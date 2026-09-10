@@ -1,9 +1,17 @@
 package com.soczuks.footballassistant.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.soczuks.footballassistant.ui.auth.LoginScreen
+import com.soczuks.footballassistant.ui.auth.StartupScreen
+import com.soczuks.footballassistant.ui.auth.StartupState
+import com.soczuks.footballassistant.ui.auth.StartupViewModel
 
 sealed class Screen(val route: String) {
     object Startup : Screen("startup")
@@ -14,6 +22,7 @@ sealed class Screen(val route: String) {
     object MatchDetails : Screen("match_details/{matchId}") {
         fun createRoute(matchId: Int) = "match_details/$matchId"
     }
+
     object Competitions : Screen("competitions")
     object CompetitionDetails : Screen("competition_details/{competitionId}") {
         fun createRoute(competitionId: Int) = "competition_details/$competitionId"
@@ -21,16 +30,43 @@ sealed class Screen(val route: String) {
 }
 
 @Composable
-fun NavGraph(navController: NavHostController) {
+fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
     NavHost(
         navController = navController,
         startDestination = Screen.Startup.route
     ) {
         composable(Screen.Startup.route) {
+            val viewModel: StartupViewModel = hiltViewModel()
+            val state by viewModel.uiState.collectAsState()
 
+            LaunchedEffect(state) {
+                val destination = when (state) {
+                    StartupState.Authenticated -> Screen.Home.route
+                    StartupState.Unauthenticated -> Screen.Login.route
+                    else -> null
+                }
+
+                destination?.let {
+                    if (state == StartupState.Authenticated) {
+                        onAuthenticated()
+                    }
+                    navController.navigate(it) {
+                        popUpTo(Screen.Startup.route) { inclusive = true }
+                    }
+                }
+            }
+
+            StartupScreen(state = state, onRetry = viewModel::restoreSession)
         }
         composable(Screen.Login.route) {
-
+            LoginScreen(
+                onNavigateToRegister = { navController.navigate(Screen.Register.route) },
+                onLoginSuccess = {
+                    onAuthenticated()
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Login.route)
+                    }
+                })
         }
         composable(Screen.Register.route) {
 

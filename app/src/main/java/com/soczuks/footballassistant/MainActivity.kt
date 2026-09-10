@@ -11,6 +11,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.soczuks.footballassistant.ui.theme.FootballAssistantTheme
 import androidx.compose.ui.Modifier
 import com.soczuks.footballassistant.ui.navigation.NavGraph
@@ -24,6 +28,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
+            var authenticatedEvent by remember { mutableIntStateOf(0) }
             val useDarkTheme = isSystemInDarkTheme()
 
             CompositionLocalProvider {
@@ -34,7 +39,9 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        NavGraph(navController = navController)
+                        NavGraph(
+                            navController = navController,
+                            onAuthenticated = { authenticatedEvent++ })
                     }
                 }
             }

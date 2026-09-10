@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FootballAssistant</string>
-    <string name="restore_session_error">Could not verify your session. Check your connection and try again.</string>
-    <string name="retry">Retry</string>
+    <string name="restore_session_error">Nie udało się zweryfikować sesji. Sprawdź połączenie i spróbuj ponownie.</string>
+    <string name="retry">Ponów</string>
     <string name="login_failed" />
     <string name="registration_failed" />
     <string name="welcome" />

@@ -10,47 +10,47 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = GreenPrimaryDark,
-    onPrimary = GreenOnPrimaryDark,
-    primaryContainer = GreenPrimaryContainerDark,
-    onPrimaryContainer = GreenOnPrimaryContainerDark,
-    secondary = GreenSecondaryDark,
-    onSecondary = GreenOnSecondaryDark,
-    secondaryContainer = GreenSecondaryContainerDark,
-    onSecondaryContainer = GreenOnSecondaryContainerDark,
-    tertiary = GreenTertiaryDark,
-    onTertiary = GreenOnTertiaryDark,
-    tertiaryContainer = GreenTertiaryContainerDark,
-    onTertiaryContainer = GreenOnTertiaryContainerDark,
-    background = GreenBackgroundDark,
-    onBackground = GreenOnBackgroundDark,
-    surface = GreenSurfaceDark,
-    onSurface = GreenOnSurfaceDark
+    primary = PitchPrimaryDark,
+    onPrimary = PitchOnPrimaryDark,
+    primaryContainer = PitchPrimaryContainerDark,
+    onPrimaryContainer = PitchOnPrimaryContainerDark,
+    secondary = AccentSecondaryDark,
+    onSecondary = AccentOnSecondaryDark,
+    secondaryContainer = AccentSecondaryContainerDark,
+    onSecondaryContainer = AccentOnSecondaryContainerDark,
+    tertiary = ClubTertiaryDark,
+    onTertiary = ClubOnTertiaryDark,
+    tertiaryContainer = ClubTertiaryContainerDark,
+    onTertiaryContainer = ClubOnTertiaryContainerDark,
+    background = StadiumBackgroundDark,
+    onBackground = StadiumOnBackgroundDark,
+    surface = StadiumSurfaceDark,
+    onSurface = StadiumOnSurfaceDark
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = GreenPrimary,
-    onPrimary = GreenOnPrimary,
-    primaryContainer = GreenPrimaryContainer,
-    onPrimaryContainer = GreenOnPrimaryContainer,
-    secondary = GreenSecondary,
-    onSecondary = GreenOnSecondary,
-    secondaryContainer = GreenSecondaryContainer,
-    onSecondaryContainer = GreenOnSecondaryContainer,
-    tertiary = GreenTertiary,
-    onTertiary = GreenOnTertiary,
-    tertiaryContainer = GreenTertiaryContainer,
-    onTertiaryContainer = GreenOnTertiaryContainer,
-    background = GreenBackground,
-    onBackground = GreenOnBackground,
-    surface = GreenSurface,
-    onSurface = GreenOnSurface
+    primary = PitchPrimary,
+    onPrimary = PitchOnPrimary,
+    primaryContainer = PitchPrimaryContainer,
+    onPrimaryContainer = PitchOnPrimaryContainer,
+    secondary = AccentSecondary,
+    onSecondary = AccentOnSecondary,
+    secondaryContainer = AccentSecondaryContainer,
+    onSecondaryContainer = AccentOnSecondaryContainer,
+    tertiary = ClubTertiary,
+    onTertiary = ClubOnTertiary,
+    tertiaryContainer = ClubTertiaryContainer,
+    onTertiaryContainer = ClubOnTertiaryContainer,
+    background = StadiumBackground,
+    onBackground = StadiumOnBackground,
+    surface = StadiumSurface,
+    onSurface = StadiumOnSurface
 )
 
 @Composable
 fun FootballAssistantTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Set to false to prioritize our custom green theme over dynamic system colors
+    // Set to false to prioritize our custom football theme over dynamic system colors
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {

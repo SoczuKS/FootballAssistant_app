@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.soczuks.footballassistant.ui.auth.LoginScreen
+import com.soczuks.footballassistant.ui.auth.RegisterScreen
 import com.soczuks.footballassistant.ui.auth.StartupScreen
 import com.soczuks.footballassistant.ui.auth.StartupState
 import com.soczuks.footballassistant.ui.auth.StartupViewModel
@@ -69,7 +70,9 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 })
         }
         composable(Screen.Register.route) {
-
+            RegisterScreen(
+                onNavigateToLogin = { navController.popBackStack() },
+                onRegisterSuccess = { navController.popBackStack() })
         }
         composable(Screen.Home.route) {
 

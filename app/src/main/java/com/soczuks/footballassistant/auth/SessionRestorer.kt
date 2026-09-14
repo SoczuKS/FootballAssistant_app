@@ -21,7 +21,7 @@ class SessionRestorer @Inject constructor(
             return SessionRestoreResult.Unauthenticated
         }
 
-        return when(val validationResult = sessionValidator.validate()) {
+        return when (val validationResult = sessionValidator.validate()) {
             is SessionValidationResult.Valid -> {
                 sessionManager.saveUserId(validationResult.userId)
                 SessionRestoreResult.Authenticated

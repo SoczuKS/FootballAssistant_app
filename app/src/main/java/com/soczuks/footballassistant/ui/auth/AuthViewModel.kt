@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
+import com.soczuks.footballassistant.api.model.request.LoginRequest
+import com.soczuks.footballassistant.api.model.request.RegisterRequest
 import com.soczuks.footballassistant.data.SessionManager
-import com.soczuks.footballassistant.models.api.LoginRequest
-import com.soczuks.footballassistant.models.api.RegisterRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +28,17 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = AuthState.Loading
             try {
+                val response = api.login(request)
 
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+
+                    sessionManager.saveTokens(body.accessToken, body.refreshToken)
+                    sessionManager.saveUserId(body.user.id)
+                    _uiState.value = AuthState.LoginSuccess
+                } else {
+                    _uiState.value = AuthState.Error(context.getString(R.string.login_failed))
+                }
             } catch (_: Exception) {
                 _uiState.value = AuthState.Error(context.getString(R.string.login_failed))
             }
@@ -39,7 +49,14 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = AuthState.Loading
             try {
+                val response = api.register(request)
 
+                if (response.isSuccessful) {
+                    _uiState.value = AuthState.RegistrationSuccess
+                } else {
+                    _uiState.value =
+                        AuthState.Error(context.getString(R.string.registration_failed))
+                }
             } catch (_: Exception) {
                 _uiState.value = AuthState.Error(context.getString(R.string.registration_failed))
             }

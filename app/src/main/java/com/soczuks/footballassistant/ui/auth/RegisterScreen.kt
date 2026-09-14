@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +20,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,41 +35,54 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
-import com.soczuks.footballassistant.api.model.request.LoginRequest
+import com.soczuks.footballassistant.api.model.request.RegisterRequest
 import com.soczuks.footballassistant.utility.withoutWhitespace
 
+internal fun arePasswordsTheSame(password: String, confirmPassword: String): Boolean {
+    return password == confirmPassword
+}
+
 @Composable
-fun LoginScreen(
-    onNavigateToRegister: () -> Unit,
-    onLoginSuccess: () -> Unit,
+fun RegisterScreen(
+    onNavigateToLogin: () -> Unit,
+    onRegisterSuccess: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     var login by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordConfirmation by remember { mutableStateOf("") }
+    var passwordMismatch by remember { mutableStateOf(false) }
 
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(uiState) {
-        if (uiState is AuthState.LoginSuccess) {
-            onLoginSuccess()
-            viewModel.resetState()
-        }
+    if (uiState is AuthState.RegistrationSuccess) {
+        AlertDialog(
+            onDismissRequest = {},
+            title = { Text(stringResource(R.string.registration_success_title)) },
+            text = { Text(stringResource(R.string.registration_success_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.resetState()
+                    onRegisterSuccess()
+                }) {
+                    Text(stringResource(R.string.ok))
+                }
+            }
+        )
     }
 
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-    ) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = stringResource(R.string.welcome),
+                text = stringResource(R.string.register_header),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -83,21 +98,62 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
+                value = email,
+                onValueChange = { email = withoutWhitespace(it) },
+                label = { Text(stringResource(R.string.email_label)) },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
                 value = password,
-                onValueChange = { password = withoutWhitespace(it) },
+                onValueChange = {
+                    password = withoutWhitespace(it)
+                    passwordMismatch = false
+                },
                 label = { Text(stringResource(R.string.password_label)) },
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = passwordConfirmation,
+                onValueChange = {
+                    passwordConfirmation = withoutWhitespace(it)
+                    passwordMismatch = false
+                },
+                label = { Text(stringResource(R.string.confirm_password_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done
                 ),
+                isError = passwordMismatch,
+                supportingText = if (passwordMismatch) {
+                    { Text(stringResource(R.string.error_passwords_do_not_match)) }
+                } else null,
                 singleLine = true
             )
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { viewModel.login(LoginRequest(login, password)) },
+                onClick = {
+                    if (arePasswordsTheSame(password, passwordConfirmation)) {
+                        viewModel.register(
+                            RegisterRequest(login, password, email)
+                        )
+                    } else {
+                        passwordMismatch = true
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = uiState !is AuthState.Loading
             ) {
@@ -108,13 +164,13 @@ fun LoginScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text(stringResource(R.string.login_action))
+                    Text(stringResource(R.string.register_button))
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            TextButton(onClick = onNavigateToRegister) {
-                Text(stringResource(R.string.navigate_to_register))
+            TextButton(onClick = onNavigateToLogin) {
+                Text(stringResource(R.string.already_have_account))
             }
 
             if (uiState is AuthState.Error) {

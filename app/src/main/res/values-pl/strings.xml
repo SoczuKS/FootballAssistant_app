@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FootballAssistant</string>
+
     <string name="restore_session_error">Nie udało się zweryfikować sesji. Sprawdź połączenie i spróbuj ponownie.</string>
     <string name="retry">Ponów</string>
-    <string name="login_failed" />
-    <string name="registration_failed" />
-    <string name="welcome" />
-    <string name="login_label" />
-    <string name="password_label" />
-    <string name="login_action" />
-    <string name="navigate_to_register" />
+    <string name="login_failed" >Nie udało się zalogować. Sprawdź dane i spróbuj ponownie.</string>
+    <string name="registration_failed" >Nie udało się utworzyć konta. Sprawdź dane i spróbuj ponownie.</string>
+    <string name="welcome" >Witaj w FootballAssistant</string>
+    <string name="login_label" >Nazwa użytkownika</string>
+    <string name="password_label" >Hasło</string>
+    <string name="login_action" >Zaloguj się</string>
+    <string name="navigate_to_register" >Nie masz konta? Zarejestruj się</string>
+    <string name="registration_success_title" >Sprawdź pocztę</string>
+    <string name="registration_success_message" >Rejestracja zakończona. Otwórz link w emailu aktywacyjnym przed zalogowaniem.</string>
+    <string name="ok" >OK</string>
+    <string name="register_header" >Dołącz do FootballAssistant</string>
+    <string name="confirm_password_label" >Potwierdź hasło</string>
+    <string name="error_passwords_do_not_match" >Hasła nie są identyczne.</string>
+    <string name="email_label" >Email</string>
+    <string name="register_button" >Zarejestruj się</string>
+    <string name="already_have_account" >Masz już konto? Zaloguj się</string>
 </resources>

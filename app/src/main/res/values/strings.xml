@@ -1,12 +1,21 @@
 <resources>
-    <string name="app_name">FootballAssistant</string>
+    <string name="app_name" translatable="false">FootballAssistant</string>
     <string name="restore_session_error">Could not verify your session. Check your connection and try again.</string>
     <string name="retry">Retry</string>
-    <string name="login_failed" />
-    <string name="registration_failed" />
-    <string name="welcome" />
-    <string name="login_label" />
-    <string name="password_label" />
-    <string name="login_action" />
-    <string name="navigate_to_register" />
+    <string name="login_failed" >Could not sign in. Check your details and try again.</string>
+    <string name="registration_failed" >Could not create the account. Check your details and try again.</string>
+    <string name="welcome" >Welcome to FootballAssistant</string>
+    <string name="login_label" >Login</string>
+    <string name="password_label" >Password</string>
+    <string name="login_action" >Login</string>
+    <string name="navigate_to_register" >Don\'t have an account? Register</string>
+    <string name="registration_success_title" >Check your email</string>
+    <string name="registration_success_message" >Registration successful. Open the link in the activation email before signing in.</string>
+    <string name="ok" >OK</string>
+    <string name="register_header" >Join FootballAssistant</string>
+    <string name="confirm_password_label" >Confirm password</string>
+    <string name="error_passwords_do_not_match" >Passwords do not match.</string>
+    <string name="email_label" >Email</string>
+    <string name="register_button" >Register</string>
+    <string name="already_have_account" >Already have an account? Login</string>
 </resources>

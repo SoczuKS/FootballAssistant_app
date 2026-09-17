@@ -21,19 +21,19 @@ class HttpTokenRefreshGateway @Inject constructor(
             NetworkConfig.AGENT_HEADER_NAME, NetworkConfig.AGENT_HEADER_VALUE
         ).post(payload.toRequestBody("application/json".toMediaType())).build()
 
-        client.newCall(request).execute().use { response ->
+        client.newCall(request).execute().use { jsonResponse ->
             when {
-                response.isSuccessful -> {
-                    val body = response.body.string()
-                    val tokens = gson.fromJson(body, RefreshTokenResponse::class.java)
-                    if (tokens.accessToken.isBlank() || tokens.refreshToken.isBlank()) {
+                jsonResponse.isSuccessful -> {
+                    val body = jsonResponse.body.string()
+                    val response = gson.fromJson(body, RefreshTokenResponse::class.java)
+                    if (response.data.accessToken.isBlank() || response.data.refreshToken.isBlank()) {
                         TokenRefreshResult.Unavailable
                     } else {
-                        TokenRefreshResult.Success(tokens.accessToken, tokens.refreshToken)
+                        TokenRefreshResult.Success(response.data.accessToken, response.data.refreshToken)
                     }
                 }
 
-                response.code == 401 -> TokenRefreshResult.Rejected
+                jsonResponse.code == 401 -> TokenRefreshResult.Rejected
                 else -> TokenRefreshResult.Unavailable
             }
         }

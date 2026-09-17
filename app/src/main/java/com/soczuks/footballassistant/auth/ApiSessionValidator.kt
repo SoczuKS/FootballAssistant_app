@@ -11,7 +11,7 @@ class ApiSessionValidator @Inject constructor(private val api: FootballAssistant
         val response = api.getCurrentUser()
 
         when {
-            response.isSuccessful -> response.body()?.user?.id?.let(SessionValidationResult::Valid)
+            response.isSuccessful -> response.body()?.data?.user?.id?.let(SessionValidationResult::Valid)
                 ?: SessionValidationResult.Unavailable
 
             response.code() == 401 || response.code() == 403 -> SessionValidationResult.Invalid

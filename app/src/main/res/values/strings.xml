@@ -18,4 +18,21 @@
     <string name="email_label" >Email</string>
     <string name="register_button" >Register</string>
     <string name="already_have_account" >Already have an account? Login</string>
+    <string name="update_up_to_date_title" />
+    <string name="update_up_to_date_message" />
+    <string name="update_download" />
+    <string name="update_downloading" />
+    <string name="update_progress" />
+    <string name="update_error_network" />
+    <string name="update_error_download" />
+    <string name="update_error_verification" />
+    <string name="update_error_installation" />
+    <string name="update_error_title" />
+    <string name="update_later" />
+    <string name="update_verifying" />
+    <string name="update_install" />
+    <string name="update_required_title" />
+    <string name="update_available_title" />
+    <string name="update_version" />
+    <string name="update_size_mb" />
 </resources>

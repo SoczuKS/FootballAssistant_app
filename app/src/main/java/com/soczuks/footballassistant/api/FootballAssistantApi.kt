@@ -1,5 +1,6 @@
 package com.soczuks.footballassistant.api
 
+import com.soczuks.footballassistant.api.model.AppRelease
 import com.soczuks.footballassistant.api.model.request.LoginRequest
 import com.soczuks.footballassistant.api.model.request.RegisterRequest
 import com.soczuks.footballassistant.api.model.response.LoginResponse
@@ -19,4 +20,7 @@ interface FootballAssistantApi {
 
     @GET("auth/me")
     suspend fun getCurrentUser(): Response<UserProfileResponse>
+
+    @GET("app/latest")
+    suspend fun getLatestAppRelease(): Response<AppRelease>
 }

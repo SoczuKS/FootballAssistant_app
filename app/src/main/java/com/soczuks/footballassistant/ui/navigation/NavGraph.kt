@@ -13,6 +13,7 @@ import com.soczuks.footballassistant.ui.auth.RegisterScreen
 import com.soczuks.footballassistant.ui.auth.StartupScreen
 import com.soczuks.footballassistant.ui.auth.StartupState
 import com.soczuks.footballassistant.ui.auth.StartupViewModel
+import com.soczuks.footballassistant.ui.home.HomeScreen
 
 sealed class Screen(val route: String) {
     object Startup : Screen("startup")
@@ -75,7 +76,18 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 onRegisterSuccess = { navController.popBackStack() })
         }
         composable(Screen.Home.route) {
-
+            HomeScreen(
+                goToMatchesScreen = {
+                    navController.navigate(Screen.Matches.route) {
+                        launchSingleTop = true
+                    }
+                },
+                goToCompetitionsScreen = {
+                    navController.navigate(Screen.Competitions.route) {
+                        launchSingleTop = true
+                    }
+                },
+            )
         }
         composable(Screen.Matches.route) {
 

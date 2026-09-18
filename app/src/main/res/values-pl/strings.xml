@@ -36,4 +36,9 @@
     <string name="update_available_title" />
     <string name="update_version" />
     <string name="update_size_mb" />
+    <string name="home_nav" />
+    <string name="matches_nav" />
+    <string name="competitions_nav" />
+    <string name="home_title" />
+    <string name="home_error" />
 </resources>

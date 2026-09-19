@@ -13,6 +13,7 @@ import com.soczuks.footballassistant.ui.auth.RegisterScreen
 import com.soczuks.footballassistant.ui.auth.StartupScreen
 import com.soczuks.footballassistant.ui.auth.StartupState
 import com.soczuks.footballassistant.ui.auth.StartupViewModel
+import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListScreen
 import com.soczuks.footballassistant.ui.home.HomeScreen
 import com.soczuks.footballassistant.ui.match.matchlistscreen.MatchListScreen
 
@@ -108,7 +109,18 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
         }
         composable(Screen.Competitions.route) {
-
+            CompetitionListScreen(
+                goToHomeScreen = {
+                    navController.navigate(Screen.Home.route) {
+                        launchSingleTop = true
+                    }
+                },
+                goToMatchesScreen = {
+                    navController.navigate(Screen.Matches.route) {
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
         composable(Screen.CompetitionDetails.route) {
 

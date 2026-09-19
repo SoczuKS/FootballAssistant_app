@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.ui.common.ErrorContent
 import com.soczuks.footballassistant.ui.navigation.NavBar
 import com.soczuks.footballassistant.ui.navigation.NavBarElement
 import com.soczuks.footballassistant.ui.navigation.TopBar
@@ -63,20 +64,5 @@ fun HomeScreen(
                 HomeUiState.Success -> {}
             }
         }
-    }
-}
-
-@Composable
-private fun ErrorContent(onRetry: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(stringResource(R.string.home_error), color = MaterialTheme.colorScheme.error)
-        Spacer(Modifier.height(16.dp))
-        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
     }
 }

@@ -42,4 +42,6 @@
     <string name="home_error" >Could not load overview.</string>
     <string name="add_competition_button_description">Add competition</string>
     <string name="competitions_title">Competitions</string>
+    <string name="matches_title">Matches</string>
+    <string name="add_match_button_description">Add match</string>
 </resources>

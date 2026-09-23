@@ -17,22 +17,30 @@ import com.soczuks.footballassistant.ui.competition.addcompetitionscreen.AddComp
 import com.soczuks.footballassistant.ui.competition.competitiondetailsscreen.CompetitionDetailsScreen
 import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListScreen
 import com.soczuks.footballassistant.ui.home.HomeScreen
+import com.soczuks.footballassistant.ui.match.addmatchscreen.AddMatchScreen
+import com.soczuks.footballassistant.ui.match.matchdetailsscreen.MatchDetailsScreen
 import com.soczuks.footballassistant.ui.match.matchlistscreen.MatchListScreen
 
 sealed class Screen(val route: String) {
     object Startup : Screen("startup")
+
     object Login : Screen("login")
     object Register : Screen("register")
+
     object Home : Screen("home")
+
     object Matches : Screen("matches")
     object MatchDetails : Screen("match_details/{matchId}") {
         fun createRoute(matchId: Int) = "match_details/$matchId"
     }
 
+    object AddMatch : Screen("add_match")
+
     object Competitions : Screen("competitions")
     object CompetitionDetails : Screen("competition_details/{competitionId}") {
         fun createRoute(competitionId: Int) = "competition_details/$competitionId"
     }
+
     object AddCompetition : Screen("add_competition")
 }
 
@@ -65,6 +73,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             StartupScreen(state = state, onRetry = viewModel::restoreSession)
         }
+
         composable(Screen.Login.route) {
             LoginScreen(
                 onNavigateToRegister = { navController.navigate(Screen.Register.route) },
@@ -80,6 +89,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 onNavigateToLogin = { navController.popBackStack() },
                 onRegisterSuccess = { navController.popBackStack() })
         }
+
         composable(Screen.Home.route) {
             HomeScreen(
                 goToMatchesScreen = {
@@ -94,6 +104,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 }
             )
         }
+
         composable(Screen.Matches.route) {
             MatchListScreen(
                 goToHomeScreen = {
@@ -105,12 +116,17 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                     navController.navigate(Screen.Competitions.route) {
                         launchSingleTop = true
                     }
-                }
+                },
+                onAddMatch = { navController.navigate(Screen.AddMatch.route) }
             )
         }
         composable(Screen.MatchDetails.route) {
-
+            MatchDetailsScreen()
         }
+        composable(Screen.AddMatch.route) {
+            AddMatchScreen()
+        }
+
         composable(Screen.Competitions.route) {
             CompetitionListScreen(
                 goToHomeScreen = {

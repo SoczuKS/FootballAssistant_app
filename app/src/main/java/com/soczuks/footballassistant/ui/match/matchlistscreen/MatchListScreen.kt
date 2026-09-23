@@ -2,7 +2,12 @@ package com.soczuks.footballassistant.ui.match.matchlistscreen
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -17,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.ui.common.ErrorContent
-import com.soczuks.footballassistant.ui.home.HomeUiState
 import com.soczuks.footballassistant.ui.navigation.NavBar
 import com.soczuks.footballassistant.ui.navigation.NavBarElement
 import com.soczuks.footballassistant.ui.navigation.TopBar
@@ -26,6 +30,7 @@ import com.soczuks.footballassistant.ui.navigation.TopBar
 fun MatchListScreen(
     goToHomeScreen: () -> Unit,
     goToCompetitionsScreen: () -> Unit,
+    onAddMatch: () -> Unit,
     viewModel: MatchListViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -34,7 +39,12 @@ fun MatchListScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.home_title)) },
+        topBar = { TopBar(title = stringResource(R.string.matches_title)) },
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddMatch, containerColor = MaterialTheme.colorScheme.secondaryContainer, contentColor = MaterialTheme.colorScheme.onSecondaryContainer) {
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_match_button_description))
+            }
+        },
         bottomBar = {
             NavBar(
                 currentNavBarElement = NavBarElement.HOME,
@@ -52,9 +62,9 @@ fun MatchListScreen(
                 .fillMaxSize()
         ) {
             when (val current = state) {
-                HomeUiState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
-                HomeUiState.Error -> ErrorContent(onRetry = viewModel::load)
-                HomeUiState.Success -> {}
+                MatchListUiState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
+                MatchListUiState.Error -> ErrorContent(onRetry = viewModel::load)
+                MatchListUiState.Success -> {}
             }
         }
     }

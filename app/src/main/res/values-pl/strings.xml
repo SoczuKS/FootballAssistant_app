@@ -43,4 +43,6 @@
     <string name="home_error" >Nie udało się wczytać podsumowania.</string>
     <string name="add_competition_button_description">Dodaj rozgrywki</string>
     <string name="competitions_title">Rozgrywki</string>
+    <string name="matches_title">Mecze</string>
+    <string name="add_match_button_description">Dodaj mecz</string>
 </resources>

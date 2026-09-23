@@ -40,4 +40,6 @@
     <string name="competitions_nav" >Competitions</string>
     <string name="home_title" >Home</string>
     <string name="home_error" >Could not load overview.</string>
+    <string name="add_competition_button_description">Add competition</string>
+    <string name="competitions_title">Competitions</string>
 </resources>

@@ -41,4 +41,6 @@
     <string name="competitions_nav" >Rozgrywki</string>
     <string name="home_title" >Strona główna</string>
     <string name="home_error" >Nie udało się wczytać podsumowania.</string>
+    <string name="add_competition_button_description">Dodaj rozgrywki</string>
+    <string name="competitions_title">Rozgrywki</string>
 </resources>

@@ -13,6 +13,8 @@ import com.soczuks.footballassistant.ui.auth.RegisterScreen
 import com.soczuks.footballassistant.ui.auth.StartupScreen
 import com.soczuks.footballassistant.ui.auth.StartupState
 import com.soczuks.footballassistant.ui.auth.StartupViewModel
+import com.soczuks.footballassistant.ui.competition.addcompetitionscreen.AddCompetitionScreen
+import com.soczuks.footballassistant.ui.competition.competitiondetailsscreen.CompetitionDetailsScreen
 import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListScreen
 import com.soczuks.footballassistant.ui.home.HomeScreen
 import com.soczuks.footballassistant.ui.match.matchlistscreen.MatchListScreen
@@ -31,6 +33,7 @@ sealed class Screen(val route: String) {
     object CompetitionDetails : Screen("competition_details/{competitionId}") {
         fun createRoute(competitionId: Int) = "competition_details/$competitionId"
     }
+    object AddCompetition : Screen("add_competition")
 }
 
 @Composable
@@ -119,11 +122,15 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                     navController.navigate(Screen.Matches.route) {
                         launchSingleTop = true
                     }
-                }
+                },
+                onAddCompetition = { navController.navigate(Screen.AddCompetition.route) }
             )
         }
         composable(Screen.CompetitionDetails.route) {
-
+            CompetitionDetailsScreen()
+        }
+        composable(Screen.AddCompetition.route) {
+            AddCompetitionScreen()
         }
     }
 }

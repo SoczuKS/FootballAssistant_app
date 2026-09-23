@@ -2,7 +2,12 @@ package com.soczuks.footballassistant.ui.competition.competitionlistscreen
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -17,8 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.ui.common.ErrorContent
-import com.soczuks.footballassistant.ui.home.HomeUiState
-import com.soczuks.footballassistant.ui.home.HomeViewModel
 import com.soczuks.footballassistant.ui.navigation.NavBar
 import com.soczuks.footballassistant.ui.navigation.NavBarElement
 import com.soczuks.footballassistant.ui.navigation.TopBar
@@ -27,7 +30,8 @@ import com.soczuks.footballassistant.ui.navigation.TopBar
 fun CompetitionListScreen(
     goToHomeScreen: () -> Unit,
     goToMatchesScreen: () -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    onAddCompetition: () -> Unit,
+    viewModel: CompetitionListViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -35,10 +39,19 @@ fun CompetitionListScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.home_title)) },
+        topBar = { TopBar(title = stringResource(R.string.competitions_title)) },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onAddCompetition,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            ) {
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_competition_button_description))
+            }
+        },
         bottomBar = {
             NavBar(
-                currentNavBarElement = NavBarElement.HOME,
+                currentNavBarElement = NavBarElement.COMPETITIONS,
                 goToHomeScreen = goToHomeScreen,
                 goToMatchesScreen = goToMatchesScreen,
                 goToCompetitionsScreen = {}
@@ -53,9 +66,9 @@ fun CompetitionListScreen(
                 .fillMaxSize()
         ) {
             when (val current = state) {
-                HomeUiState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
-                HomeUiState.Error -> ErrorContent(onRetry = viewModel::load)
-                HomeUiState.Success -> {}
+                CompetitionListUiState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
+                CompetitionListUiState.Error -> ErrorContent(onRetry = viewModel::load)
+                CompetitionListUiState.Success -> {}
             }
         }
     }

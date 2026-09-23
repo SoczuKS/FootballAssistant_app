@@ -3,7 +3,6 @@ package com.soczuks.footballassistant.ui.competition.competitionlistscreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.api.FootballAssistantApi
-import com.soczuks.footballassistant.ui.home.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +12,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CompetitionListViewModel @Inject constructor(private val api: FootballAssistantApi) :
     ViewModel() {
-    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
+    private val _uiState = MutableStateFlow<CompetitionListUiState>(CompetitionListUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
@@ -25,7 +24,7 @@ class CompetitionListViewModel @Inject constructor(private val api: FootballAssi
 
     fun load(fromPullToRefresh: Boolean = false) {
         viewModelScope.launch {
-            _uiState.value = HomeUiState.Success
+            _uiState.value = CompetitionListUiState.Success
             _isRefreshing.value = false
         }
     }

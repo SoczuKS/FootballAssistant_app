@@ -47,7 +47,7 @@ fun MatchListScreen(
         },
         bottomBar = {
             NavBar(
-                currentNavBarElement = NavBarElement.HOME,
+                currentNavBarElement = NavBarElement.MATCHES,
                 goToHomeScreen = goToHomeScreen,
                 goToMatchesScreen = {},
                 goToCompetitionsScreen = goToCompetitionsScreen

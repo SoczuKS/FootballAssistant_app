@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.model.request.RegisterRequest
+import com.soczuks.footballassistant.api.model.request.RegisterRequestData
 import com.soczuks.footballassistant.utility.withoutWhitespace
 
 internal fun arePasswordsTheSame(password: String, confirmPassword: String): Boolean {
@@ -148,7 +149,7 @@ fun RegisterScreen(
                 onClick = {
                     if (arePasswordsTheSame(password, passwordConfirmation)) {
                         viewModel.register(
-                            RegisterRequest(login, password, email)
+                            RegisterRequest(data = RegisterRequestData(login, password, email))
                         )
                     } else {
                         passwordMismatch = true

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.model.request.LoginRequest
+import com.soczuks.footballassistant.api.model.request.LoginRequestData
 import com.soczuks.footballassistant.utility.withoutWhitespace
 
 @Composable
@@ -97,7 +98,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { viewModel.login(LoginRequest(login, password)) },
+                onClick = { viewModel.login(LoginRequest(data = LoginRequestData(login, password))) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = uiState !is AuthState.Loading
             ) {

@@ -4,4 +4,8 @@ import com.soczuks.footballassistant.api.model.UserProfile
 
 data class UserProfileResponseData(val user: UserProfile)
 
-data class UserProfileResponse(val statusCode: Int, val message: String, val data: UserProfileResponseData)
+data class UserProfileResponse(
+    val statusCode: Int,
+    val message: String,
+    val data: UserProfileResponseData
+)

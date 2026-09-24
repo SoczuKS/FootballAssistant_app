@@ -2,6 +2,7 @@ package com.soczuks.footballassistant.api
 
 import com.google.gson.Gson
 import com.soczuks.footballassistant.api.model.request.RefreshTokenRequest
+import com.soczuks.footballassistant.api.model.request.RefreshTokenRequestData
 import com.soczuks.footballassistant.api.model.response.RefreshTokenResponse
 import com.soczuks.footballassistant.config.NetworkConfig
 import okhttp3.MediaType.Companion.toMediaType
@@ -16,7 +17,7 @@ class HttpTokenRefreshGateway @Inject constructor(
     private val gson: Gson
 ) : TokenRefreshGateway {
     override fun refresh(refreshToken: String): TokenRefreshResult = try {
-        val payload = gson.toJson(RefreshTokenRequest(refreshToken))
+        val payload = gson.toJson(RefreshTokenRequest(data = RefreshTokenRequestData(refreshToken)))
         val request = Request.Builder().url("${NetworkConfig.BASE_URL}auth/refresh").header(
             NetworkConfig.AGENT_HEADER_NAME, NetworkConfig.AGENT_HEADER_VALUE
         ).post(payload.toRequestBody("application/json".toMediaType())).build()

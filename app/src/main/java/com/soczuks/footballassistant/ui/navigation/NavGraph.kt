@@ -80,7 +80,9 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 onLoginSuccess = {
                     onAuthenticated()
                     navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route)
+                        popUpTo(Screen.Login.route) {
+                            inclusive = true
+                        }
                     }
                 })
         }

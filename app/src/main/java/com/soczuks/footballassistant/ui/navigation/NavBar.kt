@@ -3,6 +3,7 @@ package com.soczuks.footballassistant.ui.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.SportsSoccer
+import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -17,7 +18,8 @@ fun NavBar(
     currentNavBarElement: NavBarElement,
     goToHomeScreen: () -> Unit,
     goToMatchesScreen: () -> Unit,
-    goToCompetitionsScreen: () -> Unit
+    goToCompetitionsScreen: () -> Unit,
+    goToItemsScreen: () -> Unit
 ) {
     NavigationBar {
         NavigationBarItem(
@@ -35,5 +37,10 @@ fun NavBar(
             onClick = goToCompetitionsScreen,
             icon = { Icon(Trophy, null) },
             label = { Text(stringResource(R.string.competitions_nav)) })
+        NavigationBarItem(
+            selected = currentNavBarElement == NavBarElement.ITEMS,
+            onClick = goToItemsScreen,
+            icon = { Icon(Icons.Default.Warehouse, null) },
+            label = { Text(stringResource(R.string.items_nav)) })
     }
 }

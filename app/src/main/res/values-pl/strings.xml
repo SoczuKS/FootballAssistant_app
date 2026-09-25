@@ -52,5 +52,8 @@
     <string name="no_competitions_found">Nie znaleziono rozgrywek. Dodaj pierwsze!</string>
     <string name="create_competition_button">Dodaj rozgrywki</string>
     <string name="error_add_competitions">Nie udało się dodać rozgrywek.</string>
+    <string name="items_nav">Sprzęt</string>
+    <string name="items_title">Sprzęt</string>
+    <string name="add_item_button_description">Dodaj sprzęt</string>
 
 </resources>

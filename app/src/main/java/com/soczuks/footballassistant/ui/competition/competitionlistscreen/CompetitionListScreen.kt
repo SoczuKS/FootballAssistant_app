@@ -39,6 +39,7 @@ import com.soczuks.footballassistant.ui.navigation.TopBar
 fun CompetitionListScreen(
     goToHomeScreen: () -> Unit,
     goToMatchesScreen: () -> Unit,
+    goToItemsScreen: () -> Unit,
     onAddCompetition: () -> Unit,
     onCompetitionClick: (Int) -> Unit,
     isRefreshRequired: Boolean = false,
@@ -76,7 +77,8 @@ fun CompetitionListScreen(
                 currentNavBarElement = NavBarElement.COMPETITIONS,
                 goToHomeScreen = goToHomeScreen,
                 goToMatchesScreen = goToMatchesScreen,
-                goToCompetitionsScreen = {}
+                goToCompetitionsScreen = {},
+                goToItemsScreen = goToItemsScreen
             )
         }
     ) { padding ->

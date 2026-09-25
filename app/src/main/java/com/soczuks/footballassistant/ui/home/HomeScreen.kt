@@ -25,6 +25,7 @@ import com.soczuks.footballassistant.ui.navigation.TopBar
 fun HomeScreen(
     goToMatchesScreen: () -> Unit,
     goToCompetitionsScreen: () -> Unit,
+    goToItemsScreen: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -39,7 +40,8 @@ fun HomeScreen(
                 currentNavBarElement = NavBarElement.HOME,
                 goToHomeScreen = {},
                 goToMatchesScreen = goToMatchesScreen,
-                goToCompetitionsScreen = goToCompetitionsScreen
+                goToCompetitionsScreen = goToCompetitionsScreen,
+                goToItemsScreen = goToItemsScreen
             )
         }
     ) { padding ->

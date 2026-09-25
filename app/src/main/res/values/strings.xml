@@ -51,4 +51,7 @@
     <string name="no_competitions_found">No competitions found. Add the first one!</string>
     <string name="create_competition_button">Add competition</string>
     <string name="error_add_competitions">Could not add competition.</string>
+    <string name="items_nav">Items</string>
+    <string name="items_title">Items</string>
+    <string name="add_item_button_description">Add item</string>
 </resources>

@@ -17,6 +17,8 @@ import com.soczuks.footballassistant.ui.competition.addcompetitionscreen.AddComp
 import com.soczuks.footballassistant.ui.competition.competitiondetailsscreen.CompetitionDetailsScreen
 import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListScreen
 import com.soczuks.footballassistant.ui.home.HomeScreen
+import com.soczuks.footballassistant.ui.item.additemscreen.AddItemScreen
+import com.soczuks.footballassistant.ui.item.itemlistscreen.ItemListScreen
 import com.soczuks.footballassistant.ui.match.addmatchscreen.AddMatchScreen
 import com.soczuks.footballassistant.ui.match.matchdetailsscreen.MatchDetailsScreen
 import com.soczuks.footballassistant.ui.match.matchlistscreen.MatchListScreen
@@ -42,6 +44,9 @@ sealed class Screen(val route: String) {
     }
 
     object AddCompetition : Screen("add_competition")
+
+    object Items : Screen("items")
+    object AddItem : Screen("add_item")
 }
 
 @Composable
@@ -103,6 +108,11 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                     navController.navigate(Screen.Competitions.route) {
                         launchSingleTop = true
                     }
+                },
+                goToItemsScreen = {
+                    navController.navigate(Screen.Items.route) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -116,6 +126,11 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 },
                 goToCompetitionsScreen = {
                     navController.navigate(Screen.Competitions.route) {
+                        launchSingleTop = true
+                    }
+                },
+                goToItemsScreen = {
+                    navController.navigate(Screen.Items.route) {
                         launchSingleTop = true
                     }
                 },
@@ -146,6 +161,11 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                         launchSingleTop = true
                     }
                 },
+                goToItemsScreen = {
+                    navController.navigate(Screen.Items.route) {
+                        launchSingleTop = true
+                    }
+                },
                 onAddCompetition = { navController.navigate(Screen.AddCompetition.route) },
                 onCompetitionClick = { competitionId ->
                     navController.navigate(
@@ -173,6 +193,44 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                     )
                 }
             )
+        }
+
+        composable(Screen.Items.route) { backStackEntry ->
+            val itemCreated by backStackEntry.savedStateHandle.getStateFlow("item_created", false)
+                .collectAsState()
+
+            ItemListScreen(
+                goToHomeScreen = {
+                    navController.navigate(Screen.Home.route) {
+                        launchSingleTop = true
+                    }
+                },
+                goToMatchesScreen = {
+                    navController.navigate(Screen.Matches.route) {
+                        launchSingleTop = true
+                    }
+                },
+                goToCompetitionsScreen = {
+                    navController.navigate(Screen.Competitions.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onAddItem = { navController.navigate(Screen.AddItem.route) },
+                isRefreshRequired = itemCreated,
+                refreshCallback = {
+                    backStackEntry.savedStateHandle["item_created"] = false
+                }
+            )
+        }
+        composable(Screen.AddItem.route) {
+            AddItemScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onItemCreated = {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "item_created",
+                        true
+                    )
+                })
         }
     }
 }

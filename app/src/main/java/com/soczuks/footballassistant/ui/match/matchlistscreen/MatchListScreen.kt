@@ -41,8 +41,15 @@ fun MatchListScreen(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = { TopBar(title = stringResource(R.string.matches_title)) },
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddMatch, containerColor = MaterialTheme.colorScheme.secondaryContainer, contentColor = MaterialTheme.colorScheme.onSecondaryContainer) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_match_button_description))
+            FloatingActionButton(
+                onClick = onAddMatch,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = stringResource(R.string.add_match_button_description)
+                )
             }
         },
         bottomBar = {
@@ -63,7 +70,7 @@ fun MatchListScreen(
         ) {
             when (val current = state) {
                 MatchListUiState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
-                MatchListUiState.Error -> ErrorContent(onRetry = viewModel::load)
+                MatchListUiState.Error -> ErrorContent(message = "", onRetry = viewModel::load)
                 MatchListUiState.Success -> {}
             }
         }

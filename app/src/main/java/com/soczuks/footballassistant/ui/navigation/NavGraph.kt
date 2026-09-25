@@ -129,7 +129,12 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
             AddMatchScreen()
         }
 
-        composable(Screen.Competitions.route) {
+        composable(Screen.Competitions.route) { backStackEntry ->
+            val competitionCreated by backStackEntry.savedStateHandle.getStateFlow(
+                "competition_created",
+                false
+            ).collectAsState()
+
             CompetitionListScreen(
                 goToHomeScreen = {
                     navController.navigate(Screen.Home.route) {
@@ -141,14 +146,33 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                         launchSingleTop = true
                     }
                 },
-                onAddCompetition = { navController.navigate(Screen.AddCompetition.route) }
+                onAddCompetition = { navController.navigate(Screen.AddCompetition.route) },
+                onCompetitionClick = { competitionId ->
+                    navController.navigate(
+                        Screen.CompetitionDetails.createRoute(
+                            competitionId
+                        )
+                    )
+                },
+                isRefreshRequired = competitionCreated,
+                refreshCallback = {
+                    backStackEntry.savedStateHandle["competition_created"] = false
+                }
             )
         }
         composable(Screen.CompetitionDetails.route) {
             CompetitionDetailsScreen()
         }
         composable(Screen.AddCompetition.route) {
-            AddCompetitionScreen()
+            AddCompetitionScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onCompetitionCreated = {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "competition_created",
+                        true
+                    )
+                }
+            )
         }
     }
 }

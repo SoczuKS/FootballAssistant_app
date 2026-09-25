@@ -33,9 +33,13 @@ class AuthViewModel @Inject constructor(
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
 
-                    sessionManager.saveTokens(body.data.accessToken, body.data.refreshToken)
-                    sessionManager.saveUserId(body.data.user.id)
-                    _uiState.value = AuthState.LoginSuccess
+                    if (body.statusCode == 0) {
+                        sessionManager.saveTokens(body.data.accessToken, body.data.refreshToken)
+                        sessionManager.saveUserId(body.data.user.id)
+                        _uiState.value = AuthState.LoginSuccess
+                    } else {
+                        _uiState.value = AuthState.Error(body.message)
+                    }
                 } else {
                     _uiState.value = AuthState.Error(context.getString(R.string.login_failed))
                 }
@@ -51,8 +55,14 @@ class AuthViewModel @Inject constructor(
             try {
                 val response = api.register(request)
 
-                if (response.isSuccessful) {
-                    _uiState.value = AuthState.RegistrationSuccess
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+
+                    if (body.statusCode == 0) {
+                        _uiState.value = AuthState.RegistrationSuccess
+                    } else {
+                        _uiState.value = AuthState.Error(body.message)
+                    }
                 } else {
                     _uiState.value =
                         AuthState.Error(context.getString(R.string.registration_failed))

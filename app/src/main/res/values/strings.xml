@@ -44,4 +44,11 @@
     <string name="competitions_title">Competitions</string>
     <string name="matches_title">Matches</string>
     <string name="add_match_button_description">Add match</string>
+    <string name="add_competition_title">Add competition</string>
+    <string name="back_button_description">Back</string>
+    <string name="competition_name_label">Name</string>
+    <string name="error_load_competitions" >Could not load gardens.</string>
+    <string name="no_competitions_found">No competitions found. Add the first one!</string>
+    <string name="create_competition_button">Add competition</string>
+    <string name="error_add_competitions">Could not add competition.</string>
 </resources>

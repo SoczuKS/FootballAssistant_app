@@ -45,4 +45,12 @@
     <string name="competitions_title">Rozgrywki</string>
     <string name="matches_title">Mecze</string>
     <string name="add_match_button_description">Dodaj mecz</string>
+    <string name="add_competition_title">Dodaj rozgrywki</string>
+    <string name="back_button_description">Wstecz</string>
+    <string name="competition_name_label">Nazwa</string>
+    <string name="error_load_competitions">Nie udało się wczytać rozgrywek.</string>
+    <string name="no_competitions_found">Nie znaleziono rozgrywek. Dodaj pierwsze!</string>
+    <string name="create_competition_button">Dodaj rozgrywki</string>
+    <string name="error_add_competitions">Nie udało się dodać rozgrywek.</string>
+
 </resources>

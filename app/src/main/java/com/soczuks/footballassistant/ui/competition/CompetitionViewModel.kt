@@ -20,8 +20,7 @@ import javax.inject.Inject
 class CompetitionViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val api: FootballAssistantApi
-) :
-    ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow<CompetitionListUiState>(CompetitionListUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
@@ -75,7 +74,8 @@ class CompetitionViewModel @Inject constructor(
         viewModelScope.launch {
             _createCompetitionState.value = CreateCompetitionState.Loading
             try {
-                val response = api.addCompetition(CompetitionAddRequest(data = CompetitionAddRequestData(name)))
+                val response =
+                    api.addCompetition(CompetitionAddRequest(data = CompetitionAddRequestData(name)))
 
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
@@ -86,10 +86,12 @@ class CompetitionViewModel @Inject constructor(
                         _createCompetitionState.value = CreateCompetitionState.Error(body.message)
                     }
                 } else {
-                    _createCompetitionState.value = CreateCompetitionState.Error(context.getString(R.string.error_add_competitions))
+                    _createCompetitionState.value =
+                        CreateCompetitionState.Error(context.getString(R.string.error_add_competitions))
                 }
-            } catch(_: Exception) {
-                _createCompetitionState.value = CreateCompetitionState.Error(context.getString(R.string.error_add_competitions))
+            } catch (_: Exception) {
+                _createCompetitionState.value =
+                    CreateCompetitionState.Error(context.getString(R.string.error_add_competitions))
             }
         }
     }

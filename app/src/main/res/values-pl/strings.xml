@@ -55,5 +55,11 @@
     <string name="items_nav">Sprzęt</string>
     <string name="items_title">Sprzęt</string>
     <string name="add_item_button_description">Dodaj sprzęt</string>
+    <string name="error_add_item" >Nie udało się dodać przedmiotu.</string>
+    <string name="item_name_label" >Przedmiot</string>
+    <string name="create_item_button" >Dodaj przedmiot</string>
+    <string name="add_item_title" >Dodaj przedmiot</string>
+    <string name="error_load_items" >Nie udało się wczytać przedmiotów.</string>
+    <string name="no_items_found" >Nie znaleziono przedmiotów. Dodaj pierwsze!</string>
 
 </resources>

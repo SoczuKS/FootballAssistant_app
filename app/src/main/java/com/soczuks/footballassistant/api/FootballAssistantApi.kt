@@ -2,9 +2,11 @@ package com.soczuks.footballassistant.api
 
 import com.soczuks.footballassistant.api.model.AppRelease
 import com.soczuks.footballassistant.api.model.request.CompetitionAddRequest
+import com.soczuks.footballassistant.api.model.request.ItemAddRequest
 import com.soczuks.footballassistant.api.model.request.LoginRequest
 import com.soczuks.footballassistant.api.model.request.RegisterRequest
 import com.soczuks.footballassistant.api.model.response.CompetitionsResponse
+import com.soczuks.footballassistant.api.model.response.ItemsResponse
 import com.soczuks.footballassistant.api.model.response.LoginResponse
 import com.soczuks.footballassistant.api.model.response.MessageResponse
 import com.soczuks.footballassistant.api.model.response.UserProfileResponse
@@ -31,4 +33,10 @@ interface FootballAssistantApi {
 
     @POST("competition/add")
     suspend fun addCompetition(@Body request: CompetitionAddRequest): Response<MessageResponse>
+
+    @GET("item")
+    suspend fun getItems(): Response<ItemsResponse>
+
+    @POST("item/add")
+    suspend fun addItem(@Body request: ItemAddRequest): Response<MessageResponse>
 }

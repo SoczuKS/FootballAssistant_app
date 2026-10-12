@@ -87,9 +87,13 @@ fun AddCompetitionScreen(
             )
             Spacer(modifier = Modifier.height(32.dp))
 
-            Button(onClick = {
-                viewModel.addCompetition(name)
-            }, modifier = Modifier.fillMaxWidth(), enabled = name.isNotBlank() && createCompetitionState !is CreateCompetitionState.Loading) {
+            Button(
+                onClick = {
+                    viewModel.addCompetition(name)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = name.isNotBlank() && createCompetitionState !is CreateCompetitionState.Loading
+            ) {
                 if (createCompetitionState is CreateCompetitionState.Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 } else {

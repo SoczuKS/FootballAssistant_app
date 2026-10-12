@@ -101,17 +101,17 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
             HomeScreen(
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Home.route) { inclusive = true }
                     }
                 },
                 goToCompetitionsScreen = {
                     navController.navigate(Screen.Competitions.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Home.route) { inclusive = true }
                     }
                 },
                 goToItemsScreen = {
                     navController.navigate(Screen.Items.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Home.route) { inclusive = true }
                     }
                 }
             )
@@ -121,17 +121,17 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
             MatchListScreen(
                 goToHomeScreen = {
                     navController.navigate(Screen.Home.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Matches.route) { inclusive = true }
                     }
                 },
                 goToCompetitionsScreen = {
                     navController.navigate(Screen.Competitions.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Matches.route) { inclusive = true }
                     }
                 },
                 goToItemsScreen = {
                     navController.navigate(Screen.Items.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Matches.route) { inclusive = true }
                     }
                 },
                 onAddMatch = { navController.navigate(Screen.AddMatch.route) }
@@ -153,17 +153,17 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
             CompetitionListScreen(
                 goToHomeScreen = {
                     navController.navigate(Screen.Home.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
                     }
                 },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
                     }
                 },
                 goToItemsScreen = {
                     navController.navigate(Screen.Items.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
                     }
                 },
                 onAddCompetition = { navController.navigate(Screen.AddCompetition.route) },
@@ -202,17 +202,17 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
             ItemListScreen(
                 goToHomeScreen = {
                     navController.navigate(Screen.Home.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Home.route) { inclusive = true }
                     }
                 },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Home.route) { inclusive = true }
                     }
                 },
                 goToCompetitionsScreen = {
                     navController.navigate(Screen.Competitions.route) {
-                        launchSingleTop = true
+                        popUpTo(Screen.Home.route) { inclusive = true }
                     }
                 },
                 onAddItem = { navController.navigate(Screen.AddItem.route) },

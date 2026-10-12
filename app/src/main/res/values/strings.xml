@@ -35,12 +35,8 @@
     <string name="update_available_title" >Update available</string>
     <string name="update_version" >Version %1$s</string>
     <string name="update_size_mb" >Download size: %1$.1f MB</string>
-    <string name="home_nav" >Home</string>
-    <string name="matches_nav" >Matches</string>
-    <string name="competitions_nav" >Competitions</string>
     <string name="home_title" >Home</string>
     <string name="home_error" >Could not load overview.</string>
-    <string name="add_competition_button_description">Add competition</string>
     <string name="competitions_title">Competitions</string>
     <string name="matches_title">Matches</string>
     <string name="add_match_button_description">Add match</string>
@@ -49,14 +45,10 @@
     <string name="competition_name_label">Name</string>
     <string name="error_load_competitions" >Could not load competitions.</string>
     <string name="no_competitions_found">No competitions found. Add the first one!</string>
-    <string name="create_competition_button">Add competition</string>
     <string name="error_add_competitions">Could not add competition.</string>
-    <string name="items_nav">Items</string>
     <string name="items_title">Items</string>
-    <string name="add_item_button_description">Add item</string>
     <string name="error_add_item">Could not add item.</string>
     <string name="item_name_label" >Item</string>
-    <string name="create_item_button" >Add item</string>
     <string name="add_item_title" >Add item</string>
     <string name="error_load_items" >Could not load items.</string>
     <string name="no_items_found" >No items found. Add the first one!</string>

@@ -68,7 +68,7 @@ fun ItemListScreen(
             ) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = stringResource(R.string.add_item_button_description)
+                    contentDescription = stringResource(R.string.add_item_title)
                 )
             }
         },

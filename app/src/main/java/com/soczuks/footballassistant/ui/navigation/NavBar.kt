@@ -26,21 +26,21 @@ fun NavBar(
             selected = currentNavBarElement == NavBarElement.HOME,
             onClick = goToHomeScreen,
             icon = { Icon(Icons.Default.Home, null) },
-            label = { Text(stringResource(R.string.home_nav)) })
+            label = { Text(stringResource(R.string.home_title)) })
         NavigationBarItem(
             selected = currentNavBarElement == NavBarElement.MATCHES,
             onClick = goToMatchesScreen,
             icon = { Icon(Icons.Default.SportsSoccer, null) },
-            label = { Text(stringResource(R.string.matches_nav)) })
+            label = { Text(stringResource(R.string.matches_title)) })
         NavigationBarItem(
             selected = currentNavBarElement == NavBarElement.COMPETITIONS,
             onClick = goToCompetitionsScreen,
             icon = { Icon(Trophy, null) },
-            label = { Text(stringResource(R.string.competitions_nav)) })
+            label = { Text(stringResource(R.string.competitions_title)) })
         NavigationBarItem(
             selected = currentNavBarElement == NavBarElement.ITEMS,
             onClick = goToItemsScreen,
             icon = { Icon(Icons.Default.Warehouse, null) },
-            label = { Text(stringResource(R.string.items_nav)) })
+            label = { Text(stringResource(R.string.items_title)) })
     }
 }

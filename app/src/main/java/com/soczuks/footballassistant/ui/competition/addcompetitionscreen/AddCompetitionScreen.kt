@@ -97,7 +97,7 @@ fun AddCompetitionScreen(
                 if (createCompetitionState is CreateCompetitionState.Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 } else {
-                    Text(stringResource(R.string.create_competition_button))
+                    Text(stringResource(R.string.add_competition_title))
                 }
             }
 

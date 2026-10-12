@@ -92,7 +92,7 @@ fun AddItemScreen(
                 if (createItemState is CreateItemState.Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 } else {
-                    Text(stringResource(R.string.create_item_button))
+                    Text(stringResource(R.string.add_item_title))
                 }
             }
 

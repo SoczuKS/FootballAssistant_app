@@ -68,7 +68,7 @@ fun CompetitionListScreen(
             ) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = stringResource(R.string.add_competition_button_description)
+                    contentDescription = stringResource(R.string.add_competition_title)
                 )
             }
         },

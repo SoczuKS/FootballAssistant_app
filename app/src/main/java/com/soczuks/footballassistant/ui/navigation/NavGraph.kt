@@ -186,7 +186,25 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
             )
         }
         composable(Screen.CompetitionDetails.route) {
-            CompetitionDetailsScreen()
+            CompetitionDetailsScreen(
+                competitionId = it.arguments?.getString("competitionId")?.toInt() ?: 0,
+                onNavigateBack = { navController.popBackStack() },
+                goToHomeScreen = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
+                },
+                goToMatchesScreen = {
+                    navController.navigate(Screen.Matches.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
+                },
+                goToItemsScreen = {
+                    navController.navigate(Screen.Items.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(Screen.AddCompetition.route) {
             AddCompetitionScreen(

@@ -23,6 +23,7 @@ import com.soczuks.footballassistant.ui.item.itemlistscreen.ItemListScreen
 import com.soczuks.footballassistant.ui.match.addmatchscreen.AddMatchScreen
 import com.soczuks.footballassistant.ui.match.matchdetailsscreen.MatchDetailsScreen
 import com.soczuks.footballassistant.ui.match.matchlistscreen.MatchListScreen
+import com.soczuks.footballassistant.ui.team.teamlistscreen.TeamListScreen
 
 sealed class Screen(val route: String) {
     object Startup : Screen("startup")
@@ -52,6 +53,13 @@ sealed class Screen(val route: String) {
     }
 
     object AddItem : Screen("add_item")
+
+    object Teams : Screen("Teams")
+    object TeamDetails : Screen("team_details/{teamId}") {
+        fun createRoute(teamId: Int) = "team_details/$teamId"
+    }
+
+    object AddTeam : Screen("add_team")
 }
 
 @Composable
@@ -118,6 +126,11 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                     navController.navigate(Screen.Items.route) {
                         popUpTo(Screen.Home.route) { inclusive = true }
                     }
+                },
+                goToTeamsScreen = {
+                    navController.navigate(Screen.Teams.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
                 }
             )
         }
@@ -136,6 +149,11 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 },
                 goToItemsScreen = {
                     navController.navigate(Screen.Items.route) {
+                        popUpTo(Screen.Matches.route) { inclusive = true }
+                    }
+                },
+                goToTeamsScreen = {
+                    navController.navigate(Screen.Teams.route) {
                         popUpTo(Screen.Matches.route) { inclusive = true }
                     }
                 },
@@ -171,6 +189,11 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                         popUpTo(Screen.Competitions.route) { inclusive = true }
                     }
                 },
+                goToTeamsScreen = {
+                    navController.navigate(Screen.Teams.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
+                },
                 onAddCompetition = { navController.navigate(Screen.AddCompetition.route) },
                 onCompetitionClick = { competitionId ->
                     navController.navigate(
@@ -203,6 +226,11 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                     navController.navigate(Screen.Items.route) {
                         popUpTo(Screen.Competitions.route) { inclusive = true }
                     }
+                },
+                goToTeamsScreen = {
+                    navController.navigate(Screen.Teams.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
                 }
             )
         }
@@ -225,17 +253,22 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
             ItemListScreen(
                 goToHomeScreen = {
                     navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
+                        popUpTo(Screen.Items.route) { inclusive = true }
                     }
                 },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
+                        popUpTo(Screen.Items.route) { inclusive = true }
                     }
                 },
                 goToCompetitionsScreen = {
                     navController.navigate(Screen.Competitions.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
+                        popUpTo(Screen.Items.route) { inclusive = true }
+                    }
+                },
+                goToTeamsScreen = {
+                    navController.navigate(Screen.Teams.route) {
+                        popUpTo(Screen.Items.route) { inclusive = true }
                     }
                 },
                 onAddItem = { navController.navigate(Screen.AddItem.route) },
@@ -260,6 +293,46 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                         true
                     )
                 })
+        }
+
+        composable(Screen.Teams.route) { backStackEntry ->
+            val teamCreated by backStackEntry.savedStateHandle.getStateFlow(
+                "team_created",
+                false
+            ).collectAsState()
+
+            TeamListScreen(
+                goToHomeScreen = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                },
+                goToMatchesScreen = {
+                    navController.navigate(Screen.Matches.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                },
+                goToCompetitionsScreen = {
+                    navController.navigate(Screen.Competitions.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                },
+                goToItemsScreen = {
+                    navController.navigate(Screen.Items.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
+                },
+                onAddTeam = { navController.navigate(Screen.AddTeam.route) },
+                onTeamClick = { teamId ->
+                    navController.navigate(
+                        Screen.TeamDetails.createRoute(
+                            teamId
+                        )
+                    )
+                },
+                isRefreshRequired = teamCreated,
+                refreshCallback = { backStackEntry.savedStateHandle["team_created"] = false }
+            )
         }
     }
 }

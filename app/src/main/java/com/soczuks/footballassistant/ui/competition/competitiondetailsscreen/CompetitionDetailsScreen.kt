@@ -27,6 +27,7 @@ fun CompetitionDetailsScreen(
     goToHomeScreen: () -> Unit,
     goToMatchesScreen: () -> Unit,
     goToItemsScreen: () -> Unit,
+    goToTeamsScreen: () -> Unit,
     viewModel: CompetitionViewModel = hiltViewModel(),
     itemsViewModel: ItemViewModel = hiltViewModel()
 ) {
@@ -50,7 +51,8 @@ fun CompetitionDetailsScreen(
                 goToHomeScreen = goToHomeScreen,
                 goToMatchesScreen = goToMatchesScreen,
                 goToCompetitionsScreen = {},
-                goToItemsScreen = goToItemsScreen
+                goToItemsScreen = goToItemsScreen,
+                goToTeamsScreen = goToTeamsScreen
             )
         }
     ) { padding ->

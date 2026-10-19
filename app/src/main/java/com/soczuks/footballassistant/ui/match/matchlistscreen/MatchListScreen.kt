@@ -31,6 +31,7 @@ fun MatchListScreen(
     goToHomeScreen: () -> Unit,
     goToCompetitionsScreen: () -> Unit,
     goToItemsScreen: () -> Unit,
+    goToTeamsScreen: () -> Unit,
     onAddMatch: () -> Unit,
     viewModel: MatchListViewModel = hiltViewModel()
 ) {
@@ -59,7 +60,8 @@ fun MatchListScreen(
                 goToHomeScreen = goToHomeScreen,
                 goToMatchesScreen = {},
                 goToCompetitionsScreen = goToCompetitionsScreen,
-                goToItemsScreen = goToItemsScreen
+                goToItemsScreen = goToItemsScreen,
+                goToTeamsScreen = goToTeamsScreen
             )
         }
     ) { padding ->

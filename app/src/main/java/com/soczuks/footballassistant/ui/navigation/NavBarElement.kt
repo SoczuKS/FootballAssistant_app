@@ -4,5 +4,6 @@ enum class NavBarElement {
     HOME,
     MATCHES,
     COMPETITIONS,
-    ITEMS
+    ITEMS,
+    TEAMS
 }

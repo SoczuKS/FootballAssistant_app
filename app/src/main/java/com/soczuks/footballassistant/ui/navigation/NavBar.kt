@@ -2,6 +2,7 @@ package com.soczuks.footballassistant.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.SportsSoccer
 import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material3.Icon
@@ -19,9 +20,20 @@ fun NavBar(
     goToHomeScreen: () -> Unit,
     goToMatchesScreen: () -> Unit,
     goToCompetitionsScreen: () -> Unit,
-    goToItemsScreen: () -> Unit
+    goToItemsScreen: () -> Unit,
+    goToTeamsScreen: () -> Unit
 ) {
     NavigationBar {
+        NavigationBarItem(
+            selected = currentNavBarElement == NavBarElement.COMPETITIONS,
+            onClick = goToCompetitionsScreen,
+            icon = { Icon(Trophy, null) },
+            label = { Text(stringResource(R.string.competitions_title)) })
+        NavigationBarItem(
+            selected = currentNavBarElement == NavBarElement.TEAMS,
+            onClick = goToTeamsScreen,
+            icon = { Icon(Icons.Default.People, null) },
+            label = { Text(stringResource(R.string.teams_title)) })
         NavigationBarItem(
             selected = currentNavBarElement == NavBarElement.HOME,
             onClick = goToHomeScreen,
@@ -33,14 +45,10 @@ fun NavBar(
             icon = { Icon(Icons.Default.SportsSoccer, null) },
             label = { Text(stringResource(R.string.matches_title)) })
         NavigationBarItem(
-            selected = currentNavBarElement == NavBarElement.COMPETITIONS,
-            onClick = goToCompetitionsScreen,
-            icon = { Icon(Trophy, null) },
-            label = { Text(stringResource(R.string.competitions_title)) })
-        NavigationBarItem(
             selected = currentNavBarElement == NavBarElement.ITEMS,
             onClick = goToItemsScreen,
             icon = { Icon(Icons.Default.Warehouse, null) },
             label = { Text(stringResource(R.string.items_title)) })
+
     }
 }

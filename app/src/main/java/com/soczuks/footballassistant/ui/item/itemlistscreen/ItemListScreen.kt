@@ -40,6 +40,7 @@ fun ItemListScreen(
     goToHomeScreen: () -> Unit,
     goToMatchesScreen: () -> Unit,
     goToCompetitionsScreen: () -> Unit,
+    goToTeamsScreen: () -> Unit,
     onAddItem: () -> Unit,
     onItemClick: (Int) -> Unit,
     isRefreshRequired: Boolean = false,
@@ -78,7 +79,8 @@ fun ItemListScreen(
                 goToHomeScreen = goToHomeScreen,
                 goToMatchesScreen = goToMatchesScreen,
                 goToCompetitionsScreen = goToCompetitionsScreen,
-                goToItemsScreen = {}
+                goToItemsScreen = {},
+                goToTeamsScreen = goToTeamsScreen
             )
         }
     ) { padding ->

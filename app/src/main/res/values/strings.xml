@@ -53,4 +53,5 @@
     <string name="error_load_items" >Could not load items.</string>
     <string name="no_items_found" >No items found. Add the first one!</string>
     <string name="back_button_desc">Back</string>
+    <string name="teams_title">Teams</string>
 </resources>

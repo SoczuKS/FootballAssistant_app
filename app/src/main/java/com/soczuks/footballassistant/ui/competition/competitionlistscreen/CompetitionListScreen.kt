@@ -40,6 +40,7 @@ fun CompetitionListScreen(
     goToHomeScreen: () -> Unit,
     goToMatchesScreen: () -> Unit,
     goToItemsScreen: () -> Unit,
+    goToTeamsScreen: () -> Unit,
     onAddCompetition: () -> Unit,
     onCompetitionClick: (Int) -> Unit,
     isRefreshRequired: Boolean = false,
@@ -78,7 +79,8 @@ fun CompetitionListScreen(
                 goToHomeScreen = goToHomeScreen,
                 goToMatchesScreen = goToMatchesScreen,
                 goToCompetitionsScreen = {},
-                goToItemsScreen = goToItemsScreen
+                goToItemsScreen = goToItemsScreen,
+                goToTeamsScreen = goToTeamsScreen
             )
         }
     ) { padding ->

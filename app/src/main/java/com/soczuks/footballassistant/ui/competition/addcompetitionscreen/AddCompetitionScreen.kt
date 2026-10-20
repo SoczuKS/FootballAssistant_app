@@ -48,7 +48,7 @@ fun AddCompetitionScreen(
     val createCompetitionState by viewModel.createCompetitionState.collectAsState()
 
     LaunchedEffect(createCompetitionState) {
-        if (createCompetitionState is CreateCompetitionState.Success) {
+        if (createCompetitionState is AddCompetitionState.Success) {
             onCompetitionCreated()
             onNavigateBack()
             viewModel.resetCreateState()
@@ -92,19 +92,19 @@ fun AddCompetitionScreen(
                     viewModel.addCompetition(name)
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = name.isNotBlank() && createCompetitionState !is CreateCompetitionState.Loading
+                enabled = name.isNotBlank() && createCompetitionState !is AddCompetitionState.Loading
             ) {
-                if (createCompetitionState is CreateCompetitionState.Loading) {
+                if (createCompetitionState is AddCompetitionState.Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 } else {
                     Text(stringResource(R.string.add_competition_title))
                 }
             }
 
-            if (createCompetitionState is CreateCompetitionState.Error) {
+            if (createCompetitionState is AddCompetitionState.Error) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = (createCompetitionState as CreateCompetitionState.Error).message,
+                    text = (createCompetitionState as AddCompetitionState.Error).message,
                     color = MaterialTheme.colorScheme.error
                 )
             }

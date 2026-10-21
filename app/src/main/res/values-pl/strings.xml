@@ -55,4 +55,10 @@
     <string name="no_items_found" >Nie znaleziono przedmiotów. Dodaj pierwsze!</string>
     <string name="back_button_desc">Wstecz</string>
     <string name="teams_title">Zespoły</string>
+    <string name="add_team_title">Add team</string>
+    <string name="team_name_label">name</string>
+    <string name="team_address_label">address</string>
+    <string name="choose_team_color">Choose color</string>
+    <string name="cancel">Cancel</string>
+    <string name="team_color_label">color</string>
 </resources>

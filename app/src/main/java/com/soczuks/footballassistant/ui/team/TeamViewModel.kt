@@ -3,6 +3,7 @@ package com.soczuks.footballassistant.ui.team
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.soczuks.footballassistant.api.FootballAssistantApi
+import com.soczuks.footballassistant.ui.team.addteamscreen.AddTeamState
 import com.soczuks.footballassistant.ui.team.teamlistscreen.TeamListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,11 +22,22 @@ class TeamViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
+    private val _addTeamState = MutableStateFlow<AddTeamState>(AddTeamState.Idle)
+    val addTeamState = _addTeamState.asStateFlow()
+
     init {
         load()
     }
 
-    fun load(fromPulToRefresh: Boolean = false) {
+    fun load(fromPullToRefresh: Boolean = false) {
+        // TODO
+    }
 
+    fun resetAddState() {
+        _addTeamState.value = AddTeamState.Idle
+    }
+
+    fun addTeam() {
+        // TODO
     }
 }

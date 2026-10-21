@@ -23,6 +23,7 @@ import com.soczuks.footballassistant.ui.item.itemlistscreen.ItemListScreen
 import com.soczuks.footballassistant.ui.match.addmatchscreen.AddMatchScreen
 import com.soczuks.footballassistant.ui.match.matchdetailsscreen.MatchDetailsScreen
 import com.soczuks.footballassistant.ui.match.matchlistscreen.MatchListScreen
+import com.soczuks.footballassistant.ui.team.addteamscreen.AddTeamScreen
 import com.soczuks.footballassistant.ui.team.teamlistscreen.TeamListScreen
 
 sealed class Screen(val route: String) {
@@ -54,7 +55,7 @@ sealed class Screen(val route: String) {
 
     object AddItem : Screen("add_item")
 
-    object Teams : Screen("Teams")
+    object Teams : Screen("teams")
     object TeamDetails : Screen("team_details/{teamId}") {
         fun createRoute(teamId: Int) = "team_details/$teamId"
     }
@@ -304,22 +305,22 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
             TeamListScreen(
                 goToHomeScreen = {
                     navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
+                        popUpTo(Screen.Teams.route) { inclusive = true }
                     }
                 },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
+                        popUpTo(Screen.Teams.route) { inclusive = true }
                     }
                 },
                 goToCompetitionsScreen = {
                     navController.navigate(Screen.Competitions.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
+                        popUpTo(Screen.Teams.route) { inclusive = true }
                     }
                 },
                 goToItemsScreen = {
                     navController.navigate(Screen.Items.route) {
-                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                        popUpTo(Screen.Teams.route) { inclusive = true }
                     }
                 },
                 onAddTeam = { navController.navigate(Screen.AddTeam.route) },
@@ -333,6 +334,19 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 isRefreshRequired = teamCreated,
                 refreshCallback = { backStackEntry.savedStateHandle["team_created"] = false }
             )
+        }
+        composable(Screen.TeamDetails.route) {
+
+        }
+        composable(Screen.AddTeam.route) {
+            AddTeamScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onTeamCreated = {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "team_created",
+                        true
+                    )
+                })
         }
     }
 }

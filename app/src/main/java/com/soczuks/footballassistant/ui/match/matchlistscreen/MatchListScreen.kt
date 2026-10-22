@@ -35,7 +35,7 @@ fun MatchListScreen(
     onAddMatch: () -> Unit,
     viewModel: MatchListViewModel = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -72,7 +72,7 @@ fun MatchListScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            when (val current = state) {
+            when (val current = uiState) {
                 MatchListUiState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 MatchListUiState.Error -> ErrorContent(message = "", onRetry = viewModel::load)
                 MatchListUiState.Success -> {}

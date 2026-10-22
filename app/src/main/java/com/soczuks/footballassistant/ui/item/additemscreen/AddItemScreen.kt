@@ -45,10 +45,10 @@ fun AddItemScreen(
 ) {
     var name by rememberSaveable { mutableStateOf("") }
 
-    val createItemState by viewModel.createItemState.collectAsState()
+    val addItemState by viewModel.addItemState.collectAsState()
 
-    LaunchedEffect(createItemState) {
-        if (createItemState is CreateItemState.Success) {
+    LaunchedEffect(addItemState) {
+        if (addItemState is AddItemState.Success) {
             onItemCreated()
             onNavigateBack()
             viewModel.resetCreateState()
@@ -87,19 +87,19 @@ fun AddItemScreen(
             Button(
                 onClick = { viewModel.addItem(name) },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = name.isNotBlank() && createItemState !is CreateItemState.Loading
+                enabled = name.isNotBlank() && addItemState !is AddItemState.Loading
             ) {
-                if (createItemState is CreateItemState.Loading) {
+                if (addItemState is AddItemState.Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 } else {
                     Text(stringResource(R.string.add_item_title))
                 }
             }
 
-            if (createItemState is CreateItemState.Error) {
+            if (addItemState is AddItemState.Error) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = (createItemState as CreateItemState.Error).message,
+                    text = (addItemState as AddItemState.Error).message,
                     color = MaterialTheme.colorScheme.error
                 )
             }

@@ -45,7 +45,7 @@ fun AddCompetitionScreen(
 ) {
     var name by rememberSaveable { mutableStateOf("") }
 
-    val createCompetitionState by viewModel.createCompetitionState.collectAsState()
+    val createCompetitionState by viewModel.addCompetitionState.collectAsState()
 
     LaunchedEffect(createCompetitionState) {
         if (createCompetitionState is AddCompetitionState.Success) {

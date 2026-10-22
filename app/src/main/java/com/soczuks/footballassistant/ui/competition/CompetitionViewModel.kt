@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
-import com.soczuks.footballassistant.api.model.request.CompetitionAddRequest
-import com.soczuks.footballassistant.api.model.request.CompetitionAddRequestData
+import com.soczuks.footballassistant.api.model.request.AddCompetitionRequest
+import com.soczuks.footballassistant.api.model.request.AddCompetitionRequestData
 import com.soczuks.footballassistant.ui.competition.addcompetitionscreen.AddCompetitionState
 import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +29,7 @@ class CompetitionViewModel @Inject constructor(
 
     private val _addCompetitionState =
         MutableStateFlow<AddCompetitionState>(AddCompetitionState.Idle)
-    val createCompetitionState = _addCompetitionState.asStateFlow()
+    val addCompetitionState = _addCompetitionState.asStateFlow()
 
     init {
         load()
@@ -75,7 +75,7 @@ class CompetitionViewModel @Inject constructor(
             _addCompetitionState.value = AddCompetitionState.Loading
             try {
                 val response =
-                    api.addCompetition(CompetitionAddRequest(data = CompetitionAddRequestData(name)))
+                    api.addCompetition(AddCompetitionRequest(data = AddCompetitionRequestData(name)))
 
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!

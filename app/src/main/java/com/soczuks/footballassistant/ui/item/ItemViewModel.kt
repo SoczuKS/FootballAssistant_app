@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
-import com.soczuks.footballassistant.api.model.request.ItemAddRequest
-import com.soczuks.footballassistant.api.model.request.ItemAddRequestData
-import com.soczuks.footballassistant.ui.item.additemscreen.CreateItemState
+import com.soczuks.footballassistant.api.model.request.AddItemRequest
+import com.soczuks.footballassistant.api.model.request.AddItemRequestData
+import com.soczuks.footballassistant.ui.item.additemscreen.AddItemState
 import com.soczuks.footballassistant.ui.item.itemlistscreen.ItemListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -27,9 +27,8 @@ class ItemViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val _createItemState = MutableStateFlow<CreateItemState>(CreateItemState.Idle)
-    val createItemState = _createItemState.asStateFlow()
-
+    private val _addItemState = MutableStateFlow<AddItemState>(AddItemState.Idle)
+    val addItemState = _addItemState.asStateFlow()
 
     init {
         load()
@@ -65,30 +64,30 @@ class ItemViewModel @Inject constructor(
     }
 
     fun resetCreateState() {
-        _createItemState.value = CreateItemState.Idle
+        _addItemState.value = AddItemState.Idle
     }
 
     fun addItem(name: String) {
         viewModelScope.launch {
-            _createItemState.value = CreateItemState.Loading
+            _addItemState.value = AddItemState.Loading
             try {
-                val response = api.addItem(ItemAddRequest(data = ItemAddRequestData(name)))
+                val response = api.addItem(AddItemRequest(data = AddItemRequestData(name)))
 
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
 
                     if (body.statusCode == 0) {
-                        _createItemState.value = CreateItemState.Success
+                        _addItemState.value = AddItemState.Success
                     } else {
-                        _createItemState.value = CreateItemState.Error(body.message)
+                        _addItemState.value = AddItemState.Error(body.message)
                     }
                 } else {
-                    _createItemState.value =
-                        CreateItemState.Error(context.getString(R.string.error_add_item))
+                    _addItemState.value =
+                        AddItemState.Error(context.getString(R.string.error_add_item))
                 }
             } catch (_: Exception) {
-                _createItemState.value =
-                    CreateItemState.Error(context.getString(R.string.error_add_item))
+                _addItemState.value =
+                    AddItemState.Error(context.getString(R.string.error_add_item))
             }
         }
     }

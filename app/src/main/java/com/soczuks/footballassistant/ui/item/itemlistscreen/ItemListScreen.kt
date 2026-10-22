@@ -42,7 +42,6 @@ fun ItemListScreen(
     goToCompetitionsScreen: () -> Unit,
     goToTeamsScreen: () -> Unit,
     onAddItem: () -> Unit,
-    onItemClick: (Int) -> Unit,
     isRefreshRequired: Boolean = false,
     refreshCallback: () -> Unit = {},
     viewModel: ItemViewModel = hiltViewModel()
@@ -119,8 +118,8 @@ fun ItemListScreen(
                         ) {
                             items(state.items) { item ->
                                 ItemItem(
-                                    item = item,
-                                    onClick = { onItemClick(item.id) })
+                                    item = item
+                                )
                             }
                         }
                     }

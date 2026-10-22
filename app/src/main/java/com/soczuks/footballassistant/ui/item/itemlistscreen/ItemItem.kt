@@ -14,9 +14,8 @@ import androidx.compose.ui.unit.dp
 import com.soczuks.footballassistant.api.model.Item
 
 @Composable
-fun ItemItem(item: Item, onClick: () -> Unit) {
+fun ItemItem(item: Item) {
     Card(
-        onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {

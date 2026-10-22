@@ -18,7 +18,6 @@ import com.soczuks.footballassistant.ui.competition.competitiondetailsscreen.Com
 import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListScreen
 import com.soczuks.footballassistant.ui.home.HomeScreen
 import com.soczuks.footballassistant.ui.item.additemscreen.AddItemScreen
-import com.soczuks.footballassistant.ui.item.itemdetailsscreen.ItemDetailsScreen
 import com.soczuks.footballassistant.ui.item.itemlistscreen.ItemListScreen
 import com.soczuks.footballassistant.ui.match.addmatchscreen.AddMatchScreen
 import com.soczuks.footballassistant.ui.match.matchdetailsscreen.MatchDetailsScreen
@@ -49,9 +48,6 @@ sealed class Screen(val route: String) {
     object AddCompetition : Screen("add_competition")
 
     object Items : Screen("items")
-    object ItemDetails : Screen("item_details/{itemId}") {
-        fun createRoute(itemId: Int) = "item_details/$itemId"
-    }
 
     object AddItem : Screen("add_item")
 
@@ -273,17 +269,11 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                     }
                 },
                 onAddItem = { navController.navigate(Screen.AddItem.route) },
-                onItemClick = { itemId ->
-                    navController.navigate(Screen.ItemDetails.createRoute(itemId))
-                },
                 isRefreshRequired = itemCreated,
                 refreshCallback = {
                     backStackEntry.savedStateHandle["item_created"] = false
                 }
             )
-        }
-        composable(Screen.ItemDetails.route) {
-            ItemDetailsScreen()
         }
         composable(Screen.AddItem.route) {
             AddItemScreen(

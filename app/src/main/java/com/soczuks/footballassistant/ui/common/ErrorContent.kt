@@ -1,6 +1,5 @@
 package com.soczuks.footballassistant.ui.common
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

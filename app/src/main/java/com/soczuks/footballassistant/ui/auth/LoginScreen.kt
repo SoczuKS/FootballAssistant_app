@@ -98,7 +98,16 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { viewModel.login(LoginRequest(data = LoginRequestData(login, password))) },
+                onClick = {
+                    viewModel.login(
+                        LoginRequest(
+                            data = LoginRequestData(
+                                login,
+                                password
+                            )
+                        )
+                    )
+                },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = uiState !is AuthState.Loading
             ) {

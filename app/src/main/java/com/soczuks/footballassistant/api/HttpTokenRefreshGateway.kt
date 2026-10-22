@@ -30,7 +30,10 @@ class HttpTokenRefreshGateway @Inject constructor(
                     if (response.data.accessToken.isBlank() || response.data.refreshToken.isBlank()) {
                         TokenRefreshResult.Unavailable
                     } else {
-                        TokenRefreshResult.Success(response.data.accessToken, response.data.refreshToken)
+                        TokenRefreshResult.Success(
+                            response.data.accessToken,
+                            response.data.refreshToken
+                        )
                     }
                 }
 

@@ -4,6 +4,7 @@ import android.graphics.Color.HSVToColor
 import android.graphics.Color.colorToHSV
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,11 +45,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -106,7 +109,7 @@ fun AddTeamScreen(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { stringResource(R.string.team_name_label) },
+                label = { Text(stringResource(R.string.team_name_label)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(32.dp))
@@ -116,42 +119,19 @@ fun AddTeamScreen(
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(12.dp))
-            Box(
-                modifier = Modifier
-                    .size(96.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(
-                        if (color.isNotBlank()) {
-                            Color(color.toColorInt())
-                        } else {
-                            Color.White
-                        }
-                    )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = color,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = { showColorPicker = true },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.choose_team_color))
-            }
+            ColorPreview(color = color, onClick = { showColorPicker = true })
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
                 value = address,
                 onValueChange = { address = it },
-                label = { stringResource(R.string.team_address_label) },
+                label = { Text(stringResource(R.string.team_address_label)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(32.dp))
 
             Button(
-                onClick = { viewModel.addTeam() /* TODO */ },
+                onClick = { viewModel.addTeam(name, color, address) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = name.isNotBlank() && color.isNotBlank() && addTeamState !is Loading
             ) {
@@ -394,6 +374,56 @@ private fun HuePicker(
                 y = size.height / 2f
             )
         )
+    }
+}
+
+@Composable
+private fun ColorPreview(color: String, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(16.dp)
+
+    Box(
+        modifier = Modifier
+            .size(96.dp)
+            .clip(shape)
+            .clickable(role = Role.Button, onClick = onClick)
+    ) {
+        if (color.isBlank()) {
+            CheckerboardBackground(modifier = Modifier.matchParentSize())
+        } else {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(Color(color.toColorInt()))
+            )
+        }
+    }
+}
+
+@Composable
+private fun CheckerboardBackground(modifier: Modifier, tileSize: Float = 12F) {
+    Canvas(modifier = modifier) {
+        val lightTile = Color(0xFFE0E0E0)
+        val darkTile = Color(0xFFBDBDBD)
+        val tileSizeInternal = tileSize.dp.toPx()
+
+        val columns = (size.width / tileSizeInternal).toInt() + 1
+        val rows = (size.height / tileSizeInternal).toInt() + 1
+
+        for (row in 0 until rows) {
+            for (column in 0 until columns) {
+                val color = if ((row + column) % 2 == 0) {
+                    lightTile
+                } else {
+                    darkTile
+                }
+
+                drawRect(
+                    color = color,
+                    topLeft = Offset(x = column * tileSizeInternal, y = row * tileSizeInternal),
+                    size = Size(width = tileSizeInternal, height = tileSizeInternal)
+                )
+            }
+        }
     }
 }
 

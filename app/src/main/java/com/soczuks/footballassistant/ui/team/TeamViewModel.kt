@@ -37,7 +37,7 @@ class TeamViewModel @Inject constructor(
         _addTeamState.value = AddTeamState.Idle
     }
 
-    fun addTeam() {
+    fun addTeam(name: String, color: String, address: String) {
         // TODO
     }
 }

@@ -60,4 +60,8 @@
     <string name="choose_team_color">Choose primary color</string>
     <string name="cancel">Cancel</string>
     <string name="team_color_label">Primary color</string>
+    <string name="error_load_teams">Could not load teams.</string>
+    <string name="error_add_team">Could not add team.</string>
+    <string name="team_competition_label">Competition</string>
+    <string name="no_teams_found">No teams found. Add the first one!</string>
 </resources>

@@ -61,4 +61,8 @@
     <string name="choose_team_color">Wybierz dominujący kolor</string>
     <string name="cancel">Anuluj</string>
     <string name="team_color_label">Dominujący kolor</string>
+    <string name="error_load_teams">Nie udało się wczytać zespołów.</string>
+    <string name="error_add_team">Nie udało się dodać zespołu.</string>
+    <string name="team_competition_label">Rozgrywki</string>
+    <string name="no_teams_found">Nie znaleziono zespołów. Dodaj pierwszy!</string>
 </resources>

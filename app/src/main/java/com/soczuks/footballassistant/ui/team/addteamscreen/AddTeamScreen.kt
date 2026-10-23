@@ -23,7 +23,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +60,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.ui.competition.CompetitionViewModel
+import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListUiState
 import com.soczuks.footballassistant.ui.team.TeamViewModel
 import com.soczuks.footballassistant.ui.team.addteamscreen.AddTeamState.Loading
 import java.util.Locale
@@ -65,15 +71,19 @@ import java.util.Locale
 fun AddTeamScreen(
     onNavigateBack: () -> Unit,
     onTeamCreated: () -> Unit,
-    viewModel: TeamViewModel = hiltViewModel()
+    viewModel: TeamViewModel = hiltViewModel(),
+    competitionViewModel: CompetitionViewModel = hiltViewModel()
 ) {
     var name by rememberSaveable { mutableStateOf("") }
     var color by rememberSaveable { mutableStateOf("") }
     var address by rememberSaveable { mutableStateOf("") }
+    var competitionId by rememberSaveable { mutableStateOf<Int?>(null) }
 
     var showColorPicker by rememberSaveable { mutableStateOf(false) }
+    var showCompetitionPicker by rememberSaveable { mutableStateOf(false) }
 
     val addTeamState by viewModel.addTeamState.collectAsState()
+    val competitionState by competitionViewModel.uiState.collectAsState()
 
     LaunchedEffect(addTeamState) {
         if (addTeamState is AddTeamState.Success) {
@@ -122,6 +132,68 @@ fun AddTeamScreen(
             ColorPreview(color = color, onClick = { showColorPicker = true })
             Spacer(modifier = Modifier.height(32.dp))
 
+            val selectedCompetition = when (val state = competitionState) {
+                is CompetitionListUiState.Success -> state.competitions.find { it.id == competitionId }
+                else -> null
+            }
+
+            ExposedDropdownMenuBox(
+                expanded = showCompetitionPicker,
+                onExpandedChange = {
+                    if (competitionState is CompetitionListUiState.Success) {
+                        showCompetitionPicker = !showCompetitionPicker
+                    }
+                }, modifier = Modifier.fillMaxWidth()
+            ) {
+                val fillMaxWidth = Modifier
+                    .fillMaxWidth()
+                OutlinedTextField(
+                    value = selectedCompetition?.name.orEmpty(),
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text(stringResource(R.string.team_competition_label)) },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = showCompetitionPicker)
+                    },
+                    modifier = fillMaxWidth.menuAnchor(
+                        ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                        competitionState is CompetitionListUiState.Success
+                    ),
+                    enabled = competitionState is CompetitionListUiState.Success
+                )
+
+                ExposedDropdownMenu(
+                    expanded = showCompetitionPicker,
+                    onDismissRequest = { showCompetitionPicker = false }) {
+                    val competitions =
+                        (competitionState as? CompetitionListUiState.Success)?.competitions.orEmpty()
+
+                    competitions.forEach { competition ->
+                        DropdownMenuItem(text = { Text(competition.name) }, onClick = {
+                            competitionId = competition.id
+                            showCompetitionPicker = false
+                        })
+                    }
+                }
+            }
+            when (val state = competitionState) {
+                CompetitionListUiState.Loading -> {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                }
+
+                is CompetitionListUiState.Error -> {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = state.message,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+
+                is CompetitionListUiState.Success -> Unit
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+
             OutlinedTextField(
                 value = address,
                 onValueChange = { address = it },
@@ -131,9 +203,18 @@ fun AddTeamScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             Button(
-                onClick = { viewModel.addTeam(name, color, address) },
+                onClick = {
+                    competitionId?.let { competitionId ->
+                        viewModel.addTeam(
+                            name,
+                            color,
+                            competitionId,
+                            address
+                        )
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = name.isNotBlank() && color.isNotBlank() && addTeamState !is Loading
+                enabled = name.isNotBlank() && color.isNotBlank() && competitionId != null && addTeamState !is Loading
             ) {
                 if (addTeamState is Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)

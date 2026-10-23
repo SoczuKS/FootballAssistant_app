@@ -3,12 +3,14 @@ package com.soczuks.footballassistant.api
 import com.soczuks.footballassistant.api.model.AppRelease
 import com.soczuks.footballassistant.api.model.request.AddCompetitionRequest
 import com.soczuks.footballassistant.api.model.request.AddItemRequest
+import com.soczuks.footballassistant.api.model.request.AddTeamRequest
 import com.soczuks.footballassistant.api.model.request.LoginRequest
 import com.soczuks.footballassistant.api.model.request.RegisterRequest
 import com.soczuks.footballassistant.api.model.response.CompetitionsResponse
 import com.soczuks.footballassistant.api.model.response.ItemsResponse
 import com.soczuks.footballassistant.api.model.response.LoginResponse
 import com.soczuks.footballassistant.api.model.response.MessageResponse
+import com.soczuks.footballassistant.api.model.response.TeamsResponse
 import com.soczuks.footballassistant.api.model.response.UserProfileResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -39,4 +41,10 @@ interface FootballAssistantApi {
 
     @POST("item/add")
     suspend fun addItem(@Body request: AddItemRequest): Response<MessageResponse>
+
+    @GET("team")
+    suspend fun getTeams(): Response<TeamsResponse>
+
+    @POST("team/add")
+    suspend fun addTeam(@Body request: AddTeamRequest): Response<MessageResponse>
 }

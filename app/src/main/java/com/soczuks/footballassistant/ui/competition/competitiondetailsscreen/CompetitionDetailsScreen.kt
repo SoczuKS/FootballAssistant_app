@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.SnackbarHost
@@ -23,14 +25,17 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.ui.common.ErrorContent
 import com.soczuks.footballassistant.ui.competition.CompetitionViewModel
 import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListUiState
 import com.soczuks.footballassistant.ui.item.ItemViewModel
+import com.soczuks.footballassistant.ui.item.itemlistscreen.ItemListUiState
 import com.soczuks.footballassistant.ui.navigation.NavBar
 import com.soczuks.footballassistant.ui.navigation.NavBarElement
 import com.soczuks.footballassistant.ui.navigation.TopBar
@@ -48,6 +53,7 @@ fun CompetitionDetailsScreen(
     itemsViewModel: ItemViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val itemsState by itemsViewModel.uiState.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val areItemsRefreshing by itemsViewModel.isRefreshing.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -93,7 +99,50 @@ fun CompetitionDetailsScreen(
 
                 when (selectedTabIndex) {
                     0 -> {
+                        when (val state = itemsState) {
+                            ItemListUiState.Loading -> Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                CircularProgressIndicator()
+                            }
 
+                            is ItemListUiState.Error -> ErrorContent(
+                                message = state.message,
+                                onRetry = viewModel::load
+                            )
+
+                            is ItemListUiState.Success -> {
+                                if (state.items.isEmpty()) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(16.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            text = stringResource(R.string.no_items_found),
+                                            style = MaterialTheme.typography.bodyLarge
+                                        )
+                                    }
+                                } else {
+                                    LazyColumn(
+                                        contentPadding = PaddingValues(16.dp),
+                                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                                        modifier = Modifier.fillMaxSize()
+                                    ) {
+                                        items(state.items) { item ->
+                                            CompetitionItemAssignmentItem(
+                                                item,
+                                                false,
+                                                onCheckedChange = {})
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     1 -> {

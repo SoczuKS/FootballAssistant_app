@@ -65,4 +65,6 @@
     <string name="error_add_team">Nie udało się dodać zespołu.</string>
     <string name="team_competition_label">Rozgrywki</string>
     <string name="no_teams_found">Nie znaleziono zespołów. Dodaj pierwszy!</string>
+    <string name="items_tab_title">Przedmioty</string>
+    <string name="teams_tab_title">Zespoły</string>
 </resources>

@@ -9,15 +9,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import com.soczuks.footballassistant.api.model.Team
 
 @Composable
 fun TeamItem(team: Team, onClick: () -> Unit) {
     Card(
         onClick = onClick, modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = Color(team.color.toColorInt()))
     ) {
         Column(
             modifier = Modifier

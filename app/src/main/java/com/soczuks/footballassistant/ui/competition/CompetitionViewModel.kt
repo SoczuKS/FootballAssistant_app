@@ -7,7 +7,10 @@ import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.model.request.AddCompetitionRequest
 import com.soczuks.footballassistant.api.model.request.AddCompetitionRequestData
+import com.soczuks.footballassistant.api.model.request.CompetitionItemAssignmentRequest
+import com.soczuks.footballassistant.api.model.request.CompetitionItemAssignmentRequestData
 import com.soczuks.footballassistant.ui.competition.addcompetitionscreen.AddCompetitionState
+import com.soczuks.footballassistant.ui.competition.competitiondetailsscreen.CompetitionItemAssignmentState
 import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -30,6 +33,10 @@ class CompetitionViewModel @Inject constructor(
     private val _addCompetitionState =
         MutableStateFlow<AddCompetitionState>(AddCompetitionState.Idle)
     val addCompetitionState = _addCompetitionState.asStateFlow()
+
+    private val _assignmentState =
+        MutableStateFlow<CompetitionItemAssignmentState>(CompetitionItemAssignmentState.Idle)
+    val assignmentState = _assignmentState.asStateFlow()
 
     init {
         load()
@@ -70,6 +77,10 @@ class CompetitionViewModel @Inject constructor(
         _addCompetitionState.value = AddCompetitionState.Idle
     }
 
+    fun resetAssignmentState() {
+        _assignmentState.value = CompetitionItemAssignmentState.Idle
+    }
+
     fun addCompetition(name: String) {
         viewModelScope.launch {
             _addCompetitionState.value = AddCompetitionState.Loading
@@ -92,6 +103,39 @@ class CompetitionViewModel @Inject constructor(
             } catch (_: Exception) {
                 _addCompetitionState.value =
                     AddCompetitionState.Error(context.getString(R.string.error_add_competitions))
+            }
+        }
+    }
+
+    fun assignItem(competitionId: Int, itemId: Int, assignment: Boolean) {
+        viewModelScope.launch {
+            _assignmentState.value = CompetitionItemAssignmentState.Pending
+            try {
+                val response = api.assignItemToCompetition(
+                    CompetitionItemAssignmentRequest(
+                        data = CompetitionItemAssignmentRequestData(
+                            competitionId,
+                            itemId,
+                            assignment
+                        )
+                    )
+                )
+
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+
+                    if (body.statusCode == 0) {
+                        _assignmentState.value = CompetitionItemAssignmentState.Success
+                    } else {
+                        _assignmentState.value = CompetitionItemAssignmentState.Error(body.message)
+                    }
+                } else {
+                    _assignmentState.value =
+                        CompetitionItemAssignmentState.Error(context.getString(R.string.error_item_assignment))
+                }
+            } catch (_: Exception) {
+                _assignmentState.value =
+                    CompetitionItemAssignmentState.Error(context.getString(R.string.error_item_assignment))
             }
         }
     }

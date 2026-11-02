@@ -53,8 +53,9 @@ fun CompetitionDetailsScreen(
     itemsViewModel: ItemViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val itemsState by itemsViewModel.uiState.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val itemAssignmentState by viewModel.assignmentState.collectAsState()
+    val itemsState by itemsViewModel.uiState.collectAsState()
     val areItemsRefreshing by itemsViewModel.isRefreshing.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -62,7 +63,23 @@ fun CompetitionDetailsScreen(
     val competition =
         (uiState as? CompetitionListUiState.Success)?.competitions?.find { it.id == competitionId }
 
-    LaunchedEffect(competitionId) {}
+    LaunchedEffect(itemAssignmentState) {
+        when (val state = itemAssignmentState) {
+            CompetitionItemAssignmentState.Success -> {
+                viewModel.load(fromPullToRefresh = true)
+                viewModel.resetAssignmentState()
+            }
+
+            is CompetitionItemAssignmentState.Error -> {
+                snackBarHostState.showSnackbar(state.message)
+
+                viewModel.load(fromPullToRefresh = true)
+                viewModel.resetAssignmentState()
+            }
+
+            CompetitionItemAssignmentState.Idle, CompetitionItemAssignmentState.Pending -> Unit
+        }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -110,7 +127,7 @@ fun CompetitionDetailsScreen(
 
                             is ItemListUiState.Error -> ErrorContent(
                                 message = state.message,
-                                onRetry = viewModel::load
+                                onRetry = itemsViewModel::load
                             )
 
                             is ItemListUiState.Success -> {
@@ -128,16 +145,24 @@ fun CompetitionDetailsScreen(
                                         )
                                     }
                                 } else {
-                                    LazyColumn(
-                                        contentPadding = PaddingValues(16.dp),
-                                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                                        modifier = Modifier.fillMaxSize()
-                                    ) {
-                                        items(state.items) { item ->
-                                            CompetitionItemAssignmentItem(
-                                                item,
-                                                false,
-                                                onCheckedChange = {})
+                                    competition?.let { competition ->
+                                        LazyColumn(
+                                            contentPadding = PaddingValues(16.dp),
+                                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                                            modifier = Modifier.fillMaxSize()
+                                        ) {
+                                            items(state.items) { item ->
+                                                CompetitionItemAssignmentItem(
+                                                    item,
+                                                    competition.itemList.items.any { it.id == item.id },
+                                                    onCheckedChange = {
+                                                        viewModel.assignItem(
+                                                            competition.id,
+                                                            item.id,
+                                                            it
+                                                        )
+                                                    })
+                                            }
                                         }
                                     }
                                 }

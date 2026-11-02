@@ -67,4 +67,5 @@
     <string name="no_teams_found">Nie znaleziono zespołów. Dodaj pierwszy!</string>
     <string name="items_tab_title">Przedmioty</string>
     <string name="teams_tab_title">Zespoły</string>
+    <string name="error_item_assignment">Nie udało się przypisać przedmiotu</string>
 </resources>

@@ -66,4 +66,5 @@
     <string name="no_teams_found">No teams found. Add the first one!</string>
     <string name="items_tab_title">Items</string>
     <string name="teams_tab_title">Teams</string>
+    <string name="error_item_assignment">Item assignment failed</string>
 </resources>

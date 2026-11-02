@@ -4,6 +4,7 @@ import com.soczuks.footballassistant.api.model.AppRelease
 import com.soczuks.footballassistant.api.model.request.AddCompetitionRequest
 import com.soczuks.footballassistant.api.model.request.AddItemRequest
 import com.soczuks.footballassistant.api.model.request.AddTeamRequest
+import com.soczuks.footballassistant.api.model.request.CompetitionItemAssignmentRequest
 import com.soczuks.footballassistant.api.model.request.LoginRequest
 import com.soczuks.footballassistant.api.model.request.RegisterRequest
 import com.soczuks.footballassistant.api.model.response.CompetitionsResponse
@@ -35,6 +36,9 @@ interface FootballAssistantApi {
 
     @POST("competition/add")
     suspend fun addCompetition(@Body request: AddCompetitionRequest): Response<MessageResponse>
+
+    @POST("/competition/assign_item")
+    suspend fun assignItemToCompetition(@Body request: CompetitionItemAssignmentRequest): Response<MessageResponse>
 
     @GET("item")
     suspend fun getItems(): Response<ItemsResponse>

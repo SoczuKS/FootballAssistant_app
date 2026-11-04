@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
-import com.soczuks.footballassistant.api.model.request.AddTeamRequest
-import com.soczuks.footballassistant.api.model.request.AddTeamRequestData
+import com.soczuks.footballassistant.api.model.request.team.TeamAddRequest
+import com.soczuks.footballassistant.api.model.request.team.TeamAddRequestData
 import com.soczuks.footballassistant.ui.team.addteamscreen.AddTeamState
 import com.soczuks.footballassistant.ui.team.teamlistscreen.TeamListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -73,8 +73,8 @@ class TeamViewModel @Inject constructor(
             try {
                 val response =
                     api.addTeam(
-                        AddTeamRequest(
-                            data = AddTeamRequestData(
+                        TeamAddRequest(
+                            data = TeamAddRequestData(
                                 name, color, competitionIds,
                                 address.ifBlank { null })
                         )

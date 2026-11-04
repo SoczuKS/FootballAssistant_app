@@ -1,10 +1,10 @@
 package com.soczuks.footballassistant.api
 
 import com.soczuks.footballassistant.api.model.AppRelease
-import com.soczuks.footballassistant.api.model.request.AddCompetitionRequest
-import com.soczuks.footballassistant.api.model.request.AddItemRequest
-import com.soczuks.footballassistant.api.model.request.AddTeamRequest
-import com.soczuks.footballassistant.api.model.request.CompetitionItemAssignmentRequest
+import com.soczuks.footballassistant.api.model.request.competition.CompetitionAddRequest
+import com.soczuks.footballassistant.api.model.request.item.ItemAddRequest
+import com.soczuks.footballassistant.api.model.request.team.TeamAddRequest
+import com.soczuks.footballassistant.api.model.request.competition.CompetitionItemAssignmentRequest
 import com.soczuks.footballassistant.api.model.request.LoginRequest
 import com.soczuks.footballassistant.api.model.request.RegisterRequest
 import com.soczuks.footballassistant.api.model.response.CompetitionsResponse
@@ -35,7 +35,7 @@ interface FootballAssistantApi {
     suspend fun getCompetitions(): Response<CompetitionsResponse>
 
     @POST("competition/add")
-    suspend fun addCompetition(@Body request: AddCompetitionRequest): Response<MessageResponse>
+    suspend fun addCompetition(@Body request: CompetitionAddRequest): Response<MessageResponse>
 
     @POST("/competition/assign_item")
     suspend fun assignItemToCompetition(@Body request: CompetitionItemAssignmentRequest): Response<MessageResponse>
@@ -44,11 +44,11 @@ interface FootballAssistantApi {
     suspend fun getItems(): Response<ItemsResponse>
 
     @POST("item/add")
-    suspend fun addItem(@Body request: AddItemRequest): Response<MessageResponse>
+    suspend fun addItem(@Body request: ItemAddRequest): Response<MessageResponse>
 
     @GET("team")
     suspend fun getTeams(): Response<TeamsResponse>
 
     @POST("team/add")
-    suspend fun addTeam(@Body request: AddTeamRequest): Response<MessageResponse>
+    suspend fun addTeam(@Body request: TeamAddRequest): Response<MessageResponse>
 }

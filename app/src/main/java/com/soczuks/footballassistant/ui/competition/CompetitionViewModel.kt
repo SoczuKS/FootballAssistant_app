@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
-import com.soczuks.footballassistant.api.model.request.AddCompetitionRequest
-import com.soczuks.footballassistant.api.model.request.AddCompetitionRequestData
-import com.soczuks.footballassistant.api.model.request.CompetitionItemAssignmentRequest
-import com.soczuks.footballassistant.api.model.request.CompetitionItemAssignmentRequestData
+import com.soczuks.footballassistant.api.model.request.competition.CompetitionAddRequest
+import com.soczuks.footballassistant.api.model.request.competition.CompetitionAddRequestData
+import com.soczuks.footballassistant.api.model.request.competition.CompetitionItemAssignmentRequest
+import com.soczuks.footballassistant.api.model.request.competition.CompetitionItemAssignmentRequestData
 import com.soczuks.footballassistant.ui.competition.addcompetitionscreen.AddCompetitionState
 import com.soczuks.footballassistant.ui.competition.competitiondetailsscreen.CompetitionItemAssignmentState
 import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListUiState
@@ -86,7 +86,7 @@ class CompetitionViewModel @Inject constructor(
             _addCompetitionState.value = AddCompetitionState.Loading
             try {
                 val response =
-                    api.addCompetition(AddCompetitionRequest(data = AddCompetitionRequestData(name)))
+                    api.addCompetition(CompetitionAddRequest(data = CompetitionAddRequestData(name)))
 
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!

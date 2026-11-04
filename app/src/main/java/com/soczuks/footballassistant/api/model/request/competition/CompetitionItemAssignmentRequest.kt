@@ -1,4 +1,4 @@
-package com.soczuks.footballassistant.api.model.request
+package com.soczuks.footballassistant.api.model.request.competition
 
 data class CompetitionItemAssignmentRequestData(
     val competitionId: Int,

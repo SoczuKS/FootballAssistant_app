@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
-import com.soczuks.footballassistant.api.model.request.AddItemRequest
-import com.soczuks.footballassistant.api.model.request.AddItemRequestData
+import com.soczuks.footballassistant.api.model.request.item.ItemAddRequest
+import com.soczuks.footballassistant.api.model.request.item.ItemAddRequestData
 import com.soczuks.footballassistant.ui.item.additemscreen.AddItemState
 import com.soczuks.footballassistant.ui.item.itemlistscreen.ItemListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -71,7 +71,7 @@ class ItemViewModel @Inject constructor(
         viewModelScope.launch {
             _addItemState.value = AddItemState.Loading
             try {
-                val response = api.addItem(AddItemRequest(data = AddItemRequestData(name)))
+                val response = api.addItem(ItemAddRequest(data = ItemAddRequestData(name)))
 
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!

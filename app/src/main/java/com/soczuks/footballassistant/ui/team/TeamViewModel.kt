@@ -66,7 +66,7 @@ class TeamViewModel @Inject constructor(
         _addTeamState.value = AddTeamState.Idle
     }
 
-    fun addTeam(name: String, color: String, competitionId: Int, address: String) {
+    fun addTeam(name: String, color: String, competitionIds: List<Int>, address: String) {
         viewModelScope.launch {
             _addTeamState.value = AddTeamState.Loading
 
@@ -75,7 +75,7 @@ class TeamViewModel @Inject constructor(
                     api.addTeam(
                         AddTeamRequest(
                             data = AddTeamRequestData(
-                                name, color, competitionId,
+                                name, color, competitionIds,
                                 address.ifBlank { null })
                         )
                     )

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -77,7 +78,7 @@ fun AddTeamScreen(
     var name by rememberSaveable { mutableStateOf("") }
     var color by rememberSaveable { mutableStateOf("") }
     var address by rememberSaveable { mutableStateOf("") }
-    var competitionId by rememberSaveable { mutableStateOf<Int?>(null) }
+    var competitionIds by rememberSaveable { mutableStateOf<List<Int>>(emptyList()) }
 
     var showColorPicker by rememberSaveable { mutableStateOf(false) }
     var showCompetitionPicker by rememberSaveable { mutableStateOf(false) }
@@ -132,9 +133,9 @@ fun AddTeamScreen(
             ColorPreview(color = color, onClick = { showColorPicker = true })
             Spacer(modifier = Modifier.height(32.dp))
 
-            val selectedCompetition = when (val state = competitionState) {
-                is CompetitionListUiState.Success -> state.competitions.find { it.id == competitionId }
-                else -> null
+            val selectedCompetitions = when (val state = competitionState) {
+                is CompetitionListUiState.Success -> state.competitions.filter { it.id in competitionIds }
+                else -> emptyList()
             }
 
             ExposedDropdownMenuBox(
@@ -148,7 +149,7 @@ fun AddTeamScreen(
                 val fillMaxWidth = Modifier
                     .fillMaxWidth()
                 OutlinedTextField(
-                    value = selectedCompetition?.name.orEmpty(),
+                    value = selectedCompetitions.joinToString { it.name },
                     onValueChange = {},
                     readOnly = true,
                     label = { Text(stringResource(R.string.team_competition_label)) },
@@ -169,10 +170,21 @@ fun AddTeamScreen(
                         (competitionState as? CompetitionListUiState.Success)?.competitions.orEmpty()
 
                     competitions.forEach { competition ->
-                        DropdownMenuItem(text = { Text(competition.name) }, onClick = {
-                            competitionId = competition.id
-                            showCompetitionPicker = false
-                        })
+                        val selected = competition.id in competitionIds
+
+                        DropdownMenuItem(
+                            text = { Text(competition.name) },
+                            trailingIcon = {
+                                Checkbox(checked = selected, onCheckedChange = null)
+                            },
+                            onClick = {
+                                competitionIds =
+                                    if (selected) {
+                                        competitionIds - competition.id
+                                    } else {
+                                        competitionIds + competition.id
+                                    }
+                            })
                     }
                 }
             }
@@ -204,17 +216,15 @@ fun AddTeamScreen(
 
             Button(
                 onClick = {
-                    competitionId?.let { competitionId ->
-                        viewModel.addTeam(
-                            name,
-                            color,
-                            competitionId,
-                            address
-                        )
-                    }
+                    viewModel.addTeam(
+                        name,
+                        color,
+                        competitionIds,
+                        address
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = name.isNotBlank() && color.isNotBlank() && competitionId != null && addTeamState !is Loading
+                enabled = name.isNotBlank() && color.isNotBlank() && addTeamState !is Loading
             ) {
                 if (addTeamState is Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)

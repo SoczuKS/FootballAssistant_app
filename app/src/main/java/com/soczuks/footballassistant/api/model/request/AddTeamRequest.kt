@@ -3,7 +3,7 @@ package com.soczuks.footballassistant.api.model.request
 data class AddTeamRequestData(
     val name: String,
     val color: String,
-    val competitionId: Int,
+    val competitionIds: List<Int>,
     val address: String? = null
 )
 

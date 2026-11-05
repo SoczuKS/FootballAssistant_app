@@ -7,18 +7,18 @@ import javax.inject.Singleton
 @Singleton
 class ApiSessionValidator @Inject constructor(private val api: FootballAssistantApi) :
     SessionValidator {
-    override suspend fun validate(): SessionValidationResult = try {
+    override suspend fun validate(): SessionValidationStatus = try {
         val response = api.getCurrentUser()
 
         when {
-            response.isSuccessful -> response.body()?.data?.user?.id?.let(SessionValidationResult::Valid)
-                ?: SessionValidationResult.Unavailable
+            response.isSuccessful -> response.body()?.data?.user?.id?.let(SessionValidationStatus::Valid)
+                ?: SessionValidationStatus.Unavailable
 
-            response.code() == 401 || response.code() == 403 -> SessionValidationResult.Invalid
+            response.code() == 401 || response.code() == 403 -> SessionValidationStatus.Invalid
 
-            else -> SessionValidationResult.Unavailable
+            else -> SessionValidationStatus.Unavailable
         }
     } catch (_: Exception) {
-        SessionValidationResult.Unavailable
+        SessionValidationStatus.Unavailable
     }
 }

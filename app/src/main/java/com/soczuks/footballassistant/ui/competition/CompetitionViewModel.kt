@@ -6,12 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.model.request.competition.CompetitionAddRequest
-import com.soczuks.footballassistant.api.model.request.competition.CompetitionAddRequestData
 import com.soczuks.footballassistant.api.model.request.competition.CompetitionItemAssignmentRequest
-import com.soczuks.footballassistant.api.model.request.competition.CompetitionItemAssignmentRequestData
-import com.soczuks.footballassistant.ui.competition.addcompetitionscreen.AddCompetitionState
-import com.soczuks.footballassistant.ui.competition.competitiondetailsscreen.CompetitionItemAssignmentState
-import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListUiState
+import com.soczuks.footballassistant.ui.competition.add.CompetitionAddStatus
+import com.soczuks.footballassistant.ui.competition.details.CompetitionItemAssignmentStatus
+import com.soczuks.footballassistant.ui.competition.list.CompetitionListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,22 +19,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CompetitionViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val api: FootballAssistantApi
+    @ApplicationContext private val context: Context, private val api: FootballAssistantApi
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<CompetitionListUiState>(CompetitionListUiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val _listStatus = MutableStateFlow<CompetitionListStatus>(CompetitionListStatus.Loading)
+    val listStatus = _listStatus.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val _addCompetitionState =
-        MutableStateFlow<AddCompetitionState>(AddCompetitionState.Idle)
-    val addCompetitionState = _addCompetitionState.asStateFlow()
+    private val _competitionAddStatus =
+        MutableStateFlow<CompetitionAddStatus>(CompetitionAddStatus.Idle)
+    val competitionAddStatus = _competitionAddStatus.asStateFlow()
 
-    private val _assignmentState =
-        MutableStateFlow<CompetitionItemAssignmentState>(CompetitionItemAssignmentState.Idle)
-    val assignmentState = _assignmentState.asStateFlow()
+    private val _itemAssignmentStatus =
+        MutableStateFlow<CompetitionItemAssignmentStatus>(CompetitionItemAssignmentStatus.Idle)
+    val itemAssignmentStatus = _itemAssignmentStatus.asStateFlow()
 
     init {
         load()
@@ -47,76 +44,73 @@ class CompetitionViewModel @Inject constructor(
             if (fromPullToRefresh) {
                 _isRefreshing.value = true
             } else {
-                _uiState.value = CompetitionListUiState.Loading
+                _listStatus.value = CompetitionListStatus.Loading
             }
 
             try {
                 val response = api.getCompetitions()
                 if (response.isSuccessful && response.body() != null) {
                     if (response.body()!!.statusCode == 0) {
-                        _uiState.value =
-                            CompetitionListUiState.Success(response.body()!!.data.competitions)
+                        _listStatus.value =
+                            CompetitionListStatus.Success(response.body()!!.data.competitions)
                     } else {
-                        _uiState.value =
-                            CompetitionListUiState.Error(response.body()!!.message)
+                        _listStatus.value = CompetitionListStatus.Error(response.body()!!.message)
                     }
                 } else {
-                    _uiState.value =
-                        CompetitionListUiState.Error(context.getString(R.string.error_load_competitions))
+                    _listStatus.value =
+                        CompetitionListStatus.Error(context.getString(R.string.error_load_competitions))
                 }
             } catch (_: Exception) {
-                _uiState.value =
-                    CompetitionListUiState.Error(context.getString(R.string.error_load_competitions))
+                _listStatus.value =
+                    CompetitionListStatus.Error(context.getString(R.string.error_load_competitions))
             } finally {
                 _isRefreshing.value = false
             }
         }
     }
 
-    fun resetCreateState() {
-        _addCompetitionState.value = AddCompetitionState.Idle
+    fun resetAddStatus() {
+        _competitionAddStatus.value = CompetitionAddStatus.Idle
     }
 
-    fun resetAssignmentState() {
-        _assignmentState.value = CompetitionItemAssignmentState.Idle
+    fun resetItemAssignmentStatus() {
+        _itemAssignmentStatus.value = CompetitionItemAssignmentStatus.Idle
     }
 
     fun addCompetition(name: String) {
         viewModelScope.launch {
-            _addCompetitionState.value = AddCompetitionState.Loading
+            _competitionAddStatus.value = CompetitionAddStatus.Pending
             try {
                 val response =
-                    api.addCompetition(CompetitionAddRequest(data = CompetitionAddRequestData(name)))
+                    api.addCompetition(CompetitionAddRequest(data = CompetitionAddRequest.Data(name)))
 
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
 
                     if (body.statusCode == 0) {
-                        _addCompetitionState.value = AddCompetitionState.Success
+                        _competitionAddStatus.value = CompetitionAddStatus.Success
                     } else {
-                        _addCompetitionState.value = AddCompetitionState.Error(body.message)
+                        _competitionAddStatus.value = CompetitionAddStatus.Error(body.message)
                     }
                 } else {
-                    _addCompetitionState.value =
-                        AddCompetitionState.Error(context.getString(R.string.error_add_competitions))
+                    _competitionAddStatus.value =
+                        CompetitionAddStatus.Error(context.getString(R.string.error_add_competitions))
                 }
             } catch (_: Exception) {
-                _addCompetitionState.value =
-                    AddCompetitionState.Error(context.getString(R.string.error_add_competitions))
+                _competitionAddStatus.value =
+                    CompetitionAddStatus.Error(context.getString(R.string.error_add_competitions))
             }
         }
     }
 
     fun assignItem(competitionId: Int, itemId: Int, assignment: Boolean) {
         viewModelScope.launch {
-            _assignmentState.value = CompetitionItemAssignmentState.Pending
+            _itemAssignmentStatus.value = CompetitionItemAssignmentStatus.Pending
             try {
                 val response = api.assignItemToCompetition(
                     CompetitionItemAssignmentRequest(
-                        data = CompetitionItemAssignmentRequestData(
-                            competitionId,
-                            itemId,
-                            assignment
+                        data = CompetitionItemAssignmentRequest.Data(
+                            competitionId, itemId, assignment
                         )
                     )
                 )
@@ -125,17 +119,18 @@ class CompetitionViewModel @Inject constructor(
                     val body = response.body()!!
 
                     if (body.statusCode == 0) {
-                        _assignmentState.value = CompetitionItemAssignmentState.Success
+                        _itemAssignmentStatus.value = CompetitionItemAssignmentStatus.Success
                     } else {
-                        _assignmentState.value = CompetitionItemAssignmentState.Error(body.message)
+                        _itemAssignmentStatus.value =
+                            CompetitionItemAssignmentStatus.Error(body.message)
                     }
                 } else {
-                    _assignmentState.value =
-                        CompetitionItemAssignmentState.Error(context.getString(R.string.error_item_assignment))
+                    _itemAssignmentStatus.value =
+                        CompetitionItemAssignmentStatus.Error(context.getString(R.string.error_item_assignment))
                 }
             } catch (_: Exception) {
-                _assignmentState.value =
-                    CompetitionItemAssignmentState.Error(context.getString(R.string.error_item_assignment))
+                _itemAssignmentStatus.value =
+                    CompetitionItemAssignmentStatus.Error(context.getString(R.string.error_item_assignment))
             }
         }
     }

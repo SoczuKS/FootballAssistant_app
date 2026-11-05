@@ -50,9 +50,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun FootballAssistantTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Set to false to prioritize our custom football theme over dynamic system colors
-    dynamicColor: Boolean = false,
-    content: @Composable () -> Unit
+    dynamicColor: Boolean = false, content: @Composable () -> Unit
 ) {
     val colorScheme = when {
         dynamicColor -> {
@@ -65,8 +63,6 @@ fun FootballAssistantTheme(
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
+        colorScheme = colorScheme, typography = Typography, content = content
     )
 }

@@ -40,42 +40,49 @@ class UpdateManager @Inject constructor(
     private val checking = AtomicBoolean(false)
     private val monitoring = AtomicBoolean(false)
 
-    private val _state = MutableStateFlow<UpdateUiState>(UpdateUiState.Idle)
-    val state: StateFlow<UpdateUiState> = _state.asStateFlow()
+    private val _updateStatus = MutableStateFlow<UpdateStatus>(UpdateStatus.Idle)
+    val updateStatus: StateFlow<UpdateStatus> = _updateStatus.asStateFlow()
 
     init {
         scope.launch { removeInstalledUpdateFiles() }
     }
 
     fun checkForUpdate(force: Boolean = false) {
-        if (
-            _state.value is UpdateUiState.Downloading ||
-            _state.value is UpdateUiState.Verifying
-        ) return
-        if (!checking.compareAndSet(false, true)) return
+        if (_updateStatus.value is UpdateStatus.Downloading || _updateStatus.value is UpdateStatus.Verifying) {
+            return
+        }
+        if (!checking.compareAndSet(false, true)) {
+            return
+        }
         scope.launch {
             try {
                 if (!force) {
                     val elapsed = System.currentTimeMillis() - preferences.lastCheckAt()
                     val hasPendingWork = preferences.activeDownload() != null
-                    if (!hasPendingWork && elapsed in 0 until CHECK_INTERVAL_MS) return@launch
+                    if (!hasPendingWork && elapsed in 0 until CHECK_INTERVAL_MS) {
+                        return@launch
+                    }
                 }
 
-                if (_state.value == UpdateUiState.Idle || force) {
-                    _state.value = UpdateUiState.Checking
+                if (_updateStatus.value == UpdateStatus.Idle || force) {
+                    _updateStatus.value = UpdateStatus.Checking
                 }
                 val response = api.getLatestAppRelease()
                 preferences.markChecked(System.currentTimeMillis())
                 if (!response.isSuccessful) {
-                    if (force) _state.value = UpdateUiState.Error(UpdateError.NETWORK)
-                    else _state.value = UpdateUiState.Idle
+                    if (force) {
+                        _updateStatus.value = UpdateStatus.Error(UpdateError.NETWORK)
+                    } else {
+                        _updateStatus.value = UpdateStatus.Idle
+                    }
                     return@launch
                 }
 
                 val release = response.body()
                 if (release == null || !isValidRelease(release)) {
-                    if (force) _state.value = UpdateUiState.Error(UpdateError.NETWORK)
-                    else _state.value = UpdateUiState.Idle
+                    _updateStatus.value =
+                        if (force) UpdateStatus.Error(UpdateError.NETWORK) else UpdateStatus.Idle
+
                     return@launch
                 }
 
@@ -87,7 +94,7 @@ class UpdateManager @Inject constructor(
                     if (release.versionCode <= BuildConfig.VERSION_CODE) {
                         preferences.clearActiveDownload()
                     }
-                    _state.value = if (force) UpdateUiState.UpToDate else UpdateUiState.Idle
+                    _updateStatus.value = if (force) UpdateStatus.UpToDate else UpdateStatus.Idle
                     return@launch
                 }
 
@@ -98,15 +105,18 @@ class UpdateManager @Inject constructor(
                     if (activeDownload != null) preferences.clearActiveDownload()
                     val file = updateFile(release.versionCode)
                     if (file.isFile && verifyFile(file, release)) {
-                        _state.value = UpdateUiState.ReadyToInstall(release, decision.required)
+                        _updateStatus.value =
+                            UpdateStatus.ReadyToInstall(release, decision.required)
                     } else {
-                        if (file.exists()) file.delete()
-                        _state.value = UpdateUiState.Available(release, decision.required)
+                        if (file.exists()) {
+                            file.delete()
+                        }
+                        _updateStatus.value = UpdateStatus.Available(release, decision.required)
                     }
                 }
             } catch (_: Exception) {
-                if (force) _state.value = UpdateUiState.Error(UpdateError.NETWORK)
-                else _state.value = UpdateUiState.Idle
+                _updateStatus.value =
+                    if (force) UpdateStatus.Error(UpdateError.NETWORK) else UpdateStatus.Idle
             } finally {
                 checking.set(false)
             }
@@ -114,79 +124,74 @@ class UpdateManager @Inject constructor(
     }
 
     fun dismiss() {
-        val current = _state.value
+        val current = _updateStatus.value
         val release = releaseFrom(current) ?: run {
-            _state.value = UpdateUiState.Idle
+            _updateStatus.value = UpdateStatus.Idle
             return
         }
         if (requiredFrom(current)) return
         scope.launch {
             preferences.dismiss(release.versionCode)
             preferences.clearActiveDownload()
-            _state.value = UpdateUiState.Idle
+            _updateStatus.value = UpdateStatus.Idle
         }
     }
 
     fun download() {
-        val current = _state.value
+        val current = _updateStatus.value
         val release = releaseFrom(current) ?: return
         val required = requiredFrom(current)
-        if (current is UpdateUiState.Downloading || current is UpdateUiState.Verifying) return
+        if (current is UpdateStatus.Downloading || current is UpdateStatus.Verifying) {
+            return
+        }
 
         scope.launch {
             try {
                 val directory = updatesDirectory()
                 directory.mkdirs()
                 val file = updateFile(release.versionCode)
-                if (file.exists()) file.delete()
+                if (file.exists()) {
+                    file.delete()
+                }
 
                 val request = DownloadManager.Request(release.downloadUrl.toUri())
                     .setTitle("Gardener ${release.versionName}")
                     .setDescription(context.getString(R.string.update_downloading))
-                    .setMimeType(APK_MIME_TYPE)
-                    .setNotificationVisibility(
+                    .setMimeType(APK_MIME_TYPE).setNotificationVisibility(
                         DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
-                    )
-                    .setAllowedOverMetered(true)
-                    .setAllowedOverRoaming(false)
+                    ).setAllowedOverMetered(true).setAllowedOverRoaming(false)
                     .setDestinationInExternalFilesDir(
-                        context,
-                        Environment.DIRECTORY_DOWNLOADS,
-                        "updates/${file.name}"
+                        context, Environment.DIRECTORY_DOWNLOADS, "updates/${file.name}"
                     )
 
                 val downloadId = downloadManager.enqueue(request)
                 preferences.saveActiveDownload(downloadId, release.versionCode)
                 monitorDownload(downloadId, release, required)
             } catch (_: Exception) {
-                _state.value = UpdateUiState.Error(UpdateError.DOWNLOAD, release, required)
+                _updateStatus.value = UpdateStatus.Error(UpdateError.DOWNLOAD, release, required)
             }
         }
     }
 
     fun hasInstallPermission(): Boolean = context.packageManager.canRequestPackageInstalls()
 
-    fun unknownSourcesIntent(): Intent =
-        Intent(
-            Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
-            "package:${context.packageName}".toUri()
-        )
+    fun unknownSourcesIntent(): Intent = Intent(
+        Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, "package:${context.packageName}".toUri()
+    )
 
     fun install(activity: Activity) {
-        val current = _state.value
+        val current = _updateStatus.value
         val release = releaseFrom(current) ?: return
         val required = requiredFrom(current)
         val file = updateFile(release.versionCode)
         if (!file.isFile || !hasInstallPermission()) {
-            _state.value = UpdateUiState.Error(UpdateError.INSTALLATION, release, required)
+            _updateStatus.value = UpdateStatus.Error(UpdateError.INSTALLATION, release, required)
             return
         }
 
         try {
             val uri = FileProvider.getUriForFile(
-                context,
-                "${context.packageName}.fileprovider",
-                file
+                context, "${context.packageName}.fileprovider", file
             )
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(uri, APK_MIME_TYPE)
@@ -194,18 +199,18 @@ class UpdateManager @Inject constructor(
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             activity.startActivity(intent)
-            _state.value = UpdateUiState.ReadyToInstall(release, required)
+            _updateStatus.value = UpdateStatus.ReadyToInstall(release, required)
         } catch (_: Exception) {
-            _state.value = UpdateUiState.Error(UpdateError.INSTALLATION, release, required)
+            _updateStatus.value = UpdateStatus.Error(UpdateError.INSTALLATION, release, required)
         }
     }
 
     private suspend fun monitorDownload(
-        downloadId: Long,
-        release: AppRelease,
-        required: Boolean
+        downloadId: Long, release: AppRelease, required: Boolean
     ) {
-        if (!monitoring.compareAndSet(false, true)) return
+        if (!monitoring.compareAndSet(false, true)) {
+            return
+        }
         try {
             while (true) {
                 val query = DownloadManager.Query().setFilterById(downloadId)
@@ -214,12 +219,10 @@ class UpdateManager @Inject constructor(
                     if (!it.moveToFirst()) {
                         preferences.clearActiveDownload()
                         if (verifyFile(updateFile(release.versionCode), release)) {
-                            _state.value = UpdateUiState.ReadyToInstall(release, required)
+                            _updateStatus.value = UpdateStatus.ReadyToInstall(release, required)
                         } else {
-                            _state.value = UpdateUiState.Error(
-                                UpdateError.DOWNLOAD,
-                                release,
-                                required
+                            _updateStatus.value = UpdateStatus.Error(
+                                UpdateError.DOWNLOAD, release, required
                             )
                         }
                         return
@@ -242,10 +245,8 @@ class UpdateManager @Inject constructor(
 
                         DownloadManager.STATUS_FAILED -> {
                             preferences.clearActiveDownload()
-                            _state.value = UpdateUiState.Error(
-                                UpdateError.DOWNLOAD,
-                                release,
-                                required
+                            _updateStatus.value = UpdateStatus.Error(
+                                UpdateError.DOWNLOAD, release, required
                             )
                             return
                         }
@@ -253,11 +254,11 @@ class UpdateManager @Inject constructor(
                         else -> {
                             val progress = if (total > 0) {
                                 ((downloaded * 100L) / total).toInt().coerceIn(0, 100)
-                            } else null
-                            _state.value = UpdateUiState.Downloading(
-                                release,
-                                required,
-                                progress
+                            } else {
+                                null
+                            }
+                            _updateStatus.value = UpdateStatus.Downloading(
+                                release, required, progress
                             )
                         }
                     }
@@ -270,52 +271,50 @@ class UpdateManager @Inject constructor(
     }
 
     private suspend fun verifyDownloadedRelease(release: AppRelease, required: Boolean) {
-        _state.value = UpdateUiState.Verifying(release, required)
+        _updateStatus.value = UpdateStatus.Verifying(release, required)
         val file = updateFile(release.versionCode)
         if (verifyFile(file, release)) {
-            _state.value = UpdateUiState.ReadyToInstall(release, required)
+            _updateStatus.value = UpdateStatus.ReadyToInstall(release, required)
         } else {
             file.delete()
-            _state.value = UpdateUiState.Error(UpdateError.VERIFICATION, release, required)
+            _updateStatus.value = UpdateStatus.Error(UpdateError.VERIFICATION, release, required)
         }
     }
 
     private suspend fun verifyFile(file: File, release: AppRelease): Boolean =
         withContext(Dispatchers.IO) {
-            if (!file.isFile || file.length() != release.sizeBytes) return@withContext false
+            if (!file.isFile || file.length() != release.sizeBytes) {
+                return@withContext false
+            }
             val actual = sha256Hex(file)
             actual.equals(release.sha256, ignoreCase = true)
         }
 
     private fun isValidRelease(release: AppRelease): Boolean =
-        release.versionCode > 0 &&
-                release.minimumSupportedVersionCode in 1..release.versionCode &&
-                release.versionName.isNotBlank() &&
-                release.downloadUrl.startsWith("https://") &&
-                release.sha256.matches(Regex("^[a-fA-F0-9]{64}$")) &&
-                release.sizeBytes > 0
+        release.versionCode > 0 && release.minimumSupportedVersionCode in 1..release.versionCode && release.versionName.isNotBlank() && release.downloadUrl.startsWith(
+            "https://"
+        ) && release.sha256.matches(Regex("^[a-fA-F0-9]{64}$")) && release.sizeBytes > 0
 
-    private fun releaseFrom(state: UpdateUiState): AppRelease? = when (state) {
-        is UpdateUiState.Available -> state.release
-        is UpdateUiState.Downloading -> state.release
-        is UpdateUiState.Verifying -> state.release
-        is UpdateUiState.ReadyToInstall -> state.release
-        is UpdateUiState.Error -> state.release
+    private fun releaseFrom(state: UpdateStatus): AppRelease? = when (state) {
+        is UpdateStatus.Available -> state.release
+        is UpdateStatus.Downloading -> state.release
+        is UpdateStatus.Verifying -> state.release
+        is UpdateStatus.ReadyToInstall -> state.release
+        is UpdateStatus.Error -> state.release
         else -> null
     }
 
-    private fun requiredFrom(state: UpdateUiState): Boolean = when (state) {
-        is UpdateUiState.Available -> state.required
-        is UpdateUiState.Downloading -> state.required
-        is UpdateUiState.Verifying -> state.required
-        is UpdateUiState.ReadyToInstall -> state.required
-        is UpdateUiState.Error -> state.required
+    private fun requiredFrom(state: UpdateStatus): Boolean = when (state) {
+        is UpdateStatus.Available -> state.required
+        is UpdateStatus.Downloading -> state.required
+        is UpdateStatus.Verifying -> state.required
+        is UpdateStatus.ReadyToInstall -> state.required
+        is UpdateStatus.Error -> state.required
         else -> false
     }
 
     private fun updatesDirectory(): File = File(
-        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
-        "updates"
+        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "updates"
     )
 
     private fun updateFile(versionCode: Int): File =
@@ -324,13 +323,14 @@ class UpdateManager @Inject constructor(
     private fun removeInstalledUpdateFiles() {
         updatesDirectory().listFiles()?.forEach { file ->
             val version = file.name.removePrefix("gardener-").removeSuffix(".apk").toIntOrNull()
-            if (version != null && version <= BuildConfig.VERSION_CODE) file.delete()
+            if (version != null && version <= BuildConfig.VERSION_CODE) {
+                file.delete()
+            }
         }
     }
 
     private fun evaluateUpdate(
-        release: AppRelease,
-        dismissedVersionCode: Int?
+        release: AppRelease, dismissedVersionCode: Int?
     ): UpdateDecision {
         val currentVersionCode = BuildConfig.VERSION_CODE
         if (release.versionCode <= currentVersionCode) {

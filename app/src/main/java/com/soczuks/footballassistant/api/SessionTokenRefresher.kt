@@ -5,8 +5,7 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class SessionTokenRefresher @Inject constructor(
-    private val sessionManager: SessionManager,
-    private val gateway: TokenRefreshGateway
+    private val sessionManager: SessionManager, private val gateway: TokenRefreshGateway
 ) {
     private val refreshLock = Any()
 
@@ -29,7 +28,7 @@ class SessionTokenRefresher @Inject constructor(
             }
 
             when (val result = gateway.refresh(refreshToken)) {
-                is TokenRefreshResult.Success -> {
+                is TokenRefreshStatus.Success -> {
                     if (sessionManager.getRefreshToken() != refreshToken) {
                         return@runBlocking null
                     }
@@ -37,12 +36,12 @@ class SessionTokenRefresher @Inject constructor(
                     result.accessToken
                 }
 
-                TokenRefreshResult.Rejected -> {
+                TokenRefreshStatus.Rejected -> {
                     sessionManager.clearSession()
                     null
                 }
 
-                TokenRefreshResult.Unavailable -> null
+                TokenRefreshStatus.Unavailable -> null
             }
         }
     }

@@ -2,7 +2,6 @@ package com.soczuks.footballassistant.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Light Theme Colors
 val PitchPrimary = Color(0xFF1B5E20)
 val PitchOnPrimary = Color(0xFFFFFFFF)
 val PitchPrimaryContainer = Color(0xFFA5D6A7)
@@ -26,7 +25,6 @@ val StadiumOnBackground = Color(0xFF112015)
 val StadiumSurface = Color(0xFFFFFFFF)
 val StadiumOnSurface = Color(0xFF112015)
 
-// Dark Theme Colors
 val PitchPrimaryDark = Color(0xFF81C784)
 val PitchOnPrimaryDark = Color(0xFF00390A)
 val PitchPrimaryContainerDark = Color(0xFF0F4015)

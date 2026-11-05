@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val updateState by updateManager.state.collectAsState()
+            val updateState by updateManager.updateStatus.collectAsState()
             val unknownSourceLauncher =
                 rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
                     if (updateManager.hasInstallPermission()) {
@@ -78,8 +78,7 @@ class MainActivity : ComponentActivity() {
                     }
                 },
                 onDismiss = updateManager::dismiss,
-                onCheckAgain = { updateManager.checkForUpdate(force = true) }
-            )
+                onCheckAgain = { updateManager.checkForUpdate(force = true) })
         }
     }
 }

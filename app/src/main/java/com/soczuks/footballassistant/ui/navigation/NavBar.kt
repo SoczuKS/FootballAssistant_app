@@ -28,11 +28,9 @@ private fun NavBarIcon(imageVector: ImageVector, selected: Boolean) {
     val scale = transition.animateFloat(
         transitionSpec = {
             spring(
-                dampingRatio = Spring.DampingRatioMediumBouncy,
-                stiffness = Spring.StiffnessLow
+                dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
             )
-        },
-        label = "iconScale"
+        }, label = "iconScale"
     ) { isSelected ->
         if (isSelected) 1.25f else 1f
     }

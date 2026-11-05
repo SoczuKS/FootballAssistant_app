@@ -16,23 +16,17 @@ import com.soczuks.footballassistant.R
 
 @Composable
 internal fun ProgressDialog(title: String, progress: Int?) {
-    AlertDialog(
-        onDismissRequest = {},
-        title = { Text(title) },
-        text = {
-            if (progress == null) {
-                CircularProgressIndicator()
-            } else {
-                Column {
-                    LinearProgressIndicator(
-                        progress = { progress / 100f },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(stringResource(R.string.update_progress, progress))
-                }
+    AlertDialog(onDismissRequest = {}, title = { Text(title) }, text = {
+        if (progress == null) {
+            CircularProgressIndicator()
+        } else {
+            Column {
+                LinearProgressIndicator(
+                    progress = { progress / 100f }, modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(stringResource(R.string.update_progress, progress))
             }
-        },
-        confirmButton = {}
-    )
+        }
+    }, confirmButton = {})
 }

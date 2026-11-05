@@ -34,24 +34,23 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.model.request.LoginRequest
-import com.soczuks.footballassistant.api.model.request.LoginRequestData
 import com.soczuks.footballassistant.utility.withoutWhitespace
 
 @Composable
 fun LoginScreen(
     onNavigateToRegister: () -> Unit,
     onLoginSuccess: () -> Unit,
-    viewModel: AuthViewModel = hiltViewModel()
+    authenticationViewModel: AuthenticationViewModel = hiltViewModel()
 ) {
     var login by rememberSaveable { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val uiState by viewModel.uiState.collectAsState()
+    val authenticationStatus by authenticationViewModel.authenticationStatus.collectAsState()
 
-    LaunchedEffect(uiState) {
-        if (uiState is AuthState.LoginSuccess) {
+    LaunchedEffect(authenticationStatus) {
+        if (authenticationStatus is AuthenticationStatus.LoginSuccess) {
             onLoginSuccess()
-            viewModel.resetState()
+            authenticationViewModel.resetState()
         }
     }
 
@@ -90,8 +89,7 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
+                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
                 ),
                 singleLine = true
             )
@@ -99,19 +97,18 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    viewModel.login(
+                    authenticationViewModel.login(
                         LoginRequest(
-                            data = LoginRequestData(
-                                login,
-                                password
+                            data = LoginRequest.Data(
+                                login, password
                             )
                         )
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = uiState !is AuthState.Loading
+                enabled = authenticationStatus !is AuthenticationStatus.Pending
             ) {
-                if (uiState is AuthState.Loading) {
+                if (authenticationStatus is AuthenticationStatus.Pending) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = MaterialTheme.colorScheme.onPrimary,
@@ -127,10 +124,10 @@ fun LoginScreen(
                 Text(stringResource(R.string.navigate_to_register))
             }
 
-            if (uiState is AuthState.Error) {
+            if (authenticationStatus is AuthenticationStatus.Error) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = (uiState as AuthState.Error).message,
+                    text = (authenticationStatus as AuthenticationStatus.Error).message,
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )

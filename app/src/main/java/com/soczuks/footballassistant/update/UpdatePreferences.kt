@@ -25,8 +25,7 @@ class UpdatePreferences @Inject constructor(
     private val activeDownloadIdKey = longPreferencesKey("active_download_id")
     private val activeDownloadVersionCodeKey = intPreferencesKey("active_download_version_code")
 
-    suspend fun lastCheckAt(): Long =
-        context.updateDataStore.data.first()[lastCheckAtKey] ?: 0L
+    suspend fun lastCheckAt(): Long = context.updateDataStore.data.first()[lastCheckAtKey] ?: 0L
 
     suspend fun markChecked(timestamp: Long) {
         context.updateDataStore.edit { it[lastCheckAtKey] = timestamp }

@@ -6,9 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.model.request.team.TeamAddRequest
-import com.soczuks.footballassistant.api.model.request.team.TeamAddRequestData
-import com.soczuks.footballassistant.ui.team.addteamscreen.AddTeamState
-import com.soczuks.footballassistant.ui.team.teamlistscreen.TeamListUiState
+import com.soczuks.footballassistant.ui.team.add.TeamAddStatus
+import com.soczuks.footballassistant.ui.team.list.TeamListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
@@ -18,17 +17,16 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class TeamViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val api: FootballAssistantApi
+    @ApplicationContext private val context: Context, private val api: FootballAssistantApi
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<TeamListUiState>(TeamListUiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val _listStatus = MutableStateFlow<TeamListStatus>(TeamListStatus.Loading)
+    val listStatus = _listStatus.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val _addTeamState = MutableStateFlow<AddTeamState>(AddTeamState.Idle)
-    val addTeamState = _addTeamState.asStateFlow()
+    private val _teamAddStatus = MutableStateFlow<TeamAddStatus>(TeamAddStatus.Idle)
+    val teamAddStatus = _teamAddStatus.asStateFlow()
 
     init {
         load()
@@ -39,23 +37,24 @@ class TeamViewModel @Inject constructor(
             if (fromPullToRefresh) {
                 _isRefreshing.value = true
             } else {
-                _uiState.value = TeamListUiState.Loading
+                _listStatus.value = TeamListStatus.Loading
             }
 
             try {
                 val response = api.getTeams()
                 if (response.isSuccessful && response.body() != null) {
                     if (response.body()!!.statusCode == 0) {
-                        _uiState.value = TeamListUiState.Success(response.body()!!.data.teams)
+                        _listStatus.value = TeamListStatus.Success(response.body()!!.data.teams)
                     } else {
-                        _uiState.value = TeamListUiState.Error(response.body()!!.message)
+                        _listStatus.value = TeamListStatus.Error(response.body()!!.message)
                     }
                 } else {
-                    _uiState.value =
-                        TeamListUiState.Error(context.getString(R.string.error_load_teams))
+                    _listStatus.value =
+                        TeamListStatus.Error(context.getString(R.string.error_load_teams))
                 }
             } catch (_: Exception) {
-                _uiState.value = TeamListUiState.Error(context.getString(R.string.error_load_teams))
+                _listStatus.value =
+                    TeamListStatus.Error(context.getString(R.string.error_load_teams))
             } finally {
                 _isRefreshing.value = false
             }
@@ -63,37 +62,36 @@ class TeamViewModel @Inject constructor(
     }
 
     fun resetAddState() {
-        _addTeamState.value = AddTeamState.Idle
+        _teamAddStatus.value = TeamAddStatus.Idle
     }
 
     fun addTeam(name: String, color: String, competitionIds: List<Int>, address: String) {
         viewModelScope.launch {
-            _addTeamState.value = AddTeamState.Loading
+            _teamAddStatus.value = TeamAddStatus.Pending
 
             try {
-                val response =
-                    api.addTeam(
-                        TeamAddRequest(
-                            data = TeamAddRequestData(
-                                name, color, competitionIds,
-                                address.ifBlank { null })
-                        )
+                val response = api.addTeam(
+                    TeamAddRequest(
+                        data = TeamAddRequest.Data(
+                            name, color, competitionIds, address.ifBlank { null })
                     )
+                )
 
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
 
                     if (body.statusCode == 0) {
-                        _addTeamState.value = AddTeamState.Success
+                        _teamAddStatus.value = TeamAddStatus.Success
                     } else {
-                        _addTeamState.value = AddTeamState.Error(body.message)
+                        _teamAddStatus.value = TeamAddStatus.Error(body.message)
                     }
                 } else {
-                    _addTeamState.value =
-                        AddTeamState.Error(context.getString(R.string.error_add_team))
+                    _teamAddStatus.value =
+                        TeamAddStatus.Error(context.getString(R.string.error_add_team))
                 }
             } catch (_: Exception) {
-                _addTeamState.value = AddTeamState.Error(context.getString(R.string.error_add_team))
+                _teamAddStatus.value =
+                    TeamAddStatus.Error(context.getString(R.string.error_add_team))
             }
         }
     }

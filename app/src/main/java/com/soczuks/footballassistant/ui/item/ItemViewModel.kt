@@ -6,9 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.model.request.item.ItemAddRequest
-import com.soczuks.footballassistant.api.model.request.item.ItemAddRequestData
-import com.soczuks.footballassistant.ui.item.additemscreen.AddItemState
-import com.soczuks.footballassistant.ui.item.itemlistscreen.ItemListUiState
+import com.soczuks.footballassistant.ui.item.add.ItemAddStatus
+import com.soczuks.footballassistant.ui.item.list.ItemListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,17 +17,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ItemViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val api: FootballAssistantApi
+    @ApplicationContext private val context: Context, private val api: FootballAssistantApi
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<ItemListUiState>(ItemListUiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val _listStatus = MutableStateFlow<ItemListStatus>(ItemListStatus.Loading)
+    val listStatus = _listStatus.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val _addItemState = MutableStateFlow<AddItemState>(AddItemState.Idle)
-    val addItemState = _addItemState.asStateFlow()
+    private val _itemAddStatus = MutableStateFlow<ItemAddStatus>(ItemAddStatus.Idle)
+    val itemAddStatus = _itemAddStatus.asStateFlow()
 
     init {
         load()
@@ -39,24 +37,24 @@ class ItemViewModel @Inject constructor(
             if (fromPullToRefresh) {
                 _isRefreshing.value = true
             } else {
-                _uiState.value = ItemListUiState.Loading
+                _listStatus.value = ItemListStatus.Loading
             }
 
             try {
                 val response = api.getItems()
                 if (response.isSuccessful && response.body() != null) {
                     if (response.body()!!.statusCode == 0) {
-                        _uiState.value =
-                            ItemListUiState.Success(response.body()!!.data.items)
+                        _listStatus.value = ItemListStatus.Success(response.body()!!.data.items)
                     } else {
-                        _uiState.value = ItemListUiState.Error(response.body()!!.message)
+                        _listStatus.value = ItemListStatus.Error(response.body()!!.message)
                     }
                 } else {
-                    _uiState.value =
-                        ItemListUiState.Error(context.getString(R.string.error_load_items))
+                    _listStatus.value =
+                        ItemListStatus.Error(context.getString(R.string.error_load_items))
                 }
             } catch (_: Exception) {
-                _uiState.value = ItemListUiState.Error(context.getString(R.string.error_load_items))
+                _listStatus.value =
+                    ItemListStatus.Error(context.getString(R.string.error_load_items))
             } finally {
                 _isRefreshing.value = false
             }
@@ -64,30 +62,30 @@ class ItemViewModel @Inject constructor(
     }
 
     fun resetCreateState() {
-        _addItemState.value = AddItemState.Idle
+        _itemAddStatus.value = ItemAddStatus.Idle
     }
 
     fun addItem(name: String) {
         viewModelScope.launch {
-            _addItemState.value = AddItemState.Loading
+            _itemAddStatus.value = ItemAddStatus.Pending
             try {
-                val response = api.addItem(ItemAddRequest(data = ItemAddRequestData(name)))
+                val response = api.addItem(ItemAddRequest(data = ItemAddRequest.Data(name)))
 
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
 
                     if (body.statusCode == 0) {
-                        _addItemState.value = AddItemState.Success
+                        _itemAddStatus.value = ItemAddStatus.Success
                     } else {
-                        _addItemState.value = AddItemState.Error(body.message)
+                        _itemAddStatus.value = ItemAddStatus.Error(body.message)
                     }
                 } else {
-                    _addItemState.value =
-                        AddItemState.Error(context.getString(R.string.error_add_item))
+                    _itemAddStatus.value =
+                        ItemAddStatus.Error(context.getString(R.string.error_add_item))
                 }
             } catch (_: Exception) {
-                _addItemState.value =
-                    AddItemState.Error(context.getString(R.string.error_add_item))
+                _itemAddStatus.value =
+                    ItemAddStatus.Error(context.getString(R.string.error_add_item))
             }
         }
     }

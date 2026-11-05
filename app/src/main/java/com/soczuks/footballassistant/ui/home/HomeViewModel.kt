@@ -11,8 +11,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val api: FootballAssistantApi) : ViewModel() {
-    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val _status = MutableStateFlow<HomeStatus>(HomeStatus.Loading)
+    val status = _status.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
@@ -23,7 +23,7 @@ class HomeViewModel @Inject constructor(private val api: FootballAssistantApi) :
 
     fun load(fromPullToRefresh: Boolean = false) {
         viewModelScope.launch {
-            _uiState.value = HomeUiState.Success
+            _status.value = HomeStatus.Success
             _isRefreshing.value = false
         }
     }

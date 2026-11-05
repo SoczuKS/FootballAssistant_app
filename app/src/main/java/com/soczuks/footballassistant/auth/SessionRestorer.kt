@@ -6,33 +6,32 @@ import javax.inject.Singleton
 
 @Singleton
 class SessionRestorer @Inject constructor(
-    private val sessionManager: SessionManager,
-    private val sessionValidator: SessionValidator
+    private val sessionManager: SessionManager, private val sessionValidator: SessionValidator
 ) {
-    suspend fun restore(): SessionRestoreResult {
+    suspend fun restore(): SessionRestoreStatus {
         val accessToken = try {
             sessionManager.getAccessToken()
         } catch (_: Exception) {
-            return SessionRestoreResult.Unavailable
+            return SessionRestoreStatus.Unavailable
         }
 
         if (accessToken.isNullOrBlank()) {
             sessionManager.clearSession()
-            return SessionRestoreResult.Unauthenticated
+            return SessionRestoreStatus.Unauthenticated
         }
 
         return when (val validationResult = sessionValidator.validate()) {
-            is SessionValidationResult.Valid -> {
+            is SessionValidationStatus.Valid -> {
                 sessionManager.saveUserId(validationResult.userId)
-                SessionRestoreResult.Authenticated
+                SessionRestoreStatus.Authenticated
             }
 
-            SessionValidationResult.Invalid -> {
+            SessionValidationStatus.Invalid -> {
                 sessionManager.clearSession()
-                SessionRestoreResult.Unauthenticated
+                SessionRestoreStatus.Unauthenticated
             }
 
-            SessionValidationResult.Unavailable -> SessionRestoreResult.Unavailable
+            SessionValidationStatus.Unavailable -> SessionRestoreStatus.Unavailable
         }
     }
 }

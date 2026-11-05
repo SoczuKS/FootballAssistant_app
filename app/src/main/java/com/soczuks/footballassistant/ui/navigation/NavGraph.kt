@@ -11,19 +11,19 @@ import androidx.navigation.compose.composable
 import com.soczuks.footballassistant.ui.auth.LoginScreen
 import com.soczuks.footballassistant.ui.auth.RegisterScreen
 import com.soczuks.footballassistant.ui.auth.StartupScreen
-import com.soczuks.footballassistant.ui.auth.StartupState
+import com.soczuks.footballassistant.ui.auth.StartupStatus
 import com.soczuks.footballassistant.ui.auth.StartupViewModel
-import com.soczuks.footballassistant.ui.competition.addcompetitionscreen.AddCompetitionScreen
-import com.soczuks.footballassistant.ui.competition.competitiondetailsscreen.CompetitionDetailsScreen
-import com.soczuks.footballassistant.ui.competition.competitionlistscreen.CompetitionListScreen
+import com.soczuks.footballassistant.ui.competition.add.CompetitionAddScreen
+import com.soczuks.footballassistant.ui.competition.details.CompetitionDetailsScreen
+import com.soczuks.footballassistant.ui.competition.list.CompetitionListScreen
 import com.soczuks.footballassistant.ui.home.HomeScreen
-import com.soczuks.footballassistant.ui.item.additemscreen.AddItemScreen
-import com.soczuks.footballassistant.ui.item.itemlistscreen.ItemListScreen
-import com.soczuks.footballassistant.ui.match.addmatchscreen.AddMatchScreen
-import com.soczuks.footballassistant.ui.match.matchdetailsscreen.MatchDetailsScreen
-import com.soczuks.footballassistant.ui.match.matchlistscreen.MatchListScreen
-import com.soczuks.footballassistant.ui.team.addteamscreen.AddTeamScreen
-import com.soczuks.footballassistant.ui.team.teamlistscreen.TeamListScreen
+import com.soczuks.footballassistant.ui.item.add.ItemAddScreen
+import com.soczuks.footballassistant.ui.item.list.ItemListScreen
+import com.soczuks.footballassistant.ui.match.add.MatchAddScreen
+import com.soczuks.footballassistant.ui.match.details.MatchDetailsScreen
+import com.soczuks.footballassistant.ui.match.list.MatchListScreen
+import com.soczuks.footballassistant.ui.team.add.TeamAddScreen
+import com.soczuks.footballassistant.ui.team.list.TeamListScreen
 
 sealed class Screen(val route: String) {
     object Startup : Screen("startup")
@@ -62,22 +62,21 @@ sealed class Screen(val route: String) {
 @Composable
 fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
     NavHost(
-        navController = navController,
-        startDestination = Screen.Startup.route
+        navController = navController, startDestination = Screen.Startup.route
     ) {
         composable(Screen.Startup.route) {
             val viewModel: StartupViewModel = hiltViewModel()
-            val state by viewModel.uiState.collectAsState()
+            val state by viewModel.startupStatus.collectAsState()
 
             LaunchedEffect(state) {
                 val destination = when (state) {
-                    StartupState.Authenticated -> Screen.Home.route
-                    StartupState.Unauthenticated -> Screen.Login.route
+                    StartupStatus.Authenticated -> Screen.Home.route
+                    StartupStatus.Unauthenticated -> Screen.Login.route
                     else -> null
                 }
 
                 destination?.let {
-                    if (state == StartupState.Authenticated) {
+                    if (state == StartupStatus.Authenticated) {
                         onAuthenticated()
                     }
                     navController.navigate(it) {
@@ -86,7 +85,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 }
             }
 
-            StartupScreen(state = state, onRetry = viewModel::restoreSession)
+            StartupScreen(startupStatus = state, onRetry = viewModel::restoreSession)
         }
 
         composable(Screen.Login.route) {
@@ -108,74 +107,62 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
         }
 
         composable(Screen.Home.route) {
-            HomeScreen(
-                goToMatchesScreen = {
-                    navController.navigate(Screen.Matches.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
-                },
-                goToCompetitionsScreen = {
-                    navController.navigate(Screen.Competitions.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
-                },
-                goToItemsScreen = {
-                    navController.navigate(Screen.Items.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
-                },
-                goToTeamsScreen = {
-                    navController.navigate(Screen.Teams.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
+            HomeScreen(goToMatchesScreen = {
+                navController.navigate(Screen.Matches.route) {
+                    popUpTo(Screen.Home.route) { inclusive = true }
                 }
-            )
+            }, goToCompetitionsScreen = {
+                navController.navigate(Screen.Competitions.route) {
+                    popUpTo(Screen.Home.route) { inclusive = true }
+                }
+            }, goToItemsScreen = {
+                navController.navigate(Screen.Items.route) {
+                    popUpTo(Screen.Home.route) { inclusive = true }
+                }
+            }, goToTeamsScreen = {
+                navController.navigate(Screen.Teams.route) {
+                    popUpTo(Screen.Home.route) { inclusive = true }
+                }
+            })
         }
 
         composable(Screen.Matches.route) {
-            MatchListScreen(
-                goToHomeScreen = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Matches.route) { inclusive = true }
-                    }
-                },
-                goToCompetitionsScreen = {
-                    navController.navigate(Screen.Competitions.route) {
-                        popUpTo(Screen.Matches.route) { inclusive = true }
-                    }
-                },
-                goToItemsScreen = {
-                    navController.navigate(Screen.Items.route) {
-                        popUpTo(Screen.Matches.route) { inclusive = true }
-                    }
-                },
-                goToTeamsScreen = {
-                    navController.navigate(Screen.Teams.route) {
-                        popUpTo(Screen.Matches.route) { inclusive = true }
-                    }
-                },
-                onAddMatch = { navController.navigate(Screen.AddMatch.route) }
-            )
+            MatchListScreen(goToHomeScreen = {
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Matches.route) { inclusive = true }
+                }
+            }, goToCompetitionsScreen = {
+                navController.navigate(Screen.Competitions.route) {
+                    popUpTo(Screen.Matches.route) { inclusive = true }
+                }
+            }, goToItemsScreen = {
+                navController.navigate(Screen.Items.route) {
+                    popUpTo(Screen.Matches.route) { inclusive = true }
+                }
+            }, goToTeamsScreen = {
+                navController.navigate(Screen.Teams.route) {
+                    popUpTo(Screen.Matches.route) { inclusive = true }
+                }
+            }, onAddMatch = { navController.navigate(Screen.AddMatch.route) })
         }
         composable(Screen.MatchDetails.route) {
             MatchDetailsScreen()
         }
         composable(Screen.AddMatch.route) {
-            AddMatchScreen()
+            MatchAddScreen()
         }
 
         composable(Screen.Competitions.route) { backStackEntry ->
             val competitionCreated by backStackEntry.savedStateHandle.getStateFlow(
-                "competition_created",
-                false
+                "competition_created", false
             ).collectAsState()
 
             CompetitionListScreen(
                 goToHomeScreen = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Competitions.route) { inclusive = true }
-                    }
-                },
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Competitions.route) { inclusive = true }
+                }
+            },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
                         popUpTo(Screen.Competitions.route) { inclusive = true }
@@ -202,8 +189,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 isRefreshRequired = competitionCreated,
                 refreshCallback = {
                     backStackEntry.savedStateHandle["competition_created"] = false
-                }
-            )
+                })
         }
         composable(Screen.CompetitionDetails.route) {
             CompetitionDetailsScreen(
@@ -228,19 +214,16 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                     navController.navigate(Screen.Teams.route) {
                         popUpTo(Screen.Competitions.route) { inclusive = true }
                     }
-                }
-            )
+                })
         }
         composable(Screen.AddCompetition.route) {
-            AddCompetitionScreen(
+            CompetitionAddScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onCompetitionCreated = {
                     navController.previousBackStackEntry?.savedStateHandle?.set(
-                        "competition_created",
-                        true
+                        "competition_created", true
                     )
-                }
-            )
+                })
         }
 
         composable(Screen.Items.route) { backStackEntry ->
@@ -249,10 +232,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             ItemListScreen(
                 goToHomeScreen = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Items.route) { inclusive = true }
-                    }
-                },
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Items.route) { inclusive = true }
+                }
+            },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
                         popUpTo(Screen.Items.route) { inclusive = true }
@@ -272,32 +255,27 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 isRefreshRequired = itemCreated,
                 refreshCallback = {
                     backStackEntry.savedStateHandle["item_created"] = false
-                }
-            )
+                })
         }
         composable(Screen.AddItem.route) {
-            AddItemScreen(
-                onNavigateBack = { navController.popBackStack() },
-                onItemCreated = {
-                    navController.previousBackStackEntry?.savedStateHandle?.set(
-                        "item_created",
-                        true
-                    )
-                })
+            ItemAddScreen(onNavigateBack = { navController.popBackStack() }, onItemCreated = {
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    "item_created", true
+                )
+            })
         }
 
         composable(Screen.Teams.route) { backStackEntry ->
             val teamCreated by backStackEntry.savedStateHandle.getStateFlow(
-                "team_created",
-                false
+                "team_created", false
             ).collectAsState()
 
             TeamListScreen(
                 goToHomeScreen = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Teams.route) { inclusive = true }
-                    }
-                },
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Teams.route) { inclusive = true }
+                }
+            },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
                         popUpTo(Screen.Teams.route) { inclusive = true }
@@ -322,21 +300,17 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                     )
                 },
                 isRefreshRequired = teamCreated,
-                refreshCallback = { backStackEntry.savedStateHandle["team_created"] = false }
-            )
+                refreshCallback = { backStackEntry.savedStateHandle["team_created"] = false })
         }
         composable(Screen.TeamDetails.route) {
 
         }
         composable(Screen.AddTeam.route) {
-            AddTeamScreen(
-                onNavigateBack = { navController.popBackStack() },
-                onTeamCreated = {
-                    navController.previousBackStackEntry?.savedStateHandle?.set(
-                        "team_created",
-                        true
-                    )
-                })
+            TeamAddScreen(onNavigateBack = { navController.popBackStack() }, onTeamCreated = {
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    "team_created", true
+                )
+            })
         }
     }
 }

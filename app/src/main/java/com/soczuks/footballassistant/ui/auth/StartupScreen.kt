@@ -16,8 +16,7 @@ import com.soczuks.footballassistant.R
 
 @Composable
 fun StartupScreen(
-    state: StartupState,
-    onRetry: () -> Unit
+    startupStatus: StartupStatus, onRetry: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -26,8 +25,8 @@ fun StartupScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        when (state) {
-            StartupState.Unavailable -> {
+        when (startupStatus) {
+            StartupStatus.Unavailable -> {
                 Text(stringResource(R.string.restore_session_error))
                 Button(onClick = onRetry, modifier = Modifier.padding(top = 16.dp)) {
                     Text(stringResource(R.string.retry))

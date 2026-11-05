@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.model.request.RegisterRequest
-import com.soczuks.footballassistant.api.model.request.RegisterRequestData
 import com.soczuks.footballassistant.utility.withoutWhitespace
 
 internal fun arePasswordsTheSame(password: String, confirmPassword: String): Boolean {
@@ -47,7 +46,7 @@ internal fun arePasswordsTheSame(password: String, confirmPassword: String): Boo
 fun RegisterScreen(
     onNavigateToLogin: () -> Unit,
     onRegisterSuccess: () -> Unit,
-    viewModel: AuthViewModel = hiltViewModel()
+    authenticationViewModel: AuthenticationViewModel = hiltViewModel()
 ) {
     var login by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -55,22 +54,21 @@ fun RegisterScreen(
     var passwordConfirmation by remember { mutableStateOf("") }
     var passwordMismatch by remember { mutableStateOf(false) }
 
-    val uiState by viewModel.uiState.collectAsState()
+    val authenticationStatus by authenticationViewModel.authenticationStatus.collectAsState()
 
-    if (uiState is AuthState.RegistrationSuccess) {
+    if (authenticationStatus is AuthenticationStatus.RegistrationSuccess) {
         AlertDialog(
             onDismissRequest = {},
             title = { Text(stringResource(R.string.registration_success_title)) },
             text = { Text(stringResource(R.string.registration_success_message)) },
             confirmButton = {
                 TextButton(onClick = {
-                    viewModel.resetState()
+                    authenticationViewModel.resetState()
                     onRegisterSuccess()
                 }) {
                     Text(stringResource(R.string.ok))
                 }
-            }
-        )
+            })
     }
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -117,8 +115,7 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
+                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
                 ),
                 singleLine = true
             )
@@ -134,31 +131,29 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
+                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
                 ),
                 isError = passwordMismatch,
                 supportingText = if (passwordMismatch) {
                     { Text(stringResource(R.string.error_passwords_do_not_match)) }
                 } else null,
-                singleLine = true
-            )
+                singleLine = true)
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
                     if (arePasswordsTheSame(password, passwordConfirmation)) {
-                        viewModel.register(
-                            RegisterRequest(data = RegisterRequestData(login, password, email))
+                        authenticationViewModel.register(
+                            RegisterRequest(data = RegisterRequest.Data(login, password, email))
                         )
                     } else {
                         passwordMismatch = true
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = uiState !is AuthState.Loading
+                enabled = authenticationStatus !is AuthenticationStatus.Pending
             ) {
-                if (uiState is AuthState.Loading) {
+                if (authenticationStatus is AuthenticationStatus.Pending) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = MaterialTheme.colorScheme.onPrimary,
@@ -174,10 +169,10 @@ fun RegisterScreen(
                 Text(stringResource(R.string.already_have_account))
             }
 
-            if (uiState is AuthState.Error) {
+            if (authenticationStatus is AuthenticationStatus.Error) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = (uiState as AuthState.Error).message,
+                    text = (authenticationStatus as AuthenticationStatus.Error).message,
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )

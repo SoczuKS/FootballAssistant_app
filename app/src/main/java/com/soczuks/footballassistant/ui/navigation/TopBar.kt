@@ -17,21 +17,17 @@ import com.soczuks.footballassistant.R
 @Composable
 fun TopBar(title: String, onNavigateBack: (() -> Unit)? = null) {
     TopAppBar(
-        title = { Text(title) },
-        actions = {},
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ),
-        navigationIcon = {
-            onNavigateBack?.let { navigateBack ->
-                IconButton(onClick = navigateBack) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back_button_desc)
-                    )
-                }
+        title = { Text(title) }, actions = {}, colors = TopAppBarDefaults.topAppBarColors(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+    ), navigationIcon = {
+        onNavigateBack?.let { navigateBack ->
+            IconButton(onClick = navigateBack) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.back_button_desc)
+                )
             }
         }
-    )
+    })
 }

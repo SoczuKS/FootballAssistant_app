@@ -10,7 +10,9 @@ fun sha256Hex(file: File): String {
         val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
         while (true) {
             val count = stream.read(buffer)
-            if (count < 0) break
+            if (count < 0) {
+                break
+            }
             digest.update(buffer, 0, count)
         }
     }

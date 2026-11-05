@@ -1,12 +1,9 @@
 package com.soczuks.footballassistant.api.model.request.competition
 
-data class CompetitionItemAssignmentRequestData(
-    val competitionId: Int,
-    val itemId: Int,
-    val assign: Boolean
-)
-
 data class CompetitionItemAssignmentRequest(
-    private val action: String = "competition_assign_item",
-    val data: CompetitionItemAssignmentRequestData
-)
+    private val action: String = "competition_assign_item", val data: Data
+) {
+    data class Data(
+        val competitionId: Int, val itemId: Int, val assign: Boolean
+    )
+}

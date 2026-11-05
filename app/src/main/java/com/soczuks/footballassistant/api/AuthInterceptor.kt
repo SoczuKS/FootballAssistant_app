@@ -18,6 +18,7 @@ class AuthInterceptor @Inject constructor(
                 addHeader("Authorization", "Bearer $it")
             }
         }.build()
+
         return chain.proceed(request)
     }
 }

@@ -29,12 +29,12 @@ fun HomeScreen(
     goToTeamsScreen: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val status by viewModel.status.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
-    val snackBarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackBarHostState) },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = { TopBar(title = stringResource(R.string.home_title)) },
         bottomBar = {
             NavBar(
@@ -45,8 +45,7 @@ fun HomeScreen(
                 goToItemsScreen = goToItemsScreen,
                 goToTeamsScreen = goToTeamsScreen
             )
-        }
-    ) { padding ->
+        }) { padding ->
         PullToRefreshBox(
             isRefreshing = isRefreshing,
             onRefresh = { viewModel.load(fromPullToRefresh = true) },
@@ -54,14 +53,13 @@ fun HomeScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            when (val state = uiState) {
-                HomeUiState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
-                HomeUiState.Error -> ErrorContent(
-                    message = stringResource(R.string.home_error),
-                    onRetry = viewModel::load
+            when (val state = status) {
+                HomeStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
+                HomeStatus.Error -> ErrorContent(
+                    message = stringResource(R.string.home_error), onRetry = viewModel::load
                 )
 
-                HomeUiState.Success -> {}
+                HomeStatus.Success -> {}
             }
         }
     }

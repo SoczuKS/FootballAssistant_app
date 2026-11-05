@@ -1,3 +1,5 @@
 package com.soczuks.footballassistant.api.model.response
 
-data class MessageResponse(val statusCode: Int, val message: String)
+data class MessageResponse(
+    val statusCode: Int, val message: String
+)

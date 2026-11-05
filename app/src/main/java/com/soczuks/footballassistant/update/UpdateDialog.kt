@@ -9,25 +9,24 @@ import com.soczuks.footballassistant.R
 
 @Composable
 fun UpdateDialog(
-    state: UpdateUiState,
+    state: UpdateStatus,
     onDownload: () -> Unit,
     onInstall: () -> Unit,
     onDismiss: () -> Unit,
     onCheckAgain: () -> Unit
 ) {
     when (state) {
-        UpdateUiState.Idle, UpdateUiState.Checking -> Unit
+        UpdateStatus.Idle, UpdateStatus.Checking -> Unit
 
-        UpdateUiState.UpToDate -> AlertDialog(
+        UpdateStatus.UpToDate -> AlertDialog(
             onDismissRequest = onDismiss,
             title = { Text(stringResource(R.string.update_up_to_date_title)) },
             text = { Text(stringResource(R.string.update_up_to_date_message)) },
             confirmButton = {
                 TextButton(onClick = onDismiss) { Text(stringResource(R.string.ok)) }
-            }
-        )
+            })
 
-        is UpdateUiState.Available -> ReleaseDialog(
+        is UpdateStatus.Available -> ReleaseDialog(
             release = state.release,
             required = state.required,
             confirmText = stringResource(R.string.update_download),
@@ -35,17 +34,15 @@ fun UpdateDialog(
             onDismiss = onDismiss
         )
 
-        is UpdateUiState.Downloading -> ProgressDialog(
-            title = stringResource(R.string.update_downloading),
-            progress = state.progress
+        is UpdateStatus.Downloading -> ProgressDialog(
+            title = stringResource(R.string.update_downloading), progress = state.progress
         )
 
-        is UpdateUiState.Verifying -> ProgressDialog(
-            title = stringResource(R.string.update_verifying),
-            progress = null
+        is UpdateStatus.Verifying -> ProgressDialog(
+            title = stringResource(R.string.update_verifying), progress = null
         )
 
-        is UpdateUiState.ReadyToInstall -> ReleaseDialog(
+        is UpdateStatus.ReadyToInstall -> ReleaseDialog(
             release = state.release,
             required = state.required,
             confirmText = stringResource(R.string.update_install),
@@ -53,9 +50,8 @@ fun UpdateDialog(
             onDismiss = onDismiss
         )
 
-        is UpdateUiState.Error -> ErrorDialog(
-            state = state,
-            onRetry = {
+        is UpdateStatus.Error -> ErrorDialog(
+            state = state, onRetry = {
                 if (state.release == null) {
                     onCheckAgain()
                 } else if (state.kind == UpdateError.INSTALLATION) {
@@ -63,8 +59,7 @@ fun UpdateDialog(
                 } else {
                     onDownload()
                 }
-            },
-            onDismiss = onDismiss
+            }, onDismiss = onDismiss
         )
     }
 }

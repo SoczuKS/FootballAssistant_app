@@ -67,4 +67,8 @@
     <string name="items_tab_title">Items</string>
     <string name="teams_tab_title">Teams</string>
     <string name="error_item_assignment">Item assignment failed</string>
+    <string name="item_delete_error">Could not delete item</string>
+    <string name="item_delete">Delete item</string>
+    <string name="item_delete_message">Are you sure you want to delete %1$s?</string>
+    <string name="delete">Delete</string>
 </resources>

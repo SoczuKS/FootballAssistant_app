@@ -68,4 +68,8 @@
     <string name="items_tab_title">Przedmioty</string>
     <string name="teams_tab_title">Zespoły</string>
     <string name="error_item_assignment">Nie udało się przypisać przedmiotu</string>
+    <string name="item_delete_error">Nie udało się usunąć przedmiotu</string>
+    <string name="item_delete">Usuń przedmiot</string>
+    <string name="item_delete_message">Czy na pewno chcesz usunąć %1$s?</string>
+    <string name="delete">Usuń</string>
 </resources>

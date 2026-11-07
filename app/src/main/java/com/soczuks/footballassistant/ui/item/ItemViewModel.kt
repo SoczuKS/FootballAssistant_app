@@ -7,6 +7,7 @@ import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.model.request.item.ItemAddRequest
 import com.soczuks.footballassistant.ui.item.add.ItemAddStatus
+import com.soczuks.footballassistant.ui.item.list.ItemDeleteStatus
 import com.soczuks.footballassistant.ui.item.list.ItemListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -27,6 +28,9 @@ class ItemViewModel @Inject constructor(
 
     private val _itemAddStatus = MutableStateFlow<ItemAddStatus>(ItemAddStatus.Idle)
     val itemAddStatus = _itemAddStatus.asStateFlow()
+
+    private val _itemDeleteStatus = MutableStateFlow<ItemDeleteStatus>(ItemDeleteStatus.Idle)
+    val itemDeleteStatus = _itemDeleteStatus.asStateFlow()
 
     init {
         load()
@@ -86,6 +90,37 @@ class ItemViewModel @Inject constructor(
             } catch (_: Exception) {
                 _itemAddStatus.value =
                     ItemAddStatus.Error(context.getString(R.string.error_add_item))
+            }
+        }
+    }
+
+    fun resetDeleteStatus() {
+        _itemDeleteStatus.value = ItemDeleteStatus.Idle
+    }
+
+    fun deleteItem(itemId: Int, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            _itemDeleteStatus.value = ItemDeleteStatus.Pending
+            try {
+                val response = api.deleteItem(itemId)
+
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+
+                    if (body.statusCode == 0) {
+                        _itemDeleteStatus.value = ItemDeleteStatus.Success
+                        onSuccess()
+                        load()
+                    } else {
+                        _itemDeleteStatus.value = ItemDeleteStatus.Error(body.message)
+                    }
+                } else {
+                    _itemDeleteStatus.value =
+                        ItemDeleteStatus.Error(context.getString(R.string.item_delete_error))
+                }
+            } catch (_: Exception) {
+                _itemDeleteStatus.value =
+                    ItemDeleteStatus.Error(context.getString(R.string.item_delete_error))
             }
         }
     }

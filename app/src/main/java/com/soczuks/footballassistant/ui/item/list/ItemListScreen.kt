@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -17,18 +18,22 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.api.model.Item
 import com.soczuks.footballassistant.ui.common.ErrorContent
 import com.soczuks.footballassistant.ui.item.ItemViewModel
 import com.soczuks.footballassistant.ui.navigation.NavBar
@@ -47,14 +52,23 @@ fun ItemListScreen(
     itemViewModel: ItemViewModel = hiltViewModel()
 ) {
     val itemListStatus by itemViewModel.listStatus.collectAsState()
+    val itemDeleteStatus by itemViewModel.itemDeleteStatus.collectAsState()
     val areItemsRefreshing by itemViewModel.isRefreshing.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    var itemToDelete by remember { mutableStateOf<Item?>(null) }
 
     LaunchedEffect(isRefreshRequired) {
         if (isRefreshRequired) {
             itemViewModel.load()
             refreshCallback()
         }
+    }
+
+    LaunchedEffect(itemDeleteStatus) {
+        if (itemDeleteStatus is ItemDeleteStatus.Error) {
+            snackbarHostState.showSnackbar((itemDeleteStatus as ItemDeleteStatus.Error).message)
+        }
+        itemViewModel.resetDeleteStatus()
     }
 
     Scaffold(
@@ -115,13 +129,31 @@ fun ItemListScreen(
                         ) {
                             items(state.items) { item ->
                                 ItemItem(
-                                    item = item
-                                )
+                                    item = item, onDeleteRequest = { itemToDelete = item })
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    itemToDelete?.let { item ->
+        AlertDialog(
+            onDismissRequest = { itemToDelete = null },
+            title = { Text(stringResource(R.string.item_delete)) },
+            text = { Text(stringResource(R.string.item_delete_message, item.name)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    itemViewModel.deleteItem(item.id) {
+                        itemToDelete = null
+                    }
+                }) { Text(stringResource(R.string.delete)) }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    itemToDelete = null
+                }) { Text(stringResource(R.string.cancel)) }
+            })
     }
 }

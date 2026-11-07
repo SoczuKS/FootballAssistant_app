@@ -15,8 +15,10 @@ import com.soczuks.footballassistant.api.model.response.TeamsResponse
 import com.soczuks.footballassistant.api.model.response.UserProfileResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface FootballAssistantApi {
     @POST("auth/register")
@@ -45,6 +47,9 @@ interface FootballAssistantApi {
 
     @POST("item/add")
     suspend fun addItem(@Body request: ItemAddRequest): Response<MessageResponse>
+
+    @DELETE("item/{itemId}")
+    suspend fun deleteItem(@Path("itemId") itemId: Int): Response<MessageResponse>
 
     @GET("team")
     suspend fun getTeams(): Response<TeamsResponse>

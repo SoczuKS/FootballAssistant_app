@@ -65,7 +65,7 @@ class ItemViewModel @Inject constructor(
         }
     }
 
-    fun resetCreateState() {
+    fun resetAddStatus() {
         _itemAddStatus.value = ItemAddStatus.Idle
     }
 

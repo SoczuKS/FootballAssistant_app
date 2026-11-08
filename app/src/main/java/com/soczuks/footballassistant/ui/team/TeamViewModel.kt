@@ -61,7 +61,7 @@ class TeamViewModel @Inject constructor(
         }
     }
 
-    fun resetAddState() {
+    fun resetAddStatus() {
         _teamAddStatus.value = TeamAddStatus.Idle
     }
 

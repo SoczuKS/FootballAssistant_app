@@ -90,7 +90,7 @@ fun TeamAddScreen(
         if (teamAddStatus is TeamAddStatus.Success) {
             onTeamCreated()
             onNavigateBack()
-            teamViewModel.resetAddState()
+            teamViewModel.resetAddStatus()
         }
     }
 

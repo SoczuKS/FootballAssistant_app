@@ -51,7 +51,7 @@ fun ItemAddScreen(
         if (itemAddStatus is ItemAddStatus.Success) {
             onItemCreated()
             onNavigateBack()
-            itemViewModel.resetCreateState()
+            itemViewModel.resetAddStatus()
         }
     }
 

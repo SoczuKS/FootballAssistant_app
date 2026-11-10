@@ -1,6 +1,10 @@
 package com.soczuks.footballassistant.di
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializer
 import com.soczuks.footballassistant.api.AuthInterceptor
 import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.HttpTokenRefreshGateway
@@ -15,6 +19,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.Instant
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -23,7 +28,17 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideGson(): Gson = Gson()
+    fun provideGson(): Gson =
+        GsonBuilder()
+            .registerTypeAdapter(
+                Instant::class.java,
+                JsonDeserializer { json, _, _ -> Instant.parse(json.asString) }
+            )
+            .registerTypeAdapter(Instant::class.java, JsonSerializer<Instant> { value, _, _ ->
+                JsonPrimitive(
+                    value.toString()
+                )
+            }).create()
 
     @Provides
     @Singleton

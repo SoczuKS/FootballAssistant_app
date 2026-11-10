@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.ui.common.ApiActionStatus
 import com.soczuks.footballassistant.ui.common.ErrorContent
 import com.soczuks.footballassistant.ui.competition.CompetitionViewModel
 import com.soczuks.footballassistant.ui.competition.list.CompetitionListStatus
@@ -65,19 +66,19 @@ fun CompetitionDetailsScreen(
 
     LaunchedEffect(itemAssignmentStatus) {
         when (val state = itemAssignmentStatus) {
-            CompetitionItemAssignmentStatus.Success -> {
+            ApiActionStatus.Success -> {
                 competitionViewModel.load(fromPullToRefresh = true)
                 competitionViewModel.resetItemAssignmentStatus()
             }
 
-            is CompetitionItemAssignmentStatus.Error -> {
+            is ApiActionStatus.Error -> {
                 snackbarHostState.showSnackbar(state.message)
 
                 competitionViewModel.load(fromPullToRefresh = true)
                 competitionViewModel.resetItemAssignmentStatus()
             }
 
-            CompetitionItemAssignmentStatus.Idle, CompetitionItemAssignmentStatus.Pending -> Unit
+            ApiActionStatus.Idle, ApiActionStatus.Pending -> Unit
         }
     }
 

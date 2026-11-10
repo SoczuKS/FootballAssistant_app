@@ -61,10 +61,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.ui.common.ApiActionStatus
 import com.soczuks.footballassistant.ui.competition.CompetitionViewModel
 import com.soczuks.footballassistant.ui.competition.list.CompetitionListStatus
 import com.soczuks.footballassistant.ui.team.TeamViewModel
-import com.soczuks.footballassistant.ui.team.add.TeamAddStatus.Pending
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,7 +87,7 @@ fun TeamAddScreen(
     val competitionListStatus by competitionViewModel.listStatus.collectAsState()
 
     LaunchedEffect(teamAddStatus) {
-        if (teamAddStatus is TeamAddStatus.Success) {
+        if (teamAddStatus is ApiActionStatus.Success) {
             onTeamCreated()
             onNavigateBack()
             teamViewModel.resetAddStatus()
@@ -210,19 +210,19 @@ fun TeamAddScreen(
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = name.isNotBlank() && color.isNotBlank() && teamAddStatus !is Pending
+                enabled = name.isNotBlank() && color.isNotBlank() && teamAddStatus !is ApiActionStatus.Pending
             ) {
-                if (teamAddStatus is Pending) {
+                if (teamAddStatus is ApiActionStatus.Pending) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 } else {
                     Text(stringResource(R.string.add_team_title))
                 }
             }
 
-            if (teamAddStatus is TeamAddStatus.Error) {
+            if (teamAddStatus is ApiActionStatus.Error) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = (teamAddStatus as TeamAddStatus.Error).message,
+                    text = (teamAddStatus as ApiActionStatus.Error).message,
                     color = MaterialTheme.colorScheme.error
                 )
             }

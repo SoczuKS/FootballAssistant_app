@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.ui.common.ApiActionStatus
 import com.soczuks.footballassistant.ui.item.ItemViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +49,7 @@ fun ItemAddScreen(
     val itemAddStatus by itemViewModel.itemAddStatus.collectAsState()
 
     LaunchedEffect(itemAddStatus) {
-        if (itemAddStatus is ItemAddStatus.Success) {
+        if (itemAddStatus is ApiActionStatus.Success) {
             onItemCreated()
             onNavigateBack()
             itemViewModel.resetAddStatus()
@@ -85,19 +86,19 @@ fun ItemAddScreen(
             Button(
                 onClick = { itemViewModel.addItem(name) },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = name.isNotBlank() && itemAddStatus !is ItemAddStatus.Pending
+                enabled = name.isNotBlank() && itemAddStatus !is ApiActionStatus.Pending
             ) {
-                if (itemAddStatus is ItemAddStatus.Pending) {
+                if (itemAddStatus is ApiActionStatus.Pending) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 } else {
                     Text(stringResource(R.string.add_item_title))
                 }
             }
 
-            if (itemAddStatus is ItemAddStatus.Error) {
+            if (itemAddStatus is ApiActionStatus.Error) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = (itemAddStatus as ItemAddStatus.Error).message,
+                    text = (itemAddStatus as ApiActionStatus.Error).message,
                     color = MaterialTheme.colorScheme.error
                 )
             }

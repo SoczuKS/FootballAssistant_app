@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.model.request.item.ItemAddRequest
-import com.soczuks.footballassistant.ui.item.add.ItemAddStatus
+import com.soczuks.footballassistant.ui.common.ApiActionStatus
 import com.soczuks.footballassistant.ui.item.list.ItemDeleteStatus
 import com.soczuks.footballassistant.ui.item.list.ItemListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +26,7 @@ class ItemViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val _itemAddStatus = MutableStateFlow<ItemAddStatus>(ItemAddStatus.Idle)
+    private val _itemAddStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
     val itemAddStatus = _itemAddStatus.asStateFlow()
 
     private val _itemDeleteStatus = MutableStateFlow<ItemDeleteStatus>(ItemDeleteStatus.Idle)
@@ -66,12 +66,12 @@ class ItemViewModel @Inject constructor(
     }
 
     fun resetAddStatus() {
-        _itemAddStatus.value = ItemAddStatus.Idle
+        _itemAddStatus.value = ApiActionStatus.Idle
     }
 
     fun addItem(name: String) {
         viewModelScope.launch {
-            _itemAddStatus.value = ItemAddStatus.Pending
+            _itemAddStatus.value = ApiActionStatus.Pending
             try {
                 val response = api.addItem(ItemAddRequest(data = ItemAddRequest.Data(name)))
 
@@ -79,17 +79,17 @@ class ItemViewModel @Inject constructor(
                     val body = response.body()!!
 
                     if (body.statusCode == 0) {
-                        _itemAddStatus.value = ItemAddStatus.Success
+                        _itemAddStatus.value = ApiActionStatus.Success
                     } else {
-                        _itemAddStatus.value = ItemAddStatus.Error(body.message)
+                        _itemAddStatus.value = ApiActionStatus.Error(body.message)
                     }
                 } else {
                     _itemAddStatus.value =
-                        ItemAddStatus.Error(context.getString(R.string.error_add_item))
+                        ApiActionStatus.Error(context.getString(R.string.error_add_item))
                 }
             } catch (_: Exception) {
                 _itemAddStatus.value =
-                    ItemAddStatus.Error(context.getString(R.string.error_add_item))
+                    ApiActionStatus.Error(context.getString(R.string.error_add_item))
             }
         }
     }

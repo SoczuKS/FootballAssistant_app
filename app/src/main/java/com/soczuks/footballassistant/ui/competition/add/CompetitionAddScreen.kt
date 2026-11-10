@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.ui.common.ApiActionStatus
 import com.soczuks.footballassistant.ui.competition.CompetitionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +49,7 @@ fun CompetitionAddScreen(
     val competitionAddStatus by competitionViewModel.competitionAddStatus.collectAsState()
 
     LaunchedEffect(competitionAddStatus) {
-        if (competitionAddStatus is CompetitionAddStatus.Success) {
+        if (competitionAddStatus is ApiActionStatus.Success) {
             onCompetitionCreated()
             onNavigateBack()
             competitionViewModel.resetAddStatus()
@@ -90,19 +91,19 @@ fun CompetitionAddScreen(
                     competitionViewModel.addCompetition(name)
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = name.isNotBlank() && competitionAddStatus !is CompetitionAddStatus.Pending
+                enabled = name.isNotBlank() && competitionAddStatus !is ApiActionStatus.Pending
             ) {
-                if (competitionAddStatus is CompetitionAddStatus.Pending) {
+                if (competitionAddStatus is ApiActionStatus.Pending) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 } else {
                     Text(stringResource(R.string.add_competition_title))
                 }
             }
 
-            if (competitionAddStatus is CompetitionAddStatus.Error) {
+            if (competitionAddStatus is ApiActionStatus.Error) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = (competitionAddStatus as CompetitionAddStatus.Error).message,
+                    text = (competitionAddStatus as ApiActionStatus.Error).message,
                     color = MaterialTheme.colorScheme.error
                 )
             }

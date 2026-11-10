@@ -7,8 +7,7 @@ import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.model.request.competition.CompetitionAddRequest
 import com.soczuks.footballassistant.api.model.request.competition.CompetitionItemAssignmentRequest
-import com.soczuks.footballassistant.ui.competition.add.CompetitionAddStatus
-import com.soczuks.footballassistant.ui.competition.details.CompetitionItemAssignmentStatus
+import com.soczuks.footballassistant.ui.common.ApiActionStatus
 import com.soczuks.footballassistant.ui.competition.list.CompetitionListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -27,12 +26,10 @@ class CompetitionViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val _competitionAddStatus =
-        MutableStateFlow<CompetitionAddStatus>(CompetitionAddStatus.Idle)
+    private val _competitionAddStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
     val competitionAddStatus = _competitionAddStatus.asStateFlow()
 
-    private val _itemAssignmentStatus =
-        MutableStateFlow<CompetitionItemAssignmentStatus>(CompetitionItemAssignmentStatus.Idle)
+    private val _itemAssignmentStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
     val itemAssignmentStatus = _itemAssignmentStatus.asStateFlow()
 
     init {
@@ -70,16 +67,16 @@ class CompetitionViewModel @Inject constructor(
     }
 
     fun resetAddStatus() {
-        _competitionAddStatus.value = CompetitionAddStatus.Idle
+        _competitionAddStatus.value = ApiActionStatus.Idle
     }
 
     fun resetItemAssignmentStatus() {
-        _itemAssignmentStatus.value = CompetitionItemAssignmentStatus.Idle
+        _itemAssignmentStatus.value = ApiActionStatus.Idle
     }
 
     fun addCompetition(name: String) {
         viewModelScope.launch {
-            _competitionAddStatus.value = CompetitionAddStatus.Pending
+            _competitionAddStatus.value = ApiActionStatus.Pending
             try {
                 val response =
                     api.addCompetition(CompetitionAddRequest(data = CompetitionAddRequest.Data(name)))
@@ -88,24 +85,24 @@ class CompetitionViewModel @Inject constructor(
                     val body = response.body()!!
 
                     if (body.statusCode == 0) {
-                        _competitionAddStatus.value = CompetitionAddStatus.Success
+                        _competitionAddStatus.value = ApiActionStatus.Success
                     } else {
-                        _competitionAddStatus.value = CompetitionAddStatus.Error(body.message)
+                        _competitionAddStatus.value = ApiActionStatus.Error(body.message)
                     }
                 } else {
                     _competitionAddStatus.value =
-                        CompetitionAddStatus.Error(context.getString(R.string.error_add_competitions))
+                        ApiActionStatus.Error(context.getString(R.string.error_add_competitions))
                 }
             } catch (_: Exception) {
                 _competitionAddStatus.value =
-                    CompetitionAddStatus.Error(context.getString(R.string.error_add_competitions))
+                    ApiActionStatus.Error(context.getString(R.string.error_add_competitions))
             }
         }
     }
 
     fun assignItem(competitionId: Int, itemId: Int, assignment: Boolean) {
         viewModelScope.launch {
-            _itemAssignmentStatus.value = CompetitionItemAssignmentStatus.Pending
+            _itemAssignmentStatus.value = ApiActionStatus.Pending
             try {
                 val response = api.assignItemToCompetition(
                     CompetitionItemAssignmentRequest(
@@ -119,18 +116,17 @@ class CompetitionViewModel @Inject constructor(
                     val body = response.body()!!
 
                     if (body.statusCode == 0) {
-                        _itemAssignmentStatus.value = CompetitionItemAssignmentStatus.Success
+                        _itemAssignmentStatus.value = ApiActionStatus.Success
                     } else {
-                        _itemAssignmentStatus.value =
-                            CompetitionItemAssignmentStatus.Error(body.message)
+                        _itemAssignmentStatus.value = ApiActionStatus.Error(body.message)
                     }
                 } else {
                     _itemAssignmentStatus.value =
-                        CompetitionItemAssignmentStatus.Error(context.getString(R.string.error_item_assignment))
+                        ApiActionStatus.Error(context.getString(R.string.error_item_assignment))
                 }
             } catch (_: Exception) {
                 _itemAssignmentStatus.value =
-                    CompetitionItemAssignmentStatus.Error(context.getString(R.string.error_item_assignment))
+                    ApiActionStatus.Error(context.getString(R.string.error_item_assignment))
             }
         }
     }

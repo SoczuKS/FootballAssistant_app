@@ -8,7 +8,6 @@ import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.model.request.team.TeamAddRequest
 import com.soczuks.footballassistant.data.SessionManager
 import com.soczuks.footballassistant.ui.common.ApiActionStatus
-import com.soczuks.footballassistant.ui.team.add.TeamAddStatus
 import com.soczuks.footballassistant.ui.team.list.TeamListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -29,7 +28,7 @@ class TeamViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val _addStatus = MutableStateFlow<TeamAddStatus>(TeamAddStatus.Idle)
+    private val _addStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
     val teamAddStatus = _addStatus.asStateFlow()
 
     private val _currentUserId = MutableStateFlow<Int?>(null)
@@ -79,12 +78,12 @@ class TeamViewModel @Inject constructor(
     }
 
     fun resetAddStatus() {
-        _addStatus.value = TeamAddStatus.Idle
+        _addStatus.value = ApiActionStatus.Idle
     }
 
     fun addTeam(name: String, color: String, competitionIds: List<Int>, address: String) {
         viewModelScope.launch {
-            _addStatus.value = TeamAddStatus.Pending
+            _addStatus.value = ApiActionStatus.Pending
 
             try {
                 val response = api.addTeam(
@@ -98,17 +97,16 @@ class TeamViewModel @Inject constructor(
                     val body = response.body()!!
 
                     if (body.statusCode == 0) {
-                        _addStatus.value = TeamAddStatus.Success
+                        _addStatus.value = ApiActionStatus.Success
                     } else {
-                        _addStatus.value = TeamAddStatus.Error(body.message)
+                        _addStatus.value = ApiActionStatus.Error(body.message)
                     }
                 } else {
                     _addStatus.value =
-                        TeamAddStatus.Error(context.getString(R.string.error_add_team))
+                        ApiActionStatus.Error(context.getString(R.string.error_add_team))
                 }
             } catch (_: Exception) {
-                _addStatus.value =
-                    TeamAddStatus.Error(context.getString(R.string.error_add_team))
+                _addStatus.value = ApiActionStatus.Error(context.getString(R.string.error_add_team))
             }
         }
     }
@@ -133,10 +131,12 @@ class TeamViewModel @Inject constructor(
                         _joinStatus.value = ApiActionStatus.Error(body.message)
                     }
                 } else {
-                    _joinStatus.value = ApiActionStatus.Error(context.getString(R.string.team_join_error))
+                    _joinStatus.value =
+                        ApiActionStatus.Error(context.getString(R.string.team_join_error))
                 }
-            } catch(_: Exception) {
-                _joinStatus.value = ApiActionStatus.Error(context.getString(R.string.team_join_error))
+            } catch (_: Exception) {
+                _joinStatus.value =
+                    ApiActionStatus.Error(context.getString(R.string.team_join_error))
             }
         }
     }
@@ -161,10 +161,12 @@ class TeamViewModel @Inject constructor(
                         _leaveStatus.value = ApiActionStatus.Error(body.message)
                     }
                 } else {
-                    _leaveStatus.value = ApiActionStatus.Error(context.getString(R.string.team_leave_error))
+                    _leaveStatus.value =
+                        ApiActionStatus.Error(context.getString(R.string.team_leave_error))
                 }
-            } catch(_: Exception) {
-                _leaveStatus.value = ApiActionStatus.Error(context.getString(R.string.team_leave_error))
+            } catch (_: Exception) {
+                _leaveStatus.value =
+                    ApiActionStatus.Error(context.getString(R.string.team_leave_error))
             }
         }
     }

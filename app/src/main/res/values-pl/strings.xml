@@ -72,4 +72,10 @@
     <string name="item_delete">Usuń przedmiot</string>
     <string name="item_delete_message">Czy na pewno chcesz usunąć %1$s?</string>
     <string name="delete">Usuń</string>
+    <string name="matches_tab_title">Mecze</string>
+    <string name="players_tab_title">Players</string>
+    <string name="team_join">Dołącz</string>
+    <string name="team_join_error">Nie udało się dołączyć</string>
+    <string name="team_leave">Opuść</string>
+    <string name="team_leave_error">Nie udało się opuścić</string>
 </resources>

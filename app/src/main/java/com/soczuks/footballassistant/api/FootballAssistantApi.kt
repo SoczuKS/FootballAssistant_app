@@ -18,6 +18,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface FootballAssistantApi {
@@ -56,4 +57,10 @@ interface FootballAssistantApi {
 
     @POST("team/add")
     suspend fun addTeam(@Body request: TeamAddRequest): Response<MessageResponse>
+
+    @PUT("team/{teamId}/join")
+    suspend fun joinTeam(@Path("teamId") teamId: Int): Response<MessageResponse>
+
+    @DELETE("team/{teamId}/leave")
+    suspend fun leaveTeam(@Path("teamId") teamId: Int): Response<MessageResponse>
 }

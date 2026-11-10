@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.model.request.team.TeamAddRequest
+import com.soczuks.footballassistant.data.SessionManager
+import com.soczuks.footballassistant.ui.common.ApiActionStatus
 import com.soczuks.footballassistant.ui.team.add.TeamAddStatus
 import com.soczuks.footballassistant.ui.team.list.TeamListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +19,9 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class TeamViewModel @Inject constructor(
-    @ApplicationContext private val context: Context, private val api: FootballAssistantApi
+    @ApplicationContext private val context: Context,
+    private val api: FootballAssistantApi,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
     private val _listStatus = MutableStateFlow<TeamListStatus>(TeamListStatus.Loading)
     val listStatus = _listStatus.asStateFlow()
@@ -25,11 +29,24 @@ class TeamViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val _teamAddStatus = MutableStateFlow<TeamAddStatus>(TeamAddStatus.Idle)
-    val teamAddStatus = _teamAddStatus.asStateFlow()
+    private val _addStatus = MutableStateFlow<TeamAddStatus>(TeamAddStatus.Idle)
+    val teamAddStatus = _addStatus.asStateFlow()
+
+    private val _currentUserId = MutableStateFlow<Int?>(null)
+    val currentUserId = _currentUserId.asStateFlow()
+
+    private val _joinStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
+    val joinStatus = _joinStatus.asStateFlow()
+
+    private val _leaveStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
+    val leaveStatus = _leaveStatus.asStateFlow()
 
     init {
         load()
+
+        viewModelScope.launch {
+            _currentUserId.value = sessionManager.getUserId()
+        }
     }
 
     fun load(fromPullToRefresh: Boolean = false) {
@@ -62,12 +79,12 @@ class TeamViewModel @Inject constructor(
     }
 
     fun resetAddStatus() {
-        _teamAddStatus.value = TeamAddStatus.Idle
+        _addStatus.value = TeamAddStatus.Idle
     }
 
     fun addTeam(name: String, color: String, competitionIds: List<Int>, address: String) {
         viewModelScope.launch {
-            _teamAddStatus.value = TeamAddStatus.Pending
+            _addStatus.value = TeamAddStatus.Pending
 
             try {
                 val response = api.addTeam(
@@ -81,17 +98,73 @@ class TeamViewModel @Inject constructor(
                     val body = response.body()!!
 
                     if (body.statusCode == 0) {
-                        _teamAddStatus.value = TeamAddStatus.Success
+                        _addStatus.value = TeamAddStatus.Success
                     } else {
-                        _teamAddStatus.value = TeamAddStatus.Error(body.message)
+                        _addStatus.value = TeamAddStatus.Error(body.message)
                     }
                 } else {
-                    _teamAddStatus.value =
+                    _addStatus.value =
                         TeamAddStatus.Error(context.getString(R.string.error_add_team))
                 }
             } catch (_: Exception) {
-                _teamAddStatus.value =
+                _addStatus.value =
                     TeamAddStatus.Error(context.getString(R.string.error_add_team))
+            }
+        }
+    }
+
+    fun resetJoinStatus() {
+        _joinStatus.value = ApiActionStatus.Idle
+    }
+
+    fun joinTeam(teamId: Int) {
+        viewModelScope.launch {
+            _joinStatus.value = ApiActionStatus.Pending
+
+            try {
+                val response = api.joinTeam(teamId)
+
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+
+                    if (body.statusCode == 0) {
+                        _joinStatus.value = ApiActionStatus.Success
+                    } else {
+                        _joinStatus.value = ApiActionStatus.Error(body.message)
+                    }
+                } else {
+                    _joinStatus.value = ApiActionStatus.Error(context.getString(R.string.team_join_error))
+                }
+            } catch(_: Exception) {
+                _joinStatus.value = ApiActionStatus.Error(context.getString(R.string.team_join_error))
+            }
+        }
+    }
+
+    fun resetLeaveStatus() {
+        _leaveStatus.value = ApiActionStatus.Idle
+    }
+
+    fun leaveTeam(teamId: Int) {
+        viewModelScope.launch {
+            _leaveStatus.value = ApiActionStatus.Pending
+
+            try {
+                val response = api.leaveTeam(teamId)
+
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+
+                    if (body.statusCode == 0) {
+                        _leaveStatus.value = ApiActionStatus.Success
+                    } else {
+                        _leaveStatus.value = ApiActionStatus.Error(body.message)
+                    }
+                } else {
+                    _leaveStatus.value = ApiActionStatus.Error(context.getString(R.string.team_leave_error))
+                }
+            } catch(_: Exception) {
+                _leaveStatus.value = ApiActionStatus.Error(context.getString(R.string.team_leave_error))
             }
         }
     }

@@ -71,4 +71,10 @@
     <string name="item_delete">Delete item</string>
     <string name="item_delete_message">Are you sure you want to delete %1$s?</string>
     <string name="delete">Delete</string>
+    <string name="matches_tab_title">Matches</string>
+    <string name="players_tab_title">Players</string>
+    <string name="team_join">Join</string>
+    <string name="team_join_error">Could not join the team</string>
+    <string name="team_leave">Leave</string>
+    <string name="team_leave_error">Could not leave team</string>
 </resources>

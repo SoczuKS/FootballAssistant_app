@@ -78,4 +78,9 @@
     <string name="team_join_error">Nie udało się dołączyć</string>
     <string name="team_leave">Opuść</string>
     <string name="team_leave_error">Nie udało się opuścić</string>
+    <string name="match_load_error">Could not load matches.</string>
+    <string name="matches_future">Przyszłe</string>
+    <string name="matches_past">Rozegrane</string>
+    <string name="matches_no_past_matches">Brak rozegranych meczów. Dodaj nowy lub rozegraj!</string>
+    <string name="matches_no_future_matches">Brak przyszłych meczów. Dodaj nowy!</string>
 </resources>

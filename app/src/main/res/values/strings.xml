@@ -77,4 +77,9 @@
     <string name="team_join_error">Could not join the team</string>
     <string name="team_leave">Leave</string>
     <string name="team_leave_error">Could not leave team</string>
+    <string name="match_load_error">Could not load matches.</string>
+    <string name="matches_future">Future</string>
+    <string name="matches_past">Past</string>
+    <string name="matches_no_past_matches">No past matches yet. Add one or play the game!</string>
+    <string name="matches_no_future_matches">No future matches. Add one!</string>
 </resources>

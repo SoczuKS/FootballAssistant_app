@@ -10,6 +10,7 @@ import com.soczuks.footballassistant.api.model.request.team.TeamAddRequest
 import com.soczuks.footballassistant.api.model.response.CompetitionsResponse
 import com.soczuks.footballassistant.api.model.response.ItemsResponse
 import com.soczuks.footballassistant.api.model.response.LoginResponse
+import com.soczuks.footballassistant.api.model.response.MatchesResponse
 import com.soczuks.footballassistant.api.model.response.MessageResponse
 import com.soczuks.footballassistant.api.model.response.TeamsResponse
 import com.soczuks.footballassistant.api.model.response.UserProfileResponse
@@ -63,4 +64,7 @@ interface FootballAssistantApi {
 
     @DELETE("team/{teamId}/leave")
     suspend fun leaveTeam(@Path("teamId") teamId: Int): Response<MessageResponse>
+
+    @GET("match")
+    suspend fun getMatches(): Response<MatchesResponse>
 }

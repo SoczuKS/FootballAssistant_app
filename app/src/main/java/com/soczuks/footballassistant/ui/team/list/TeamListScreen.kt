@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.ui.common.ApiListStatus
 import com.soczuks.footballassistant.ui.common.ErrorContent
 import com.soczuks.footballassistant.ui.navigation.NavBar
 import com.soczuks.footballassistant.ui.navigation.NavBarElement
@@ -89,13 +90,13 @@ fun TeamListScreen(
                 .fillMaxSize()
         ) {
             when (val state = teamListStatus) {
-                TeamListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
-                is TeamListStatus.Error -> ErrorContent(
+                ApiListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
+                is ApiListStatus.Error -> ErrorContent(
                     message = state.message, onRetry = teamViewModel::load
                 )
 
-                is TeamListStatus.Success -> {
-                    if (state.teams.isEmpty()) {
+                is ApiListStatus.Success -> {
+                    if (state.data.isEmpty()) {
                         Column(
                             modifier = Modifier
                                 .padding(16.dp)
@@ -113,7 +114,7 @@ fun TeamListScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(state.teams) { team ->
+                            items(state.data) { team ->
                                 TeamItem(
                                     team = team, onClick = { onTeamClick(team.id) })
                             }

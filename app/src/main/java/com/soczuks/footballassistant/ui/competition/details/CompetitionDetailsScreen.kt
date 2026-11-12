@@ -31,12 +31,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.api.model.Competition
 import com.soczuks.footballassistant.ui.common.ApiActionStatus
+import com.soczuks.footballassistant.ui.common.ApiListStatus
 import com.soczuks.footballassistant.ui.common.ErrorContent
 import com.soczuks.footballassistant.ui.competition.CompetitionViewModel
-import com.soczuks.footballassistant.ui.competition.list.CompetitionListStatus
 import com.soczuks.footballassistant.ui.item.ItemViewModel
-import com.soczuks.footballassistant.ui.item.list.ItemListStatus
 import com.soczuks.footballassistant.ui.navigation.NavBar
 import com.soczuks.footballassistant.ui.navigation.NavBarElement
 import com.soczuks.footballassistant.ui.navigation.TopBar
@@ -62,7 +62,7 @@ fun CompetitionDetailsScreen(
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
     val competition =
-        (competitionListStatus as? CompetitionListStatus.Success)?.competitions?.find { it.id == competitionId }
+        (competitionListStatus as? ApiListStatus.Success<Competition>)?.data?.find { it.id == competitionId }
 
     LaunchedEffect(itemAssignmentStatus) {
         when (val state = itemAssignmentStatus) {
@@ -118,7 +118,7 @@ fun CompetitionDetailsScreen(
                 when (selectedTabIndex) {
                     0 -> {
                         when (val state = itemListStatus) {
-                            ItemListStatus.Loading -> Column(
+                            ApiListStatus.Loading -> Column(
                                 modifier = Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
@@ -126,12 +126,12 @@ fun CompetitionDetailsScreen(
                                 CircularProgressIndicator()
                             }
 
-                            is ItemListStatus.Error -> ErrorContent(
+                            is ApiListStatus.Error -> ErrorContent(
                                 message = state.message, onRetry = itemsViewModel::load
                             )
 
-                            is ItemListStatus.Success -> {
-                                if (state.items.isEmpty()) {
+                            is ApiListStatus.Success -> {
+                                if (state.data.isEmpty()) {
                                     Column(
                                         modifier = Modifier
                                             .fillMaxSize()
@@ -151,7 +151,7 @@ fun CompetitionDetailsScreen(
                                             verticalArrangement = Arrangement.spacedBy(12.dp),
                                             modifier = Modifier.fillMaxSize()
                                         ) {
-                                            items(state.items) { item ->
+                                            items(state.data) { item ->
                                                 CompetitionItemAssignmentItem(
                                                     item,
                                                     competition.itemList.items.any { it.id == item.id },

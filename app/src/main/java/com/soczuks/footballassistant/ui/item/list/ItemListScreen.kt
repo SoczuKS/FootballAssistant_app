@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.model.Item
+import com.soczuks.footballassistant.ui.common.ApiActionStatus
+import com.soczuks.footballassistant.ui.common.ApiListStatus
 import com.soczuks.footballassistant.ui.common.ErrorContent
 import com.soczuks.footballassistant.ui.item.ItemViewModel
 import com.soczuks.footballassistant.ui.navigation.NavBar
@@ -65,8 +67,8 @@ fun ItemListScreen(
     }
 
     LaunchedEffect(itemDeleteStatus) {
-        if (itemDeleteStatus is ItemDeleteStatus.Error) {
-            snackbarHostState.showSnackbar((itemDeleteStatus as ItemDeleteStatus.Error).message)
+        if (itemDeleteStatus is ApiActionStatus.Error) {
+            snackbarHostState.showSnackbar((itemDeleteStatus as ApiActionStatus.Error).message)
         }
         itemViewModel.resetDeleteStatus()
     }
@@ -103,13 +105,13 @@ fun ItemListScreen(
                 .fillMaxSize()
         ) {
             when (val state = itemListStatus) {
-                ItemListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
-                is ItemListStatus.Error -> ErrorContent(
+                ApiListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
+                is ApiListStatus.Error -> ErrorContent(
                     message = state.message, onRetry = itemViewModel::load
                 )
 
-                is ItemListStatus.Success -> {
-                    if (state.items.isEmpty()) {
+                is ApiListStatus.Success -> {
+                    if (state.data.isEmpty()) {
                         Column(
                             modifier = Modifier
                                 .padding(16.dp)
@@ -127,7 +129,7 @@ fun ItemListScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(state.items) { item ->
+                            items(state.data) { item ->
                                 ItemItem(
                                     item = item, onDeleteRequest = { itemToDelete = item })
                             }

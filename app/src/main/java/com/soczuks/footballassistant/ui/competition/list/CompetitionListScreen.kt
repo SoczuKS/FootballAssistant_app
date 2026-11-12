@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.ui.common.ApiListStatus
 import com.soczuks.footballassistant.ui.common.ErrorContent
 import com.soczuks.footballassistant.ui.competition.CompetitionViewModel
 import com.soczuks.footballassistant.ui.navigation.NavBar
@@ -91,13 +92,13 @@ fun CompetitionListScreen(
                 .fillMaxSize()
         ) {
             when (val state = competitionListStatus) {
-                CompetitionListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
-                is CompetitionListStatus.Error -> ErrorContent(
+                ApiListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
+                is ApiListStatus.Error -> ErrorContent(
                     message = state.message, onRetry = competitionViewModel::load
                 )
 
-                is CompetitionListStatus.Success -> {
-                    if (state.competitions.isEmpty()) {
+                is ApiListStatus.Success -> {
+                    if (state.data.isEmpty()) {
                         Column(
                             modifier = Modifier
                                 .padding(16.dp)
@@ -115,7 +116,7 @@ fun CompetitionListScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(state.competitions) { competition ->
+                            items(state.data) { competition ->
                                 CompetitionItem(
                                     competition = competition,
                                     onClick = { onCompetitionClick(competition.id) })

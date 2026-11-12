@@ -33,11 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.ui.common.ApiActionStatus
+import com.soczuks.footballassistant.ui.common.ApiListStatus
 import com.soczuks.footballassistant.ui.navigation.NavBar
 import com.soczuks.footballassistant.ui.navigation.NavBarElement
 import com.soczuks.footballassistant.ui.navigation.TopBar
 import com.soczuks.footballassistant.ui.team.TeamViewModel
-import com.soczuks.footballassistant.ui.team.list.TeamListStatus
 
 @Composable
 fun TeamDetailsScreen(
@@ -56,7 +56,7 @@ fun TeamDetailsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
-    val team = (teamListStatus as? TeamListStatus.Success)?.teams?.find { it.id == teamId }
+    val team = (teamListStatus as? ApiListStatus.Success)?.data?.find { it.id == teamId }
 
     val currentUserId by teamViewModel.currentUserId.collectAsState()
     val canJoinTeam =

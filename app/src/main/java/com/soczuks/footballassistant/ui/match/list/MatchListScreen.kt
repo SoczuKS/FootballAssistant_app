@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
+import com.soczuks.footballassistant.ui.common.ApiListStatus
 import com.soczuks.footballassistant.ui.common.ErrorContent
 import com.soczuks.footballassistant.ui.match.MatchViewModel
 import com.soczuks.footballassistant.ui.navigation.NavBar
@@ -73,9 +74,9 @@ fun MatchListScreen(
                 .fillMaxSize()
         ) {
             when (val current = matchListStatus) {
-                MatchListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
-                MatchListStatus.Error -> ErrorContent(message = "", onRetry = matchViewModel::load)
-                MatchListStatus.Success -> {}
+                ApiListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
+                is ApiListStatus.Error -> ErrorContent(message = "", onRetry = matchViewModel::load)
+                is ApiListStatus.Success -> {}
             }
         }
     }

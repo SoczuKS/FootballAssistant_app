@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
+import com.soczuks.footballassistant.api.model.Item
 import com.soczuks.footballassistant.api.model.request.item.ItemAddRequest
 import com.soczuks.footballassistant.ui.common.ApiActionStatus
-import com.soczuks.footballassistant.ui.item.list.ItemDeleteStatus
-import com.soczuks.footballassistant.ui.item.list.ItemListStatus
+import com.soczuks.footballassistant.ui.common.ApiListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class ItemViewModel @Inject constructor(
     @ApplicationContext private val context: Context, private val api: FootballAssistantApi
 ) : ViewModel() {
-    private val _listStatus = MutableStateFlow<ItemListStatus>(ItemListStatus.Loading)
+    private val _listStatus = MutableStateFlow<ApiListStatus<Item>>(ApiListStatus.Loading)
     val listStatus = _listStatus.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
@@ -29,7 +29,7 @@ class ItemViewModel @Inject constructor(
     private val _itemAddStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
     val itemAddStatus = _itemAddStatus.asStateFlow()
 
-    private val _itemDeleteStatus = MutableStateFlow<ItemDeleteStatus>(ItemDeleteStatus.Idle)
+    private val _itemDeleteStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
     val itemDeleteStatus = _itemDeleteStatus.asStateFlow()
 
     init {
@@ -41,24 +41,24 @@ class ItemViewModel @Inject constructor(
             if (fromPullToRefresh) {
                 _isRefreshing.value = true
             } else {
-                _listStatus.value = ItemListStatus.Loading
+                _listStatus.value = ApiListStatus.Loading
             }
 
             try {
                 val response = api.getItems()
                 if (response.isSuccessful && response.body() != null) {
                     if (response.body()!!.statusCode == 0) {
-                        _listStatus.value = ItemListStatus.Success(response.body()!!.data.items)
+                        _listStatus.value = ApiListStatus.Success(response.body()!!.data.items)
                     } else {
-                        _listStatus.value = ItemListStatus.Error(response.body()!!.message)
+                        _listStatus.value = ApiListStatus.Error(response.body()!!.message)
                     }
                 } else {
                     _listStatus.value =
-                        ItemListStatus.Error(context.getString(R.string.error_load_items))
+                        ApiListStatus.Error(context.getString(R.string.error_load_items))
                 }
             } catch (_: Exception) {
                 _listStatus.value =
-                    ItemListStatus.Error(context.getString(R.string.error_load_items))
+                    ApiListStatus.Error(context.getString(R.string.error_load_items))
             } finally {
                 _isRefreshing.value = false
             }
@@ -95,12 +95,12 @@ class ItemViewModel @Inject constructor(
     }
 
     fun resetDeleteStatus() {
-        _itemDeleteStatus.value = ItemDeleteStatus.Idle
+        _itemDeleteStatus.value = ApiActionStatus.Idle
     }
 
     fun deleteItem(itemId: Int, onSuccess: () -> Unit) {
         viewModelScope.launch {
-            _itemDeleteStatus.value = ItemDeleteStatus.Pending
+            _itemDeleteStatus.value = ApiActionStatus.Pending
             try {
                 val response = api.deleteItem(itemId)
 
@@ -108,19 +108,19 @@ class ItemViewModel @Inject constructor(
                     val body = response.body()!!
 
                     if (body.statusCode == 0) {
-                        _itemDeleteStatus.value = ItemDeleteStatus.Success
+                        _itemDeleteStatus.value = ApiActionStatus.Success
                         onSuccess()
                         load()
                     } else {
-                        _itemDeleteStatus.value = ItemDeleteStatus.Error(body.message)
+                        _itemDeleteStatus.value = ApiActionStatus.Error(body.message)
                     }
                 } else {
                     _itemDeleteStatus.value =
-                        ItemDeleteStatus.Error(context.getString(R.string.item_delete_error))
+                        ApiActionStatus.Error(context.getString(R.string.item_delete_error))
                 }
             } catch (_: Exception) {
                 _itemDeleteStatus.value =
-                    ItemDeleteStatus.Error(context.getString(R.string.item_delete_error))
+                    ApiActionStatus.Error(context.getString(R.string.item_delete_error))
             }
         }
     }

@@ -62,8 +62,8 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.ui.common.ApiActionStatus
+import com.soczuks.footballassistant.ui.common.ApiListStatus
 import com.soczuks.footballassistant.ui.competition.CompetitionViewModel
-import com.soczuks.footballassistant.ui.competition.list.CompetitionListStatus
 import com.soczuks.footballassistant.ui.team.TeamViewModel
 import java.util.Locale
 
@@ -130,13 +130,13 @@ fun TeamAddScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             val selectedCompetitions = when (val state = competitionListStatus) {
-                is CompetitionListStatus.Success -> state.competitions.filter { it.id in competitionIds }
+                is ApiListStatus.Success -> state.data.filter { it.id in competitionIds }
                 else -> emptyList()
             }
 
             ExposedDropdownMenuBox(
                 expanded = showCompetitionPicker, onExpandedChange = {
-                    if (competitionListStatus is CompetitionListStatus.Success) {
+                    if (competitionListStatus is ApiListStatus.Success) {
                         showCompetitionPicker = !showCompetitionPicker
                     }
                 }, modifier = Modifier.fillMaxWidth()
@@ -152,16 +152,16 @@ fun TeamAddScreen(
                     },
                     modifier = fillMaxWidth.menuAnchor(
                         ExposedDropdownMenuAnchorType.PrimaryNotEditable,
-                        competitionListStatus is CompetitionListStatus.Success
+                        competitionListStatus is ApiListStatus.Success
                     ),
-                    enabled = competitionListStatus is CompetitionListStatus.Success
+                    enabled = competitionListStatus is ApiListStatus.Success
                 )
 
                 ExposedDropdownMenu(
                     expanded = showCompetitionPicker,
                     onDismissRequest = { showCompetitionPicker = false }) {
                     val competitions =
-                        (competitionListStatus as? CompetitionListStatus.Success)?.competitions.orEmpty()
+                        (competitionListStatus as? ApiListStatus.Success)?.data.orEmpty()
 
                     competitions.forEach { competition ->
                         val selected = competition.id in competitionIds
@@ -179,19 +179,19 @@ fun TeamAddScreen(
                 }
             }
             when (val state = competitionListStatus) {
-                CompetitionListStatus.Loading -> {
+                ApiListStatus.Loading -> {
                     Spacer(modifier = Modifier.height(8.dp))
                     CircularProgressIndicator(modifier = Modifier.size(24.dp))
                 }
 
-                is CompetitionListStatus.Error -> {
+                is ApiListStatus.Error -> {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = state.message, color = MaterialTheme.colorScheme.error
                     )
                 }
 
-                is CompetitionListStatus.Success -> Unit
+                is ApiListStatus.Success -> Unit
             }
             Spacer(modifier = Modifier.height(32.dp))
 

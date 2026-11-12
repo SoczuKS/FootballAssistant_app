@@ -5,10 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
+import com.soczuks.footballassistant.api.model.Team
 import com.soczuks.footballassistant.api.model.request.team.TeamAddRequest
 import com.soczuks.footballassistant.data.SessionManager
 import com.soczuks.footballassistant.ui.common.ApiActionStatus
-import com.soczuks.footballassistant.ui.team.list.TeamListStatus
+import com.soczuks.footballassistant.ui.common.ApiListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
@@ -22,7 +23,7 @@ class TeamViewModel @Inject constructor(
     private val api: FootballAssistantApi,
     private val sessionManager: SessionManager
 ) : ViewModel() {
-    private val _listStatus = MutableStateFlow<TeamListStatus>(TeamListStatus.Loading)
+    private val _listStatus = MutableStateFlow<ApiListStatus<Team>>(ApiListStatus.Loading)
     val listStatus = _listStatus.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
@@ -53,24 +54,24 @@ class TeamViewModel @Inject constructor(
             if (fromPullToRefresh) {
                 _isRefreshing.value = true
             } else {
-                _listStatus.value = TeamListStatus.Loading
+                _listStatus.value = ApiListStatus.Loading
             }
 
             try {
                 val response = api.getTeams()
                 if (response.isSuccessful && response.body() != null) {
                     if (response.body()!!.statusCode == 0) {
-                        _listStatus.value = TeamListStatus.Success(response.body()!!.data.teams)
+                        _listStatus.value = ApiListStatus.Success(response.body()!!.data.teams)
                     } else {
-                        _listStatus.value = TeamListStatus.Error(response.body()!!.message)
+                        _listStatus.value = ApiListStatus.Error(response.body()!!.message)
                     }
                 } else {
                     _listStatus.value =
-                        TeamListStatus.Error(context.getString(R.string.error_load_teams))
+                        ApiListStatus.Error(context.getString(R.string.error_load_teams))
                 }
             } catch (_: Exception) {
                 _listStatus.value =
-                    TeamListStatus.Error(context.getString(R.string.error_load_teams))
+                    ApiListStatus.Error(context.getString(R.string.error_load_teams))
             } finally {
                 _isRefreshing.value = false
             }

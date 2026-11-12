@@ -5,10 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
+import com.soczuks.footballassistant.api.model.Competition
 import com.soczuks.footballassistant.api.model.request.competition.CompetitionAddRequest
 import com.soczuks.footballassistant.api.model.request.competition.CompetitionItemAssignmentRequest
 import com.soczuks.footballassistant.ui.common.ApiActionStatus
-import com.soczuks.footballassistant.ui.competition.list.CompetitionListStatus
+import com.soczuks.footballassistant.ui.common.ApiListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +21,7 @@ import javax.inject.Inject
 class CompetitionViewModel @Inject constructor(
     @ApplicationContext private val context: Context, private val api: FootballAssistantApi
 ) : ViewModel() {
-    private val _listStatus = MutableStateFlow<CompetitionListStatus>(CompetitionListStatus.Loading)
+    private val _listStatus = MutableStateFlow<ApiListStatus<Competition>>(ApiListStatus.Loading)
     val listStatus = _listStatus.asStateFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
@@ -41,7 +42,7 @@ class CompetitionViewModel @Inject constructor(
             if (fromPullToRefresh) {
                 _isRefreshing.value = true
             } else {
-                _listStatus.value = CompetitionListStatus.Loading
+                _listStatus.value = ApiListStatus.Loading
             }
 
             try {
@@ -49,17 +50,17 @@ class CompetitionViewModel @Inject constructor(
                 if (response.isSuccessful && response.body() != null) {
                     if (response.body()!!.statusCode == 0) {
                         _listStatus.value =
-                            CompetitionListStatus.Success(response.body()!!.data.competitions)
+                            ApiListStatus.Success(response.body()!!.data.competitions)
                     } else {
-                        _listStatus.value = CompetitionListStatus.Error(response.body()!!.message)
+                        _listStatus.value = ApiListStatus.Error(response.body()!!.message)
                     }
                 } else {
                     _listStatus.value =
-                        CompetitionListStatus.Error(context.getString(R.string.error_load_competitions))
+                        ApiListStatus.Error(context.getString(R.string.error_load_competitions))
                 }
             } catch (_: Exception) {
                 _listStatus.value =
-                    CompetitionListStatus.Error(context.getString(R.string.error_load_competitions))
+                    ApiListStatus.Error(context.getString(R.string.error_load_competitions))
             } finally {
                 _isRefreshing.value = false
             }

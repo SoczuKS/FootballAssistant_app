@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
             }
 
             UpdateDialog(
-                state = updateState,
+                status = updateState,
                 onDownload = updateManager::download,
                 onInstall = {
                     if (updateManager.hasInstallPermission()) {

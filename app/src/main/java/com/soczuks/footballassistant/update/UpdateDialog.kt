@@ -9,13 +9,13 @@ import com.soczuks.footballassistant.R
 
 @Composable
 fun UpdateDialog(
-    state: UpdateStatus,
+    status: UpdateStatus,
     onDownload: () -> Unit,
     onInstall: () -> Unit,
     onDismiss: () -> Unit,
     onCheckAgain: () -> Unit
 ) {
-    when (state) {
+    when (status) {
         UpdateStatus.Idle, UpdateStatus.Checking -> Unit
 
         UpdateStatus.UpToDate -> AlertDialog(
@@ -27,15 +27,15 @@ fun UpdateDialog(
             })
 
         is UpdateStatus.Available -> ReleaseDialog(
-            release = state.release,
-            required = state.required,
+            release = status.release,
+            required = status.required,
             confirmText = stringResource(R.string.update_download),
             onConfirm = onDownload,
             onDismiss = onDismiss
         )
 
         is UpdateStatus.Downloading -> ProgressDialog(
-            title = stringResource(R.string.update_downloading), progress = state.progress
+            title = stringResource(R.string.update_downloading), progress = status.progress
         )
 
         is UpdateStatus.Verifying -> ProgressDialog(
@@ -43,18 +43,18 @@ fun UpdateDialog(
         )
 
         is UpdateStatus.ReadyToInstall -> ReleaseDialog(
-            release = state.release,
-            required = state.required,
+            release = status.release,
+            required = status.required,
             confirmText = stringResource(R.string.update_install),
             onConfirm = onInstall,
             onDismiss = onDismiss
         )
 
         is UpdateStatus.Error -> ErrorDialog(
-            state = state, onRetry = {
-                if (state.release == null) {
+            error = status, onRetry = {
+                if (status.release == null) {
                     onCheckAgain()
-                } else if (state.kind == UpdateError.INSTALLATION) {
+                } else if (status.kind == UpdateError.INSTALLATION) {
                     onInstall()
                 } else {
                     onDownload()

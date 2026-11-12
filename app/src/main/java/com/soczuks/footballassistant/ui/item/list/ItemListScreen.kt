@@ -104,14 +104,14 @@ fun ItemListScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            when (val state = itemListStatus) {
+            when (val status = itemListStatus) {
                 ApiListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 is ApiListStatus.Error -> ErrorContent(
-                    message = state.message, onRetry = itemViewModel::load
+                    message = status.message, onRetry = itemViewModel::load
                 )
 
                 is ApiListStatus.Success -> {
-                    if (state.data.isEmpty()) {
+                    if (status.data.isEmpty()) {
                         Column(
                             modifier = Modifier
                                 .padding(16.dp)
@@ -129,7 +129,7 @@ fun ItemListScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(state.data) { item ->
+                            items(status.data) { item ->
                                 ItemItem(
                                     item = item, onDeleteRequest = { itemToDelete = item })
                             }

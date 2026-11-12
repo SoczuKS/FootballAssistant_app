@@ -89,14 +89,14 @@ fun TeamListScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            when (val state = teamListStatus) {
+            when (val status = teamListStatus) {
                 ApiListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 is ApiListStatus.Error -> ErrorContent(
-                    message = state.message, onRetry = teamViewModel::load
+                    message = status.message, onRetry = teamViewModel::load
                 )
 
                 is ApiListStatus.Success -> {
-                    if (state.data.isEmpty()) {
+                    if (status.data.isEmpty()) {
                         Column(
                             modifier = Modifier
                                 .padding(16.dp)
@@ -114,7 +114,7 @@ fun TeamListScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(state.data) { team ->
+                            items(status.data) { team ->
                                 TeamItem(
                                     team = team, onClick = { onTeamClick(team.id) })
                             }

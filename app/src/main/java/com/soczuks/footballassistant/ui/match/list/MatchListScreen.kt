@@ -73,7 +73,7 @@ fun MatchListScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            when (val current = matchListStatus) {
+            when (val status = matchListStatus) {
                 ApiListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 is ApiListStatus.Error -> ErrorContent(message = "", onRetry = matchViewModel::load)
                 is ApiListStatus.Success -> {}

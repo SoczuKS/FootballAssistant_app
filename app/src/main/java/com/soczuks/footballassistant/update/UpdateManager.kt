@@ -295,21 +295,21 @@ class UpdateManager @Inject constructor(
             "https://"
         ) && release.sha256.matches(Regex("^[a-fA-F0-9]{64}$")) && release.sizeBytes > 0
 
-    private fun releaseFrom(state: UpdateStatus): AppRelease? = when (state) {
-        is UpdateStatus.Available -> state.release
-        is UpdateStatus.Downloading -> state.release
-        is UpdateStatus.Verifying -> state.release
-        is UpdateStatus.ReadyToInstall -> state.release
-        is UpdateStatus.Error -> state.release
+    private fun releaseFrom(status: UpdateStatus): AppRelease? = when (status) {
+        is UpdateStatus.Available -> status.release
+        is UpdateStatus.Downloading -> status.release
+        is UpdateStatus.Verifying -> status.release
+        is UpdateStatus.ReadyToInstall -> status.release
+        is UpdateStatus.Error -> status.release
         else -> null
     }
 
-    private fun requiredFrom(state: UpdateStatus): Boolean = when (state) {
-        is UpdateStatus.Available -> state.required
-        is UpdateStatus.Downloading -> state.required
-        is UpdateStatus.Verifying -> state.required
-        is UpdateStatus.ReadyToInstall -> state.required
-        is UpdateStatus.Error -> state.required
+    private fun requiredFrom(status: UpdateStatus): Boolean = when (status) {
+        is UpdateStatus.Available -> status.required
+        is UpdateStatus.Downloading -> status.required
+        is UpdateStatus.Verifying -> status.required
+        is UpdateStatus.ReadyToInstall -> status.required
+        is UpdateStatus.Error -> status.required
         else -> false
     }
 

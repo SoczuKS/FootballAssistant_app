@@ -9,9 +9,9 @@ import com.soczuks.footballassistant.R
 
 @Composable
 internal fun ErrorDialog(
-    state: UpdateStatus.Error, onRetry: () -> Unit, onDismiss: () -> Unit
+    error: UpdateStatus.Error, onRetry: () -> Unit, onDismiss: () -> Unit
 ) {
-    val message = when (state.kind) {
+    val message = when (error.kind) {
         UpdateError.NETWORK -> R.string.update_error_network
         UpdateError.DOWNLOAD -> R.string.update_error_download
         UpdateError.VERIFICATION -> R.string.update_error_verification
@@ -19,7 +19,7 @@ internal fun ErrorDialog(
     }
     AlertDialog(
         onDismissRequest = {
-        if (!state.required) {
+        if (!error.required) {
             onDismiss()
         }
     },
@@ -28,7 +28,7 @@ internal fun ErrorDialog(
         confirmButton = {
             TextButton(onClick = onRetry) { Text(stringResource(R.string.retry)) }
         },
-        dismissButton = if (state.required) {
+        dismissButton = if (error.required) {
             null
         } else {
             { TextButton(onClick = onDismiss) { Text(stringResource(R.string.update_later)) } }

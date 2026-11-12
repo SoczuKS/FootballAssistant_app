@@ -65,14 +65,14 @@ fun CompetitionDetailsScreen(
         (competitionListStatus as? ApiListStatus.Success<Competition>)?.data?.find { it.id == competitionId }
 
     LaunchedEffect(itemAssignmentStatus) {
-        when (val state = itemAssignmentStatus) {
+        when (val status = itemAssignmentStatus) {
             ApiActionStatus.Success -> {
                 competitionViewModel.load(fromPullToRefresh = true)
                 competitionViewModel.resetItemAssignmentStatus()
             }
 
             is ApiActionStatus.Error -> {
-                snackbarHostState.showSnackbar(state.message)
+                snackbarHostState.showSnackbar(status.message)
 
                 competitionViewModel.load(fromPullToRefresh = true)
                 competitionViewModel.resetItemAssignmentStatus()
@@ -117,7 +117,7 @@ fun CompetitionDetailsScreen(
 
                 when (selectedTabIndex) {
                     0 -> {
-                        when (val state = itemListStatus) {
+                        when (val status = itemListStatus) {
                             ApiListStatus.Loading -> Column(
                                 modifier = Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.Center,
@@ -127,11 +127,11 @@ fun CompetitionDetailsScreen(
                             }
 
                             is ApiListStatus.Error -> ErrorContent(
-                                message = state.message, onRetry = itemsViewModel::load
+                                message = status.message, onRetry = itemsViewModel::load
                             )
 
                             is ApiListStatus.Success -> {
-                                if (state.data.isEmpty()) {
+                                if (status.data.isEmpty()) {
                                     Column(
                                         modifier = Modifier
                                             .fillMaxSize()
@@ -151,7 +151,7 @@ fun CompetitionDetailsScreen(
                                             verticalArrangement = Arrangement.spacedBy(12.dp),
                                             modifier = Modifier.fillMaxSize()
                                         ) {
-                                            items(state.data) { item ->
+                                            items(status.data) { item ->
                                                 CompetitionItemAssignmentItem(
                                                     item,
                                                     competition.itemList.items.any { it.id == item.id },

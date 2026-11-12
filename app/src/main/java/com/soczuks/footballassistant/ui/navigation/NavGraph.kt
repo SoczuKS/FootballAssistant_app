@@ -67,17 +67,17 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
     ) {
         composable(Screen.Startup.route) {
             val viewModel: StartupViewModel = hiltViewModel()
-            val state by viewModel.startupStatus.collectAsState()
+            val startupStatus by viewModel.startupStatus.collectAsState()
 
-            LaunchedEffect(state) {
-                val destination = when (state) {
+            LaunchedEffect(startupStatus) {
+                val destination = when (startupStatus) {
                     StartupStatus.Authenticated -> Screen.Home.route
                     StartupStatus.Unauthenticated -> Screen.Login.route
                     else -> null
                 }
 
                 destination?.let {
-                    if (state == StartupStatus.Authenticated) {
+                    if (startupStatus == StartupStatus.Authenticated) {
                         onAuthenticated()
                     }
                     navController.navigate(it) {
@@ -86,7 +86,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 }
             }
 
-            StartupScreen(startupStatus = state, onRetry = viewModel::restoreSession)
+            StartupScreen(startupStatus = startupStatus, onRetry = viewModel::restoreSession)
         }
 
         composable(Screen.Login.route) {

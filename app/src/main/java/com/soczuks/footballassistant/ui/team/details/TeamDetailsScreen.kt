@@ -63,14 +63,14 @@ fun TeamDetailsScreen(
         currentUserId?.let { userId -> team?.players?.none { it.id == userId } } == true
 
     LaunchedEffect(teamJoinStatus) {
-        when (val state = teamJoinStatus) {
+        when (val status = teamJoinStatus) {
             ApiActionStatus.Success -> {
                 teamViewModel.load(fromPullToRefresh = true)
                 teamViewModel.resetJoinStatus()
             }
 
             is ApiActionStatus.Error -> {
-                snackbarHostState.showSnackbar(state.message)
+                snackbarHostState.showSnackbar(status.message)
 
                 teamViewModel.resetJoinStatus()
             }
@@ -80,14 +80,14 @@ fun TeamDetailsScreen(
     }
 
     LaunchedEffect(teamLeaveStatus) {
-        when (val state = teamLeaveStatus) {
+        when (val status = teamLeaveStatus) {
             ApiActionStatus.Success -> {
                 teamViewModel.load(fromPullToRefresh = true)
                 teamViewModel.resetLeaveStatus()
             }
 
             is ApiActionStatus.Error -> {
-                snackbarHostState.showSnackbar(state.message)
+                snackbarHostState.showSnackbar(status.message)
 
                 teamViewModel.resetLeaveStatus()
             }

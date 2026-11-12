@@ -2,21 +2,15 @@ package com.soczuks.footballassistant.ui.home
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
-import com.soczuks.footballassistant.ui.common.ErrorContent
 import com.soczuks.footballassistant.ui.navigation.NavBar
 import com.soczuks.footballassistant.ui.navigation.NavBarElement
 import com.soczuks.footballassistant.ui.navigation.TopBar
@@ -26,11 +20,8 @@ fun HomeScreen(
     goToMatchesScreen: () -> Unit,
     goToCompetitionsScreen: () -> Unit,
     goToItemsScreen: () -> Unit,
-    goToTeamsScreen: () -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    goToTeamsScreen: () -> Unit
 ) {
-    val status by viewModel.status.collectAsState()
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
@@ -47,20 +38,9 @@ fun HomeScreen(
             )
         }) { padding ->
         PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = { viewModel.load(fromPullToRefresh = true) },
-            modifier = Modifier
+            isRefreshing = false, onRefresh = {}, modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-        ) {
-            when (val state = status) {
-                HomeStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
-                HomeStatus.Error -> ErrorContent(
-                    message = stringResource(R.string.home_error), onRetry = viewModel::load
-                )
-
-                HomeStatus.Success -> {}
-            }
-        }
+        ) {}
     }
 }

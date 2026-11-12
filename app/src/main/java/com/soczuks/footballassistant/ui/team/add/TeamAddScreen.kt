@@ -129,8 +129,8 @@ fun TeamAddScreen(
             ColorPreview(color = color, onClick = { showColorPicker = true })
             Spacer(modifier = Modifier.height(32.dp))
 
-            val selectedCompetitions = when (val state = competitionListStatus) {
-                is ApiListStatus.Success -> state.data.filter { it.id in competitionIds }
+            val selectedCompetitions = when (val status = competitionListStatus) {
+                is ApiListStatus.Success -> status.data.filter { it.id in competitionIds }
                 else -> emptyList()
             }
 
@@ -178,7 +178,7 @@ fun TeamAddScreen(
                     }
                 }
             }
-            when (val state = competitionListStatus) {
+            when (val status = competitionListStatus) {
                 ApiListStatus.Loading -> {
                     Spacer(modifier = Modifier.height(8.dp))
                     CircularProgressIndicator(modifier = Modifier.size(24.dp))
@@ -187,7 +187,7 @@ fun TeamAddScreen(
                 is ApiListStatus.Error -> {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = state.message, color = MaterialTheme.colorScheme.error
+                        text = status.message, color = MaterialTheme.colorScheme.error
                     )
                 }
 

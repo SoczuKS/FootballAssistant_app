@@ -91,14 +91,14 @@ fun CompetitionListScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            when (val state = competitionListStatus) {
+            when (val status = competitionListStatus) {
                 ApiListStatus.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 is ApiListStatus.Error -> ErrorContent(
-                    message = state.message, onRetry = competitionViewModel::load
+                    message = status.message, onRetry = competitionViewModel::load
                 )
 
                 is ApiListStatus.Success -> {
-                    if (state.data.isEmpty()) {
+                    if (status.data.isEmpty()) {
                         Column(
                             modifier = Modifier
                                 .padding(16.dp)
@@ -116,7 +116,7 @@ fun CompetitionListScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            items(state.data) { competition ->
+                            items(status.data) { competition ->
                                 CompetitionItem(
                                     competition = competition,
                                     onClick = { onCompetitionClick(competition.id) })

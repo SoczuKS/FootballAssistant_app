@@ -42,8 +42,8 @@ fun TeamListScreen(
     goToMatchesScreen: () -> Unit,
     goToCompetitionsScreen: () -> Unit,
     goToItemsScreen: () -> Unit,
-    onAddTeam: () -> Unit,
-    onTeamClick: (Int) -> Unit,
+    goToTeamAddScreen: () -> Unit,
+    goToTeamDetailsScreen: (Int) -> Unit,
     isRefreshRequired: Boolean = false,
     refreshCallback: () -> Unit = {},
     teamViewModel: TeamViewModel = hiltViewModel()
@@ -64,7 +64,7 @@ fun TeamListScreen(
         topBar = { TopBar(title = stringResource(R.string.teams_title)) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddTeam,
+                onClick = goToTeamAddScreen,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             ) {
@@ -116,7 +116,7 @@ fun TeamListScreen(
                         ) {
                             items(status.data) { team ->
                                 TeamItem(
-                                    team = team, onClick = { onTeamClick(team.id) })
+                                    team = team, onClick = { goToTeamDetailsScreen(team.id) })
                             }
                         }
                     }

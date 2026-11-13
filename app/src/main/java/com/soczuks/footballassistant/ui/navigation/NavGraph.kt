@@ -144,7 +144,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 navController.navigate(Screen.Teams.route) {
                     popUpTo(Screen.Matches.route) { inclusive = true }
                 }
-            }, onAddMatch = { navController.navigate(Screen.AddMatch.route) })
+            }, goToMatchAddScreen = { navController.navigate(Screen.AddMatch.route) })
         }
         composable(Screen.MatchDetails.route) {
             MatchDetailsScreen()
@@ -160,10 +160,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             CompetitionListScreen(
                 goToHomeScreen = {
-                navController.navigate(Screen.Home.route) {
-                    popUpTo(Screen.Competitions.route) { inclusive = true }
-                }
-            },
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
+                },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
                         popUpTo(Screen.Competitions.route) { inclusive = true }
@@ -179,8 +179,8 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                         popUpTo(Screen.Competitions.route) { inclusive = true }
                     }
                 },
-                onAddCompetition = { navController.navigate(Screen.AddCompetition.route) },
-                onCompetitionClick = { competitionId ->
+                goToCompetitionAddScreen = { navController.navigate(Screen.AddCompetition.route) },
+                goToCompetitionDetailsScreen = { competitionId ->
                     navController.navigate(
                         Screen.CompetitionDetails.createRoute(
                             competitionId
@@ -233,10 +233,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             ItemListScreen(
                 goToHomeScreen = {
-                navController.navigate(Screen.Home.route) {
-                    popUpTo(Screen.Items.route) { inclusive = true }
-                }
-            },
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Items.route) { inclusive = true }
+                    }
+                },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
                         popUpTo(Screen.Items.route) { inclusive = true }
@@ -252,7 +252,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                         popUpTo(Screen.Items.route) { inclusive = true }
                     }
                 },
-                onAddItem = { navController.navigate(Screen.AddItem.route) },
+                goToItemAddScreen = { navController.navigate(Screen.AddItem.route) },
                 isRefreshRequired = itemCreated,
                 refreshCallback = {
                     backStackEntry.savedStateHandle["item_created"] = false
@@ -273,10 +273,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             TeamListScreen(
                 goToHomeScreen = {
-                navController.navigate(Screen.Home.route) {
-                    popUpTo(Screen.Teams.route) { inclusive = true }
-                }
-            },
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Teams.route) { inclusive = true }
+                    }
+                },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
                         popUpTo(Screen.Teams.route) { inclusive = true }
@@ -292,8 +292,8 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                         popUpTo(Screen.Teams.route) { inclusive = true }
                     }
                 },
-                onAddTeam = { navController.navigate(Screen.AddTeam.route) },
-                onTeamClick = { teamId ->
+                goToTeamAddScreen = { navController.navigate(Screen.AddTeam.route) },
+                goToTeamDetailsScreen = { teamId ->
                     navController.navigate(
                         Screen.TeamDetails.createRoute(
                             teamId

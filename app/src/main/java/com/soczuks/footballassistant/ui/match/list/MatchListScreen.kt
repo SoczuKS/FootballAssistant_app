@@ -48,7 +48,7 @@ fun MatchListScreen(
     goToCompetitionsScreen: () -> Unit,
     goToItemsScreen: () -> Unit,
     goToTeamsScreen: () -> Unit,
-    onAddMatch: () -> Unit,
+    goToMatchAddScreen: () -> Unit,
     matchViewModel: MatchViewModel = hiltViewModel()
 ) {
     val matchListStatus by matchViewModel.listStatus.collectAsState()
@@ -61,7 +61,7 @@ fun MatchListScreen(
         topBar = { TopBar(title = stringResource(R.string.matches_title)) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddMatch,
+                onClick = goToMatchAddScreen,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             ) {

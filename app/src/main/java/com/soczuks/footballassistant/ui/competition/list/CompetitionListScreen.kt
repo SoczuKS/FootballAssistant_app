@@ -42,8 +42,8 @@ fun CompetitionListScreen(
     goToMatchesScreen: () -> Unit,
     goToItemsScreen: () -> Unit,
     goToTeamsScreen: () -> Unit,
-    onAddCompetition: () -> Unit,
-    onCompetitionClick: (Int) -> Unit,
+    goToCompetitionAddScreen: () -> Unit,
+    goToCompetitionDetailsScreen: (Int) -> Unit,
     isRefreshRequired: Boolean = false,
     refreshCallback: () -> Unit = {},
     competitionViewModel: CompetitionViewModel = hiltViewModel()
@@ -64,7 +64,7 @@ fun CompetitionListScreen(
         topBar = { TopBar(title = stringResource(R.string.competitions_title)) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddCompetition,
+                onClick = goToCompetitionAddScreen,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             ) {
@@ -119,7 +119,7 @@ fun CompetitionListScreen(
                             items(status.data) { competition ->
                                 CompetitionItem(
                                     competition = competition,
-                                    onClick = { onCompetitionClick(competition.id) })
+                                    onClick = { goToCompetitionDetailsScreen(competition.id) })
                             }
                         }
                     }

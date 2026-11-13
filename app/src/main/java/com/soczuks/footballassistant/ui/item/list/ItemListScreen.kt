@@ -48,7 +48,7 @@ fun ItemListScreen(
     goToMatchesScreen: () -> Unit,
     goToCompetitionsScreen: () -> Unit,
     goToTeamsScreen: () -> Unit,
-    onAddItem: () -> Unit,
+    goToItemAddScreen: () -> Unit,
     isRefreshRequired: Boolean = false,
     refreshCallback: () -> Unit = {},
     itemViewModel: ItemViewModel = hiltViewModel()
@@ -78,7 +78,7 @@ fun ItemListScreen(
         topBar = { TopBar(title = stringResource(R.string.items_title)) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddItem,
+                onClick = goToItemAddScreen,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             ) {

@@ -25,7 +25,7 @@ fun TopBar(title: String, onNavigateBack: (() -> Unit)? = null) {
             IconButton(onClick = navigateBack) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back_button_desc)
+                    contentDescription = stringResource(R.string.back_button_description)
                 )
             }
         }

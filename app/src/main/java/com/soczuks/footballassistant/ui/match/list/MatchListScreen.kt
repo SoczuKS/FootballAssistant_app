@@ -58,7 +58,7 @@ fun MatchListScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.matches_title)) },
+        topBar = { TopBar(title = stringResource(R.string.nav_matches_title)) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = goToMatchAddScreen,
@@ -67,7 +67,7 @@ fun MatchListScreen(
             ) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = stringResource(R.string.add_match_button_description)
+                    contentDescription = stringResource(R.string.match_add_button_description)
                 )
             }
         },
@@ -93,11 +93,11 @@ fun MatchListScreen(
                     Tab(
                         selected = selectedTabIndex == 0,
                         onClick = { selectedTabIndex = 0 },
-                        text = { Text(stringResource(R.string.matches_past)) })
+                        text = { Text(stringResource(R.string.match_past_tab_title)) })
                     Tab(
                         selected = selectedTabIndex == 1,
                         onClick = { selectedTabIndex = 1 },
-                        text = { Text(stringResource(R.string.matches_future)) })
+                        text = { Text(stringResource(R.string.match_future_tab_title)) })
                 }
 
                 when (val status = matchListStatus) {
@@ -124,7 +124,7 @@ fun MatchListScreen(
                                             .padding(16.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.Center
-                                    ) { Text(text = stringResource(R.string.matches_no_past_matches)) }
+                                    ) { Text(text = stringResource(R.string.match_no_past_matches)) }
                                 } else {
                                     LazyColumn(
                                         contentPadding = PaddingValues(16.dp),
@@ -149,7 +149,7 @@ fun MatchListScreen(
                                             .padding(16.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.Center
-                                    ) { Text(text = stringResource(R.string.matches_no_future_matches)) }
+                                    ) { Text(text = stringResource(R.string.match_no_future_matches)) }
                                 } else {
                                     LazyColumn(
                                         contentPadding = PaddingValues(16.dp),

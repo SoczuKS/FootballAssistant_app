@@ -26,7 +26,7 @@ fun HomeScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.home_title)) },
+        topBar = { TopBar(title = stringResource(R.string.nav_home_title)) },
         bottomBar = {
             NavBar(
                 currentNavBarElement = NavBarElement.HOME,

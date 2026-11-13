@@ -75,7 +75,7 @@ fun ItemListScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.items_title)) },
+        topBar = { TopBar(title = stringResource(R.string.nav_items_title)) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = goToItemAddScreen,
@@ -83,7 +83,7 @@ fun ItemListScreen(
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             ) {
                 Icon(
-                    Icons.Default.Add, contentDescription = stringResource(R.string.add_item_title)
+                    Icons.Default.Add, contentDescription = stringResource(R.string.item_add_title)
                 )
             }
         },
@@ -119,7 +119,7 @@ fun ItemListScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = stringResource(R.string.no_items_found),
+                                text = stringResource(R.string.item_not_found),
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }

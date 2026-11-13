@@ -59,7 +59,7 @@ fun CompetitionAddScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.add_competition_title)) },
+                title = { Text(stringResource(R.string.competition_add_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -96,7 +96,7 @@ fun CompetitionAddScreen(
                 if (competitionAddStatus is ApiActionStatus.Pending) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 } else {
-                    Text(stringResource(R.string.add_competition_title))
+                    Text(stringResource(R.string.competition_add_title))
                 }
             }
 

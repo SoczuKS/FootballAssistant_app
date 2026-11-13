@@ -67,11 +67,11 @@ class TeamViewModel @Inject constructor(
                     }
                 } else {
                     _listStatus.value =
-                        ApiListStatus.Error(context.getString(R.string.error_load_teams))
+                        ApiListStatus.Error(context.getString(R.string.team_load_error))
                 }
             } catch (_: Exception) {
                 _listStatus.value =
-                    ApiListStatus.Error(context.getString(R.string.error_load_teams))
+                    ApiListStatus.Error(context.getString(R.string.team_load_error))
             } finally {
                 _isRefreshing.value = false
             }
@@ -104,10 +104,10 @@ class TeamViewModel @Inject constructor(
                     }
                 } else {
                     _addStatus.value =
-                        ApiActionStatus.Error(context.getString(R.string.error_add_team))
+                        ApiActionStatus.Error(context.getString(R.string.team_add_error))
                 }
             } catch (_: Exception) {
-                _addStatus.value = ApiActionStatus.Error(context.getString(R.string.error_add_team))
+                _addStatus.value = ApiActionStatus.Error(context.getString(R.string.team_add_error))
             }
         }
     }

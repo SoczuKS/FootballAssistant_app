@@ -121,11 +121,11 @@ fun TeamDetailsScreen(
                     Tab(
                         selected = selectedTabIndex == 0,
                         onClick = { selectedTabIndex = 0 },
-                        text = { Text(stringResource(R.string.matches_tab_title)) })
+                        text = { Text(stringResource(R.string.team_matches_tab_title)) })
                     Tab(
                         selected = selectedTabIndex == 1,
                         onClick = { selectedTabIndex = 1 },
-                        text = { Text(stringResource(R.string.players_tab_title)) })
+                        text = { Text(stringResource(R.string.team_players_tab_title)) })
                 }
 
                 team?.let { team ->

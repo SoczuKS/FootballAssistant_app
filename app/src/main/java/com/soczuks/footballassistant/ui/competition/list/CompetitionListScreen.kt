@@ -61,7 +61,7 @@ fun CompetitionListScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.competitions_title)) },
+        topBar = { TopBar(title = stringResource(R.string.nav_competitions_title)) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = goToCompetitionAddScreen,
@@ -70,7 +70,7 @@ fun CompetitionListScreen(
             ) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = stringResource(R.string.add_competition_title)
+                    contentDescription = stringResource(R.string.competition_add_title)
                 )
             }
         },
@@ -106,7 +106,7 @@ fun CompetitionListScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = stringResource(R.string.no_competitions_found),
+                                text = stringResource(R.string.competition_not_found),
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }

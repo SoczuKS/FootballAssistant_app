@@ -54,11 +54,11 @@ class ItemViewModel @Inject constructor(
                     }
                 } else {
                     _listStatus.value =
-                        ApiListStatus.Error(context.getString(R.string.error_load_items))
+                        ApiListStatus.Error(context.getString(R.string.item_load_error))
                 }
             } catch (_: Exception) {
                 _listStatus.value =
-                    ApiListStatus.Error(context.getString(R.string.error_load_items))
+                    ApiListStatus.Error(context.getString(R.string.item_load_error))
             } finally {
                 _isRefreshing.value = false
             }
@@ -85,11 +85,11 @@ class ItemViewModel @Inject constructor(
                     }
                 } else {
                     _itemAddStatus.value =
-                        ApiActionStatus.Error(context.getString(R.string.error_add_item))
+                        ApiActionStatus.Error(context.getString(R.string.item_add_error))
                 }
             } catch (_: Exception) {
                 _itemAddStatus.value =
-                    ApiActionStatus.Error(context.getString(R.string.error_add_item))
+                    ApiActionStatus.Error(context.getString(R.string.item_add_error))
             }
         }
     }

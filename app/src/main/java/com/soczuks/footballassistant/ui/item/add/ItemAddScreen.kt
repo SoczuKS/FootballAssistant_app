@@ -58,7 +58,7 @@ fun ItemAddScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.add_item_title)) }, navigationIcon = {
+            TopAppBar(title = { Text(stringResource(R.string.item_add_title)) }, navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
@@ -91,7 +91,7 @@ fun ItemAddScreen(
                 if (itemAddStatus is ApiActionStatus.Pending) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 } else {
-                    Text(stringResource(R.string.add_item_title))
+                    Text(stringResource(R.string.item_add_title))
                 }
             }
 

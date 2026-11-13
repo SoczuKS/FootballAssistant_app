@@ -108,11 +108,11 @@ fun CompetitionDetailsScreen(
                     Tab(
                         selected = selectedTabIndex == 0,
                         onClick = { selectedTabIndex = 0 },
-                        text = { Text(stringResource(R.string.items_tab_title)) })
+                        text = { Text(stringResource(R.string.competition_items_tab_title)) })
                     Tab(
                         selected = selectedTabIndex == 1,
                         onClick = { selectedTabIndex = 1 },
-                        text = { Text(stringResource(R.string.teams_tab_title)) })
+                        text = { Text(stringResource(R.string.competition_teams_tab_title)) })
                 }
 
                 when (selectedTabIndex) {
@@ -140,7 +140,7 @@ fun CompetitionDetailsScreen(
                                         verticalArrangement = Arrangement.Center
                                     ) {
                                         Text(
-                                            text = stringResource(R.string.no_items_found),
+                                            text = stringResource(R.string.item_not_found),
                                             style = MaterialTheme.typography.bodyLarge
                                         )
                                     }

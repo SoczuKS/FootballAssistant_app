@@ -61,7 +61,7 @@ fun TeamListScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.teams_title)) },
+        topBar = { TopBar(title = stringResource(R.string.nav_teams_title)) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = goToTeamAddScreen,
@@ -69,7 +69,7 @@ fun TeamListScreen(
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             ) {
                 Icon(
-                    Icons.Default.Add, contentDescription = stringResource(R.string.add_team_title)
+                    Icons.Default.Add, contentDescription = stringResource(R.string.team_add_title)
                 )
             }
         },
@@ -104,7 +104,7 @@ fun TeamListScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = stringResource(R.string.no_teams_found),
+                                text = stringResource(R.string.team_not_found),
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }

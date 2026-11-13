@@ -135,7 +135,7 @@ fun RegisterScreen(
                 ),
                 isError = passwordMismatch,
                 supportingText = if (passwordMismatch) {
-                    { Text(stringResource(R.string.error_passwords_do_not_match)) }
+                    { Text(stringResource(R.string.passwords_do_not_match)) }
                 } else null,
                 singleLine = true)
             Spacer(modifier = Modifier.height(24.dp))
@@ -166,7 +166,7 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             TextButton(onClick = onNavigateToLogin) {
-                Text(stringResource(R.string.already_have_account))
+                Text(stringResource(R.string.have_account_question))
             }
 
             if (authenticationStatus is AuthenticationStatus.Error) {

@@ -96,7 +96,7 @@ fun TeamAddScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.add_team_title)) }, navigationIcon = {
+            TopAppBar(title = { Text(stringResource(R.string.team_add_title)) }, navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
@@ -215,7 +215,7 @@ fun TeamAddScreen(
                 if (teamAddStatus is ApiActionStatus.Pending) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                 } else {
-                    Text(stringResource(R.string.add_team_title))
+                    Text(stringResource(R.string.team_add_title))
                 }
             }
 
@@ -266,7 +266,7 @@ private fun TeamColorPickerDialog(
     }
 
     AlertDialog(onDismissRequest = onDismiss, title = {
-        Text(stringResource(R.string.choose_team_color))
+        Text(stringResource(R.string.team_choose_color))
     }, text = {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp)

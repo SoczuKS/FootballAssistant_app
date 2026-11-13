@@ -60,7 +60,7 @@ fun NavBar(
                     selected = currentNavBarElement == NavBarElement.COMPETITIONS
                 )
             },
-            label = { Text(stringResource(R.string.competitions_title)) })
+            label = { Text(stringResource(R.string.nav_competitions_title)) })
         NavigationBarItem(
             selected = currentNavBarElement == NavBarElement.TEAMS,
             onClick = goToTeamsScreen,
@@ -70,7 +70,7 @@ fun NavBar(
                     selected = currentNavBarElement == NavBarElement.TEAMS
                 )
             },
-            label = { Text(stringResource(R.string.teams_title)) })
+            label = { Text(stringResource(R.string.nav_teams_title)) })
         NavigationBarItem(
             selected = currentNavBarElement == NavBarElement.HOME,
             onClick = goToHomeScreen,
@@ -80,7 +80,7 @@ fun NavBar(
                     selected = currentNavBarElement == NavBarElement.HOME
                 )
             },
-            label = { Text(stringResource(R.string.home_title)) })
+            label = { Text(stringResource(R.string.nav_home_title)) })
         NavigationBarItem(
             selected = currentNavBarElement == NavBarElement.MATCHES,
             onClick = goToMatchesScreen,
@@ -90,7 +90,7 @@ fun NavBar(
                     selected = currentNavBarElement == NavBarElement.MATCHES
                 )
             },
-            label = { Text(stringResource(R.string.matches_title)) })
+            label = { Text(stringResource(R.string.nav_matches_title)) })
         NavigationBarItem(
             selected = currentNavBarElement == NavBarElement.ITEMS,
             onClick = goToItemsScreen,
@@ -100,7 +100,7 @@ fun NavBar(
                     selected = currentNavBarElement == NavBarElement.ITEMS
                 )
             },
-            label = { Text(stringResource(R.string.items_title)) })
+            label = { Text(stringResource(R.string.nav_items_title)) })
 
     }
 }

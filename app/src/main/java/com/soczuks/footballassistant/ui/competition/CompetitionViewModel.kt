@@ -56,11 +56,11 @@ class CompetitionViewModel @Inject constructor(
                     }
                 } else {
                     _listStatus.value =
-                        ApiListStatus.Error(context.getString(R.string.error_load_competitions))
+                        ApiListStatus.Error(context.getString(R.string.competition_load_error))
                 }
             } catch (_: Exception) {
                 _listStatus.value =
-                    ApiListStatus.Error(context.getString(R.string.error_load_competitions))
+                    ApiListStatus.Error(context.getString(R.string.competition_load_error))
             } finally {
                 _isRefreshing.value = false
             }
@@ -92,11 +92,11 @@ class CompetitionViewModel @Inject constructor(
                     }
                 } else {
                     _competitionAddStatus.value =
-                        ApiActionStatus.Error(context.getString(R.string.error_add_competitions))
+                        ApiActionStatus.Error(context.getString(R.string.competition_add_error))
                 }
             } catch (_: Exception) {
                 _competitionAddStatus.value =
-                    ApiActionStatus.Error(context.getString(R.string.error_add_competitions))
+                    ApiActionStatus.Error(context.getString(R.string.competition_add_error))
             }
         }
     }
@@ -123,11 +123,11 @@ class CompetitionViewModel @Inject constructor(
                     }
                 } else {
                     _itemAssignmentStatus.value =
-                        ApiActionStatus.Error(context.getString(R.string.error_item_assignment))
+                        ApiActionStatus.Error(context.getString(R.string.competition_item_assignment_error))
                 }
             } catch (_: Exception) {
                 _itemAssignmentStatus.value =
-                    ApiActionStatus.Error(context.getString(R.string.error_item_assignment))
+                    ApiActionStatus.Error(context.getString(R.string.competition_item_assignment_error))
             }
         }
     }

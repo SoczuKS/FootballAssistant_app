@@ -81,4 +81,11 @@
     <string name="match_past_tab_title">Past</string>
     <string name="match_no_past_matches">No past matches yet. Add one or play the game!</string>
     <string name="match_no_future_matches">No future matches. Add one!</string>
+    <string name="match_add_title">Add match</string>
+    <string name="match_date_label">Date</string>
+    <string name="match_add_competition_label">Competition</string>
+    <string name="match_add_home_team_label">Home team</string>
+    <string name="match_add_away_team_label">Away team</string>
+    <string name="match_add_add_button">Add match</string>
+    <string name="match_add_error">Could not add match</string>
 </resources>

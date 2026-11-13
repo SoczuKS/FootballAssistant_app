@@ -28,17 +28,13 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideGson(): Gson =
-        GsonBuilder()
-            .registerTypeAdapter(
-                Instant::class.java,
-                JsonDeserializer { json, _, _ -> Instant.parse(json.asString) }
+    fun provideGson(): Gson = GsonBuilder().registerTypeAdapter(
+        Instant::class.java, JsonDeserializer { json, _, _ -> Instant.parse(json.asString) })
+        .registerTypeAdapter(Instant::class.java, JsonSerializer<Instant> { value, _, _ ->
+            JsonPrimitive(
+                value.toString()
             )
-            .registerTypeAdapter(Instant::class.java, JsonSerializer<Instant> { value, _, _ ->
-                JsonPrimitive(
-                    value.toString()
-                )
-            }).create()
+        }).create()
 
     @Provides
     @Singleton
@@ -70,9 +66,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideFootballAssistantApi(okHttpClient: OkHttpClient): FootballAssistantApi {
+    fun provideFootballAssistantApi(okHttpClient: OkHttpClient, gson: Gson): FootballAssistantApi {
         return Retrofit.Builder().baseUrl(NetworkConfig.BASE_URL).addConverterFactory(
-            GsonConverterFactory.create()
+            GsonConverterFactory.create(gson)
         ).client(okHttpClient).build().create(FootballAssistantApi::class.java)
     }
 }

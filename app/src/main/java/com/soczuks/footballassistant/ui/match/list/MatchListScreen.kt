@@ -22,6 +22,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -49,12 +50,22 @@ fun MatchListScreen(
     goToItemsScreen: () -> Unit,
     goToTeamsScreen: () -> Unit,
     goToMatchAddScreen: () -> Unit,
+    goToMatchDetailsScreen: (Int) -> Unit,
+    isRefreshRequired: Boolean,
+    refreshCallback: () -> Unit,
     matchViewModel: MatchViewModel = hiltViewModel()
 ) {
     val matchListStatus by matchViewModel.listStatus.collectAsState()
     val areMatchesRefreshing by matchViewModel.isRefreshing.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
+
+    LaunchedEffect(isRefreshRequired) {
+        if (isRefreshRequired) {
+            matchViewModel.load()
+            refreshCallback()
+        }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -132,7 +143,7 @@ fun MatchListScreen(
                                         modifier = Modifier.fillMaxSize()
                                     ) {
                                         items(pastMatches) { match ->
-                                            MatchItem(match)
+                                            MatchItem(match) { goToMatchDetailsScreen(match.id) }
                                         }
                                     }
                                 }
@@ -157,7 +168,7 @@ fun MatchListScreen(
                                         modifier = Modifier.fillMaxSize()
                                     ) {
                                         items(futureMatches) { match ->
-                                            MatchItem(match)
+                                            MatchItem(match) { goToMatchDetailsScreen(match.id) }
                                         }
                                     }
                                 }

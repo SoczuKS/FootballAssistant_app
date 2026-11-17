@@ -126,7 +126,7 @@ fun MatchListScreen(
                         when (selectedTabIndex) {
                             0 -> {
                                 val pastMatches =
-                                    status.data.filter { it.matchDate < Instant.now() }
+                                    status.data.filter { it.matchDate.isBefore(Instant.now()) }
 
                                 if (pastMatches.isEmpty()) {
                                     Column(
@@ -151,7 +151,7 @@ fun MatchListScreen(
 
                             1 -> {
                                 val futureMatches =
-                                    status.data.filter { it.matchDate >= Instant.now() }
+                                    status.data.filter { it.matchDate.isAfter(Instant.now()) }
 
                                 if (futureMatches.isEmpty()) {
                                     Column(

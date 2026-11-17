@@ -164,7 +164,29 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 refreshCallback = { backStackEntry.savedStateHandle["match_created"] = false })
         }
         composable(Screen.MatchDetails.route) {
-            MatchDetailsScreen()
+            MatchDetailsScreen(
+                matchId = it.arguments?.getString("matchId")?.toInt() ?: 0,
+                onNavigateBack = { navController.popBackStack() },
+                goToHomeScreen = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
+                },
+                goToCompetitionsScreen = {
+                    navController.navigate(Screen.Competitions.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
+                },
+                goToItemsScreen = {
+                    navController.navigate(Screen.Items.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
+                },
+                goToTeamsScreen = {
+                    navController.navigate(Screen.Teams.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
+                })
         }
         composable(Screen.AddMatch.route) {
             MatchAddScreen(onNavigateBack = { navController.popBackStack() }, onMatchCreated = {

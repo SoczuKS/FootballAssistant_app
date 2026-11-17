@@ -7,6 +7,7 @@ import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.model.Match
 import com.soczuks.footballassistant.api.model.request.match.MatchAddRequest
+import com.soczuks.footballassistant.api.model.request.match.MatchItemCheckInRequest
 import com.soczuks.footballassistant.ui.common.ApiActionStatus
 import com.soczuks.footballassistant.ui.common.ApiListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +30,9 @@ class MatchViewModel @Inject constructor(
 
     private val _addStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
     val matchAddStatus = _addStatus.asStateFlow()
+
+    private val _checkInStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
+    val itemCheckInStatus = _checkInStatus.asStateFlow()
 
     init {
         load()
@@ -95,6 +99,42 @@ class MatchViewModel @Inject constructor(
             } catch (_: Exception) {
                 _addStatus.value =
                     ApiActionStatus.Error(context.getString(R.string.match_add_error))
+            }
+        }
+    }
+
+    fun resetCheckInStatus() {
+        _checkInStatus.value = ApiActionStatus.Idle
+    }
+
+    fun checkInItem(matchId: Int, itemId: Int, checkedIn: Boolean) {
+        viewModelScope.launch {
+            _checkInStatus.value = ApiActionStatus.Pending
+
+            try {
+                val response = api.checkInItemForMatch(
+                    MatchItemCheckInRequest(
+                        data = MatchItemCheckInRequest.Data(
+                            matchId, itemId, checkedIn
+                        )
+                    )
+                )
+
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+
+                    if (body.statusCode == 0) {
+                        _checkInStatus.value = ApiActionStatus.Success
+                    } else {
+                        _checkInStatus.value = ApiActionStatus.Error(body.message)
+                    }
+                } else {
+                    _checkInStatus.value =
+                        ApiActionStatus.Error(context.getString(R.string.match_check_in_error))
+                }
+            } catch (_: Exception) {
+                _checkInStatus.value =
+                    ApiActionStatus.Error(context.getString(R.string.match_check_in_error))
             }
         }
     }

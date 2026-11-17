@@ -7,6 +7,7 @@ import com.soczuks.footballassistant.api.model.request.competition.CompetitionAd
 import com.soczuks.footballassistant.api.model.request.competition.CompetitionItemAssignmentRequest
 import com.soczuks.footballassistant.api.model.request.item.ItemAddRequest
 import com.soczuks.footballassistant.api.model.request.match.MatchAddRequest
+import com.soczuks.footballassistant.api.model.request.match.MatchItemCheckInRequest
 import com.soczuks.footballassistant.api.model.request.team.TeamAddRequest
 import com.soczuks.footballassistant.api.model.response.CompetitionsResponse
 import com.soczuks.footballassistant.api.model.response.ItemsResponse
@@ -42,7 +43,7 @@ interface FootballAssistantApi {
     @POST("competition/add")
     suspend fun addCompetition(@Body request: CompetitionAddRequest): Response<MessageResponse>
 
-    @POST("/competition/assign_item")
+    @POST("competition/assign_item")
     suspend fun assignItemToCompetition(@Body request: CompetitionItemAssignmentRequest): Response<MessageResponse>
 
     @GET("item")
@@ -71,4 +72,7 @@ interface FootballAssistantApi {
 
     @POST("match/add")
     suspend fun addMatch(@Body request: MatchAddRequest): Response<MessageResponse>
+
+    @POST("match/check_in_item")
+    suspend fun checkInItemForMatch(@Body request: MatchItemCheckInRequest): Response<MessageResponse>
 }

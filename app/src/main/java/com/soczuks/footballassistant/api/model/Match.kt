@@ -9,5 +9,6 @@ data class Match(
     val matchDate: Instant,
     val homeTeam: Team,
     val awayTeam: Team,
-    val competition: Competition
+    val competition: Competition,
+    val checkIns: List<MatchItemCheckIn> = emptyList()
 )

@@ -88,4 +88,5 @@
     <string name="match_add_away_team_label">Away team</string>
     <string name="match_add_add_button">Add match</string>
     <string name="match_add_error">Could not add match</string>
+    <string name="match_check_in_error">Could not check in item!</string>
 </resources>

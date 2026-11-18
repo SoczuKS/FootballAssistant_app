@@ -47,7 +47,7 @@ internal fun ItemItem(item: Item, onDeleteRequest: () -> Unit) {
                     .fillMaxSize()
                     .clip(MaterialTheme.shapes.medium)
                     .background(MaterialTheme.colorScheme.error)
-                    .padding(horizontal = 20.dp),
+                    .padding(horizontal = 12.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
@@ -64,12 +64,14 @@ internal fun ItemItem(item: Item, onDeleteRequest: () -> Unit) {
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(
+                            start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp
+                        )
                         .fillMaxWidth()
                 ) {
                     Text(
                         text = item.name,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

@@ -26,14 +26,14 @@ internal fun CompetitionItemAssignmentItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 0.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(checked = checked, onCheckedChange = onCheckedChange)
 
             Text(
                 text = item.name,
-                modifier = Modifier.padding(start = 8.dp),
+                modifier = Modifier.padding(start = 0.dp),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

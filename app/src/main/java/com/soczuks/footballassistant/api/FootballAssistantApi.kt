@@ -8,6 +8,7 @@ import com.soczuks.footballassistant.api.model.request.competition.CompetitionIt
 import com.soczuks.footballassistant.api.model.request.item.ItemAddRequest
 import com.soczuks.footballassistant.api.model.request.match.MatchAddRequest
 import com.soczuks.footballassistant.api.model.request.match.MatchItemCheckInRequest
+import com.soczuks.footballassistant.api.model.request.match.MatchUpdateRequest
 import com.soczuks.footballassistant.api.model.request.team.TeamAddRequest
 import com.soczuks.footballassistant.api.model.response.CompetitionsResponse
 import com.soczuks.footballassistant.api.model.response.ItemsResponse
@@ -20,6 +21,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -75,4 +77,7 @@ interface FootballAssistantApi {
 
     @POST("match/check_in_item")
     suspend fun checkInItemForMatch(@Body request: MatchItemCheckInRequest): Response<MessageResponse>
+
+    @PATCH("match/update")
+    suspend fun updateMatch(@Body request: MatchUpdateRequest): Response<MessageResponse>
 }

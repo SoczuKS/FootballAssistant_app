@@ -87,5 +87,7 @@
     <string name="match_add_home_team_label">Gospodarze</string>
     <string name="match_add_away_team_label">Goście</string>
     <string name="match_add_add_button">Dodaj mecz</string>
-    <string name="match_add_error">Nie udałoi się dodać meczu</string>
+    <string name="match_add_error">Nie udało się dodać meczu</string>
+    <string name="match_check_in_error">Nie udało się odznaczyć przedmiotu!</string>
+    <string name="match_update_error">Nie udało się zaktualizować meczu!</string>
 </resources>

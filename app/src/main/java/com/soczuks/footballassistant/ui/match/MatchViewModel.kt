@@ -8,6 +8,7 @@ import com.soczuks.footballassistant.api.FootballAssistantApi
 import com.soczuks.footballassistant.api.model.Match
 import com.soczuks.footballassistant.api.model.request.match.MatchAddRequest
 import com.soczuks.footballassistant.api.model.request.match.MatchItemCheckInRequest
+import com.soczuks.footballassistant.api.model.request.match.MatchUpdateRequest
 import com.soczuks.footballassistant.ui.common.ApiActionStatus
 import com.soczuks.footballassistant.ui.common.ApiListStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +34,9 @@ class MatchViewModel @Inject constructor(
 
     private val _checkInStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
     val itemCheckInStatus = _checkInStatus.asStateFlow()
+
+    private val _updateStatus = MutableStateFlow<ApiActionStatus>(ApiActionStatus.Idle)
+    val updateStatus = _updateStatus.asStateFlow()
 
     init {
         load()
@@ -135,6 +139,42 @@ class MatchViewModel @Inject constructor(
             } catch (_: Exception) {
                 _checkInStatus.value =
                     ApiActionStatus.Error(context.getString(R.string.match_check_in_error))
+            }
+        }
+    }
+
+    fun resetUpdateStatus() {
+        _updateStatus.value = ApiActionStatus.Idle
+    }
+
+    fun updateMatch(matchId: Int, homeScore: Int, awayScore: Int) {
+        viewModelScope.launch {
+            _updateStatus.value = ApiActionStatus.Pending
+
+            try {
+                val response = api.updateMatch(
+                    MatchUpdateRequest(
+                        data = MatchUpdateRequest.Data(
+                            matchId, homeScore, awayScore
+                        )
+                    )
+                )
+
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()!!
+
+                    if (body.statusCode == 0) {
+                        _updateStatus.value = ApiActionStatus.Success
+                    } else {
+                        _updateStatus.value = ApiActionStatus.Error(body.message)
+                    }
+                } else {
+                    _updateStatus.value =
+                        ApiActionStatus.Error(context.getString(R.string.match_update_error))
+                }
+            } catch (_: Exception) {
+                _updateStatus.value =
+                    ApiActionStatus.Error(context.getString(R.string.match_update_error))
             }
         }
     }

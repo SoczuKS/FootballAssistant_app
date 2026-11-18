@@ -35,6 +35,7 @@ fun MatchDetailsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val itemCheckInStatus by matchViewModel.itemCheckInStatus.collectAsState()
     val areMatchesRefreshing by matchViewModel.isRefreshing.collectAsState()
+    val matchUpdateStatus by matchViewModel.updateStatus.collectAsState()
 
     val match = (matchListStatus as? ApiListStatus.Success)?.data?.find { it.id == matchId }
     val title = match?.let { "${it.homeTeam.name} : ${it.awayTeam.name}" } ?: ""
@@ -51,6 +52,24 @@ fun MatchDetailsScreen(
 
                 matchViewModel.load(fromPullToRefresh = true)
                 matchViewModel.resetCheckInStatus()
+            }
+
+            ApiActionStatus.Idle, ApiActionStatus.Pending -> Unit
+        }
+    }
+
+    LaunchedEffect(matchUpdateStatus) {
+        when (val status = matchUpdateStatus) {
+            ApiActionStatus.Success -> {
+                matchViewModel.load(fromPullToRefresh = true)
+                matchViewModel.resetUpdateStatus()
+            }
+
+            is ApiActionStatus.Error -> {
+                snackbarHostState.showSnackbar(status.message)
+
+                matchViewModel.load(fromPullToRefresh = true)
+                matchViewModel.resetUpdateStatus()
             }
 
             ApiActionStatus.Idle, ApiActionStatus.Pending -> Unit
@@ -83,7 +102,7 @@ fun MatchDetailsScreen(
                 if (isFutureMatch) {
                     FutureMatchScreen(match, matchViewModel)
                 } else {
-                    PastMatchScreen(match)
+                    PastMatchScreen(match, matchViewModel, matchUpdateStatus)
                 }
             }
         }

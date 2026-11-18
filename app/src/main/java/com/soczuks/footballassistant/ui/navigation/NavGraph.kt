@@ -133,10 +133,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             MatchListScreen(
                 goToHomeScreen = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Matches.route) { inclusive = true }
-                    }
-                },
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Matches.route) { inclusive = true }
+                }
+            },
                 goToCompetitionsScreen = {
                     navController.navigate(Screen.Competitions.route) {
                         popUpTo(Screen.Matches.route) { inclusive = true }
@@ -166,7 +166,12 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
         composable(Screen.MatchDetails.route) {
             MatchDetailsScreen(
                 matchId = it.arguments?.getString("matchId")?.toInt() ?: 0,
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "match_created", true
+                    )
+                    navController.popBackStack()
+                },
                 goToHomeScreen = {
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Competitions.route) { inclusive = true }
@@ -203,10 +208,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             CompetitionListScreen(
                 goToHomeScreen = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Competitions.route) { inclusive = true }
-                    }
-                },
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Competitions.route) { inclusive = true }
+                }
+            },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
                         popUpTo(Screen.Competitions.route) { inclusive = true }
@@ -276,10 +281,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             ItemListScreen(
                 goToHomeScreen = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Items.route) { inclusive = true }
-                    }
-                },
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Items.route) { inclusive = true }
+                }
+            },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
                         popUpTo(Screen.Items.route) { inclusive = true }
@@ -316,10 +321,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             TeamListScreen(
                 goToHomeScreen = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Teams.route) { inclusive = true }
-                    }
-                },
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Teams.route) { inclusive = true }
+                }
+            },
                 goToMatchesScreen = {
                     navController.navigate(Screen.Matches.route) {
                         popUpTo(Screen.Teams.route) { inclusive = true }

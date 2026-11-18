@@ -89,4 +89,5 @@
     <string name="match_add_add_button">Add match</string>
     <string name="match_add_error">Could not add match</string>
     <string name="match_check_in_error">Could not check in item!</string>
+    <string name="match_update_error">Could not update match!</string>
 </resources>

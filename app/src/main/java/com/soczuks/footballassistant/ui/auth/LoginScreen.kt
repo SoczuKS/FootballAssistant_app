@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,7 +23,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -29,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
@@ -43,7 +43,7 @@ fun LoginScreen(
     authenticationViewModel: AuthenticationViewModel = hiltViewModel()
 ) {
     var login by rememberSaveable { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val password = rememberTextFieldState()
 
     val authenticationStatus by authenticationViewModel.authenticationStatus.collectAsState()
 
@@ -82,16 +82,13 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = withoutWhitespace(it) },
+            OutlinedSecureTextField(
+                state = password,
                 label = { Text(stringResource(R.string.password_label)) },
                 modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
-                ),
-                singleLine = true
+                )
             )
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -100,7 +97,7 @@ fun LoginScreen(
                     authenticationViewModel.login(
                         LoginRequest(
                             data = LoginRequest.Data(
-                                login, password
+                                login, password.text.toString()
                             )
                         )
                     )

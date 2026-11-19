@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
@@ -50,8 +51,8 @@ fun RegisterScreen(
 ) {
     var login by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordConfirmation by remember { mutableStateOf("") }
+    val password = rememberTextFieldState()
+    val passwordConfirmation = rememberTextFieldState()
     var passwordMismatch by remember { mutableStateOf(false) }
 
     val authenticationStatus by authenticationViewModel.authenticationStatus.collectAsState()
@@ -105,46 +106,41 @@ fun RegisterScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = password,
-                onValueChange = {
-                    password = withoutWhitespace(it)
-                    passwordMismatch = false
-                },
+            OutlinedSecureTextField(
+                state = password,
                 label = { Text(stringResource(R.string.password_label)) },
                 modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
-                ),
-                singleLine = true
+                )
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = passwordConfirmation,
-                onValueChange = {
-                    passwordConfirmation = withoutWhitespace(it)
-                    passwordMismatch = false
-                },
+            OutlinedSecureTextField(
+                state = passwordConfirmation,
                 label = { Text(stringResource(R.string.confirm_password_label)) },
                 modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
                 ),
                 isError = passwordMismatch,
                 supportingText = if (passwordMismatch) {
                     { Text(stringResource(R.string.passwords_do_not_match)) }
-                } else null,
-                singleLine = true)
+                } else null)
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
-                    if (arePasswordsTheSame(password, passwordConfirmation)) {
+                    if (arePasswordsTheSame(
+                            password.text.toString(), passwordConfirmation.text.toString()
+                        )
+                    ) {
                         authenticationViewModel.register(
-                            RegisterRequest(data = RegisterRequest.Data(login, password, email))
+                            RegisterRequest(
+                                data = RegisterRequest.Data(
+                                    login, password.text.toString(), email
+                                )
+                            )
                         )
                     } else {
                         passwordMismatch = true

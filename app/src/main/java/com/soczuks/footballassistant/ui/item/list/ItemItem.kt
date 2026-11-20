@@ -71,7 +71,7 @@ internal fun ItemItem(item: Item, onDeleteRequest: () -> Unit) {
                 ) {
                     Text(
                         text = item.name,
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

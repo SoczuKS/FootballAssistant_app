@@ -22,12 +22,12 @@ internal fun CompetitionItem(competition: Competition, onClick: () -> Unit) {
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(start = 12.dp, top = 8.dp, end = 12.dp, bottom = 8.dp)
                 .fillMaxWidth()
         ) {
             Text(
                 text = competition.name,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

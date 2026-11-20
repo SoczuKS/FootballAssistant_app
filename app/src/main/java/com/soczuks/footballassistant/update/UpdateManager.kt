@@ -155,7 +155,7 @@ class UpdateManager @Inject constructor(
                 }
 
                 val request = DownloadManager.Request(release.downloadUrl.toUri())
-                    .setTitle("Gardener ${release.versionName}")
+                    .setTitle("FootballAssistant ${release.versionName}")
                     .setDescription(context.getString(R.string.update_downloading))
                     .setMimeType(APK_MIME_TYPE).setNotificationVisibility(
                         DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED

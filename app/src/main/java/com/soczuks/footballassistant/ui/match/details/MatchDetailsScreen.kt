@@ -24,11 +24,13 @@ import java.time.Instant
 @Composable
 fun MatchDetailsScreen(
     matchId: Int,
+    originator: MatchDetailsScreenOriginator,
     onNavigateBack: () -> Unit,
     goToHomeScreen: () -> Unit,
     goToCompetitionsScreen: () -> Unit,
     goToItemsScreen: () -> Unit,
     goToTeamsScreen: () -> Unit,
+    goToMatchesScreen: () -> Unit,
     matchViewModel: MatchViewModel = hiltViewModel()
 ) {
     val matchListStatus by matchViewModel.listStatus.collectAsState()
@@ -82,13 +84,24 @@ fun MatchDetailsScreen(
         )
     }, bottomBar = {
         NavBar(
-            currentNavBarElement = NavBarElement.MATCHES,
+            currentNavBarElement = if (originator == MatchDetailsScreenOriginator.MATCH_LIST_SCREEN) {
+                NavBarElement.MATCHES
+            } else {
+                NavBarElement.TEAMS
+            },
             goToHomeScreen = goToHomeScreen,
-            goToMatchesScreen = {},
+            goToMatchesScreen = if (originator == MatchDetailsScreenOriginator.TEAM_DETAILS_SCREEN) {
+                goToMatchesScreen
+            } else {
+                {}
+            },
             goToCompetitionsScreen = goToCompetitionsScreen,
             goToItemsScreen = goToItemsScreen,
-            goToTeamsScreen = goToTeamsScreen
-        )
+            goToTeamsScreen = if (originator == MatchDetailsScreenOriginator.MATCH_LIST_SCREEN) {
+                goToTeamsScreen
+            } else {
+                {}
+            })
     }) { padding ->
         PullToRefreshBox(
             isRefreshing = areMatchesRefreshing,

@@ -21,10 +21,12 @@ import com.soczuks.footballassistant.ui.item.add.ItemAddScreen
 import com.soczuks.footballassistant.ui.item.list.ItemListScreen
 import com.soczuks.footballassistant.ui.match.add.MatchAddScreen
 import com.soczuks.footballassistant.ui.match.details.MatchDetailsScreen
+import com.soczuks.footballassistant.ui.match.details.MatchDetailsScreenOriginator
 import com.soczuks.footballassistant.ui.match.list.MatchListScreen
 import com.soczuks.footballassistant.ui.team.add.TeamAddScreen
 import com.soczuks.footballassistant.ui.team.details.TeamDetailsScreen
 import com.soczuks.footballassistant.ui.team.list.TeamListScreen
+import kotlin.enums.enumEntries
 
 sealed class Screen(val route: String) {
     object Startup : Screen("startup")
@@ -35,8 +37,9 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
 
     object Matches : Screen("matches")
-    object MatchDetails : Screen("match_details/{matchId}") {
-        fun createRoute(matchId: Int) = "match_details/$matchId"
+    object MatchDetails : Screen("match_details/{matchId}/{originator}") {
+        fun createRoute(matchId: Int, originator: MatchDetailsScreenOriginator) =
+            "match_details/$matchId/${originator.name}"
     }
 
     object AddMatch : Screen("add_match")
@@ -127,8 +130,8 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
             })
         }
 
-        composable(Screen.Matches.route) { backStackEntry ->
-            val matchCreated by backStackEntry.savedStateHandle.getStateFlow("match_created", false)
+        composable(Screen.Matches.route) {
+            val matchCreated by it.savedStateHandle.getStateFlow("match_created", false)
                 .collectAsState()
 
             MatchListScreen(
@@ -156,16 +159,19 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 goToMatchDetailsScreen = { matchId ->
                     navController.navigate(
                         Screen.MatchDetails.createRoute(
-                            matchId
+                            matchId, MatchDetailsScreenOriginator.MATCH_LIST_SCREEN
                         )
                     )
                 },
                 isRefreshRequired = matchCreated,
-                refreshCallback = { backStackEntry.savedStateHandle["match_created"] = false })
+                refreshCallback = { it.savedStateHandle["match_created"] = false })
         }
-        composable(Screen.MatchDetails.route) {
+        composable(Screen.MatchDetails.route) { backStackEntry ->
             MatchDetailsScreen(
-                matchId = it.arguments?.getString("matchId")?.toInt() ?: 0,
+                matchId = backStackEntry.arguments?.getString("matchId")?.toInt() ?: 0,
+                originator = backStackEntry.arguments?.getString("originator")
+                    ?.let { originatorName -> enumEntries<MatchDetailsScreenOriginator>().firstOrNull { it.name == originatorName } }
+                    ?: MatchDetailsScreenOriginator.MATCH_LIST_SCREEN,
                 onNavigateBack = {
                     navController.previousBackStackEntry?.savedStateHandle?.set(
                         "match_created", true
@@ -189,6 +195,11 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 },
                 goToTeamsScreen = {
                     navController.navigate(Screen.Teams.route) {
+                        popUpTo(Screen.Competitions.route) { inclusive = true }
+                    }
+                },
+                goToMatchesScreen = {
+                    navController.navigate(Screen.Matches.route) {
                         popUpTo(Screen.Competitions.route) { inclusive = true }
                     }
                 })
@@ -378,7 +389,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 goToMatchDetailsScreen = { matchId ->
                     navController.navigate(
                         Screen.MatchDetails.createRoute(
-                            matchId
+                            matchId, MatchDetailsScreenOriginator.TEAM_DETAILS_SCREEN
                         )
                     )
                 })

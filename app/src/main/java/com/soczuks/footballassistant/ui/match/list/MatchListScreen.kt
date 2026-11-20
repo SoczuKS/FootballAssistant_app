@@ -163,8 +163,8 @@ fun MatchListScreen(
                                     ) { Text(text = stringResource(R.string.match_no_future_matches)) }
                                 } else {
                                     LazyColumn(
-                                        contentPadding = PaddingValues(16.dp),
-                                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                                        contentPadding = PaddingValues(8.dp),
+                                        verticalArrangement = Arrangement.spacedBy(2.dp),
                                         modifier = Modifier.fillMaxSize()
                                     ) {
                                         items(futureMatches) { match ->

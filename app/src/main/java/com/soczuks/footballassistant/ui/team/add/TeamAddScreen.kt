@@ -268,7 +268,7 @@ private fun TeamColorPickerDialog(
         Text(stringResource(R.string.team_choose_color))
     }, text = {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             SaturationValuePicker(
                 hue = hue,

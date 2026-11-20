@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.ui.common.ApiActionStatus
 import com.soczuks.footballassistant.ui.common.ApiListStatus
+import com.soczuks.footballassistant.ui.match.list.MatchItem
 import com.soczuks.footballassistant.ui.navigation.NavBar
 import com.soczuks.footballassistant.ui.navigation.NavBarElement
 import com.soczuks.footballassistant.ui.navigation.TopBar
@@ -45,8 +47,9 @@ fun TeamDetailsScreen(
     onNavigateBack: () -> Unit,
     goToHomeScreen: () -> Unit,
     goToMatchesScreen: () -> Unit,
+    goToCompetitionsScreen: () -> Unit,
     goToItemsScreen: () -> Unit,
-    goToTeamsScreen: () -> Unit,
+    goToMatchDetailsScreen: (Int) -> Unit,
     teamViewModel: TeamViewModel = hiltViewModel()
 ) {
     val teamListStatus by teamViewModel.listStatus.collectAsState()
@@ -101,13 +104,12 @@ fun TeamDetailsScreen(
         topBar = { TopBar(title = team?.name ?: "Team", onNavigateBack) },
         bottomBar = {
             NavBar(
-                currentNavBarElement = NavBarElement.COMPETITIONS,
+                currentNavBarElement = NavBarElement.TEAMS,
                 goToHomeScreen = goToHomeScreen,
                 goToMatchesScreen = goToMatchesScreen,
-                goToCompetitionsScreen = {},
+                goToCompetitionsScreen = goToCompetitionsScreen,
                 goToItemsScreen = goToItemsScreen,
-                goToTeamsScreen = goToTeamsScreen
-            )
+                goToTeamsScreen = {})
         }) { padding ->
         PullToRefreshBox(
             isRefreshing = areTeamsRefreshing, onRefresh = {
@@ -130,7 +132,27 @@ fun TeamDetailsScreen(
 
                 team?.let { team ->
                     when (selectedTabIndex) {
-                        0 -> {}
+                        0 -> {
+                            if (team.matches.isEmpty()) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) { Text(text = stringResource(R.string.team_no_matches)) }
+                            } else {
+                                LazyColumn(
+                                    contentPadding = PaddingValues(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    items(team.matches) { match ->
+                                        MatchItem(match) { goToMatchDetailsScreen(match.id) }
+                                    }
+                                }
+                            }
+                        }
 
                         1 -> {
                             if (canJoinTeam) {

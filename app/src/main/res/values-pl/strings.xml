@@ -65,17 +65,17 @@
     <string name="team_not_found">Nie znaleziono zespołów. Dodaj pierwszy!</string>
     <string name="competition_items_tab_title">Przedmioty</string>
     <string name="competition_teams_tab_title">Zespoły</string>
-    <string name="competition_item_assignment_error">Nie udało się przypisać przedmiotu</string>
-    <string name="item_delete_error">Nie udało się usunąć przedmiotu</string>
+    <string name="competition_item_assignment_error">Nie udało się przypisać przedmiotu.</string>
+    <string name="item_delete_error">Nie udało się usunąć przedmiotu.</string>
     <string name="item_delete">Usuń przedmiot</string>
     <string name="item_delete_message">Czy na pewno chcesz usunąć %1$s?</string>
     <string name="delete">Usuń</string>
     <string name="team_matches_tab_title">Mecze</string>
     <string name="team_players_tab_title">Players</string>
     <string name="team_join">Dołącz</string>
-    <string name="team_join_error">Nie udało się dołączyć</string>
+    <string name="team_join_error">Nie udało się dołączyć.</string>
     <string name="team_leave">Opuść</string>
-    <string name="team_leave_error">Nie udało się opuścić</string>
+    <string name="team_leave_error">Nie udało się opuścić.</string>
     <string name="match_load_error">Could not load matches.</string>
     <string name="match_future_tab_title">Przyszłe</string>
     <string name="match_past_tab_title">Rozegrane</string>
@@ -87,7 +87,8 @@
     <string name="match_add_home_team_label">Gospodarze</string>
     <string name="match_add_away_team_label">Goście</string>
     <string name="match_add_add_button">Dodaj mecz</string>
-    <string name="match_add_error">Nie udało się dodać meczu</string>
+    <string name="match_add_error">Nie udało się dodać meczu.</string>
     <string name="match_check_in_error">Nie udało się odznaczyć przedmiotu!</string>
     <string name="match_update_error">Nie udało się zaktualizować meczu!</string>
+    <string name="team_no_matches">Brak meczów. Dodaj nowy!</string>
 </resources>

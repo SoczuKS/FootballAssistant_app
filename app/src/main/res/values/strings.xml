@@ -65,17 +65,17 @@
     <string name="team_not_found">No teams found. Add the first one!</string>
     <string name="competition_items_tab_title">Items</string>
     <string name="competition_teams_tab_title">Teams</string>
-    <string name="competition_item_assignment_error">Item assignment failed</string>
-    <string name="item_delete_error">Could not delete item</string>
+    <string name="competition_item_assignment_error">Item assignment failed.</string>
+    <string name="item_delete_error">Could not delete item.</string>
     <string name="item_delete">Delete item</string>
     <string name="item_delete_message">Are you sure you want to delete %1$s?</string>
     <string name="delete">Delete</string>
     <string name="team_matches_tab_title">Matches</string>
     <string name="team_players_tab_title">Players</string>
     <string name="team_join">Join</string>
-    <string name="team_join_error">Could not join the team</string>
+    <string name="team_join_error">Could not join the team.</string>
     <string name="team_leave">Leave</string>
-    <string name="team_leave_error">Could not leave team</string>
+    <string name="team_leave_error">Could not leave team.</string>
     <string name="match_load_error">Could not load matches.</string>
     <string name="match_future_tab_title">Future</string>
     <string name="match_past_tab_title">Past</string>
@@ -87,7 +87,8 @@
     <string name="match_add_home_team_label">Home team</string>
     <string name="match_add_away_team_label">Away team</string>
     <string name="match_add_add_button">Add match</string>
-    <string name="match_add_error">Could not add match</string>
+    <string name="match_add_error">Could not add match.</string>
     <string name="match_check_in_error">Could not check in item!</string>
     <string name="match_update_error">Could not update match!</string>
+    <string name="team_no_matches">No matches yet. Add the new one!</string>
 </resources>

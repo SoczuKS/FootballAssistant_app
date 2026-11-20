@@ -263,6 +263,11 @@ private fun TeamColorPickerDialog(
     val selectedColor = remember(hue, saturation, value) {
         Color(HSVToColor(floatArrayOf(hue, saturation, value)))
     }
+    var hexText by remember { mutableStateOf(selectedColor.toHexString()) }
+
+    LaunchedEffect(selectedColor.toArgb()) {
+        hexText = selectedColor.toHexString()
+    }
 
     AlertDialog(onDismissRequest = onDismiss, title = {
         Text(stringResource(R.string.team_choose_color))
@@ -290,10 +295,27 @@ private fun TeamColorPickerDialog(
                     .background(selectedColor)
             )
 
-            Text(
-                text = selectedColor.toHexString(),
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+            OutlinedTextField(
+                value = hexText,
+                onValueChange = { newHex ->
+                    hexText = newHex
+                    parseHexColor(newHex)?.let { parsedColor ->
+                        val hsv = FloatArray(3)
+                        colorToHSV(parsedColor, hsv)
+                        hue = hsv[0]
+                        saturation = hsv[1]
+                        value = hsv[2]
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.team_hex_label)) },
+                isError = hexText.isNotBlank() && parseHexColor(hexText) == null,
+                supportingText = if (hexText.isNotBlank() && parseHexColor(hexText) == null) {
+                    { Text(stringResource(R.string.team_hex_error)) }
+                } else {
+                    null
+                },
+                singleLine = true)
         }
     }, confirmButton = {
         TextButton(
@@ -462,6 +484,24 @@ private fun updateSaturationValue(
     val value = 1f - (position.y / height.toFloat()).coerceIn(0f, 1f)
 
     onUpdated(saturation to value)
+}
+
+private fun parseHexColor(hex: String): Int? {
+    val digits = hex.trim().removePrefix("#")
+    val normalizedDigits = when (digits.length) {
+        3 -> digits.map { "$it$it" }.joinToString("")
+        6 -> digits
+        else -> return null
+    }
+    if (!normalizedDigits.matches(Regex("[0-9A-Fa-f]{6}"))) {
+        return null
+    }
+
+    return try {
+        "#$normalizedDigits".toColorInt()
+    } catch (_: IllegalArgumentException) {
+        null
+    }
 }
 
 private fun Color.toHexString(): String {

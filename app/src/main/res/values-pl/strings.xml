@@ -57,6 +57,8 @@
     <string name="team_name_label">Nazwa</string>
     <string name="team_address_label">Adres</string>
     <string name="team_choose_color">Wybierz dominujący kolor</string>
+    <string name="team_hex_label">Kolor HEX</string>
+    <string name="team_hex_error">Wprowadź 3 lub 6 cyfr szesnastkowych</string>
     <string name="cancel">Anuluj</string>
     <string name="team_color_label">Dominujący kolor</string>
     <string name="team_load_error">Nie udało się wczytać zespołów.</string>

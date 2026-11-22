@@ -93,4 +93,6 @@
     <string name="match_check_in_error">Could not check in item!</string>
     <string name="match_update_error">Could not update match!</string>
     <string name="team_no_matches">No matches yet. Add the new one!</string>
+    <string name="firstname_label">Firstname</string>
+    <string name="lastname_label">Lastname</string>
 </resources>

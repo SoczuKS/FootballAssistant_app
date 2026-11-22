@@ -4,6 +4,10 @@ data class RegisterRequest(
     private val action: String = "register", val data: Data
 ) {
     data class Data(
-        val login: String, val password: String, val email: String
+        val firstname: String,
+        val lastname: String,
+        val login: String,
+        val password: String,
+        val email: String
     )
 }

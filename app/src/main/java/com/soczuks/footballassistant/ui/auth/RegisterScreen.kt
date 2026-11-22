@@ -49,6 +49,8 @@ fun RegisterScreen(
     onRegisterSuccess: () -> Unit,
     authenticationViewModel: AuthenticationViewModel = hiltViewModel()
 ) {
+    var firstname by rememberSaveable { mutableStateOf("") }
+    var lastname by rememberSaveable { mutableStateOf("") }
     var login by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     val password = rememberTextFieldState()
@@ -56,6 +58,9 @@ fun RegisterScreen(
     var passwordMismatch by remember { mutableStateOf(false) }
 
     val authenticationStatus by authenticationViewModel.authenticationStatus.collectAsState()
+
+    val canRegister =
+        firstname.isNotBlank() && lastname.isNotBlank() && login.isNotBlank() && email.isNotBlank() && password.text.isNotBlank() && passwordConfirmation.text.isNotBlank() && authenticationStatus !is AuthenticationStatus.Pending
 
     if (authenticationStatus is AuthenticationStatus.RegistrationSuccess) {
         AlertDialog(
@@ -92,6 +97,24 @@ fun RegisterScreen(
                 value = login,
                 onValueChange = { login = withoutWhitespace(it) },
                 label = { Text(stringResource(R.string.login_label)) },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = firstname,
+                onValueChange = { firstname = it },
+                label = { Text(stringResource(R.string.firstname_label)) },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = lastname,
+                onValueChange = { lastname = it },
+                label = { Text(stringResource(R.string.lastname_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -135,19 +158,18 @@ fun RegisterScreen(
                             password.text.toString(), passwordConfirmation.text.toString()
                         )
                     ) {
+                        passwordMismatch = false
                         authenticationViewModel.register(
                             RegisterRequest(
                                 data = RegisterRequest.Data(
-                                    login, password.text.toString(), email
+                                    firstname, lastname, login, password.text.toString(), email
                                 )
                             )
                         )
                     } else {
                         passwordMismatch = true
                     }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = authenticationStatus !is AuthenticationStatus.Pending
+                }, modifier = Modifier.fillMaxWidth(), enabled = canRegister
             ) {
                 if (authenticationStatus is AuthenticationStatus.Pending) {
                     CircularProgressIndicator(

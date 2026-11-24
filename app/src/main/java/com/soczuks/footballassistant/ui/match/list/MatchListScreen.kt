@@ -51,6 +51,7 @@ fun MatchListScreen(
     goToTeamsScreen: () -> Unit,
     goToMatchAddScreen: () -> Unit,
     goToMatchDetailsScreen: (Int) -> Unit,
+    goToProfileScreen: () -> Unit,
     isRefreshRequired: Boolean,
     refreshCallback: () -> Unit,
     matchViewModel: MatchViewModel = hiltViewModel()
@@ -67,31 +68,32 @@ fun MatchListScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.nav_matches_title)) },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = goToMatchAddScreen,
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-            ) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = stringResource(R.string.match_add_button_description)
-                )
-            }
-        },
-        bottomBar = {
-            NavBar(
-                currentNavBarElement = NavBarElement.MATCHES,
-                goToHomeScreen = goToHomeScreen,
-                goToMatchesScreen = {},
-                goToCompetitionsScreen = goToCompetitionsScreen,
-                goToItemsScreen = goToItemsScreen,
-                goToTeamsScreen = goToTeamsScreen
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = {
+        TopBar(
+            title = stringResource(R.string.nav_matches_title),
+            onNavigateToProfile = goToProfileScreen
+        )
+    }, floatingActionButton = {
+        FloatingActionButton(
+            onClick = goToMatchAddScreen,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        ) {
+            Icon(
+                Icons.Default.Add,
+                contentDescription = stringResource(R.string.match_add_button_description)
             )
-        }) { padding ->
+        }
+    }, bottomBar = {
+        NavBar(
+            currentNavBarElement = NavBarElement.MATCHES,
+            goToHomeScreen = goToHomeScreen,
+            goToMatchesScreen = {},
+            goToCompetitionsScreen = goToCompetitionsScreen,
+            goToItemsScreen = goToItemsScreen,
+            goToTeamsScreen = goToTeamsScreen
+        )
+    }) { padding ->
         PullToRefreshBox(
             isRefreshing = areMatchesRefreshing,
             onRefresh = { matchViewModel.load(fromPullToRefresh = true) },

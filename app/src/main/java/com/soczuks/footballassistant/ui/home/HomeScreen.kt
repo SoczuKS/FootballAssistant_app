@@ -20,23 +20,25 @@ fun HomeScreen(
     goToMatchesScreen: () -> Unit,
     goToCompetitionsScreen: () -> Unit,
     goToItemsScreen: () -> Unit,
-    goToTeamsScreen: () -> Unit
+    goToTeamsScreen: () -> Unit,
+    goToProfileScreen: () -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.nav_home_title)) },
-        bottomBar = {
-            NavBar(
-                currentNavBarElement = NavBarElement.HOME,
-                goToHomeScreen = {},
-                goToMatchesScreen = goToMatchesScreen,
-                goToCompetitionsScreen = goToCompetitionsScreen,
-                goToItemsScreen = goToItemsScreen,
-                goToTeamsScreen = goToTeamsScreen
-            )
-        }) { padding ->
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = {
+        TopBar(
+            title = stringResource(R.string.nav_home_title), onNavigateToProfile = goToProfileScreen
+        )
+    }, bottomBar = {
+        NavBar(
+            currentNavBarElement = NavBarElement.HOME,
+            goToHomeScreen = {},
+            goToMatchesScreen = goToMatchesScreen,
+            goToCompetitionsScreen = goToCompetitionsScreen,
+            goToItemsScreen = goToItemsScreen,
+            goToTeamsScreen = goToTeamsScreen
+        )
+    }) { padding ->
         PullToRefreshBox(
             isRefreshing = false, onRefresh = {}, modifier = Modifier
                 .padding(padding)

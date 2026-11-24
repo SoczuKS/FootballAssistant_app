@@ -16,6 +16,9 @@ data object RegisterDestination
 data object HomeDestination
 
 @Serializable
+data object ProfileDestination
+
+@Serializable
 data object MatchesDestination
 
 @Serializable

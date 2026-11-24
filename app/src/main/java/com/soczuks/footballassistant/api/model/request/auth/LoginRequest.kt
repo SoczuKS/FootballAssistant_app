@@ -1,4 +1,4 @@
-package com.soczuks.footballassistant.api.model.request
+package com.soczuks.footballassistant.api.model.request.auth
 
 data class LoginRequest(
     private val action: String = "login", val data: Data

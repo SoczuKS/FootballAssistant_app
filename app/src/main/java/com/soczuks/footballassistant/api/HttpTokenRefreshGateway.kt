@@ -1,7 +1,7 @@
 package com.soczuks.footballassistant.api
 
 import com.google.gson.Gson
-import com.soczuks.footballassistant.api.model.request.RefreshTokenRequest
+import com.soczuks.footballassistant.api.model.request.auth.RefreshTokenRequest
 import com.soczuks.footballassistant.api.model.response.RefreshTokenResponse
 import com.soczuks.footballassistant.config.NetworkConfig
 import okhttp3.MediaType.Companion.toMediaType

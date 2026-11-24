@@ -24,6 +24,7 @@ import com.soczuks.footballassistant.ui.match.add.MatchAddScreen
 import com.soczuks.footballassistant.ui.match.details.MatchDetailsScreen
 import com.soczuks.footballassistant.ui.match.details.MatchDetailsScreenOriginator
 import com.soczuks.footballassistant.ui.match.list.MatchListScreen
+import com.soczuks.footballassistant.ui.profile.ProfileScreen
 import com.soczuks.footballassistant.ui.team.add.TeamAddScreen
 import com.soczuks.footballassistant.ui.team.details.TeamDetailsScreen
 import com.soczuks.footballassistant.ui.team.list.TeamListScreen
@@ -92,9 +93,12 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                 navController.navigate(TeamsDestination) {
                     popUpTo<HomeDestination> { inclusive = true }
                 }
-            })
+            }, goToProfileScreen = { navController.navigate(ProfileDestination) })
         }
 
+        composable<ProfileDestination> {
+            ProfileScreen(onNavigateBack = { navController.popBackStack() })
+        }
 
         composable<MatchesDestination> { backStackEntry ->
             val matchCreated by backStackEntry.savedStateHandle.getStateFlow("match_created", false)
@@ -102,10 +106,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             MatchListScreen(
                 goToHomeScreen = {
-                navController.navigate(HomeDestination) {
-                    popUpTo<MatchesDestination> { inclusive = true }
-                }
-            },
+                    navController.navigate(HomeDestination) {
+                        popUpTo<MatchesDestination> { inclusive = true }
+                    }
+                },
                 goToCompetitionsScreen = {
                     navController.navigate(CompetitionsDestination) {
                         popUpTo<MatchesDestination> { inclusive = true }
@@ -129,6 +133,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                         )
                     )
                 },
+                goToProfileScreen = { navController.navigate(ProfileDestination) },
                 isRefreshRequired = matchCreated,
                 refreshCallback = { backStackEntry.savedStateHandle["match_created"] = false })
         }
@@ -185,10 +190,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             CompetitionListScreen(
                 goToHomeScreen = {
-                navController.navigate(HomeDestination) {
-                    popUpTo<CompetitionsDestination> { inclusive = true }
-                }
-            },
+                    navController.navigate(HomeDestination) {
+                        popUpTo<CompetitionsDestination> { inclusive = true }
+                    }
+                },
                 goToMatchesScreen = {
                     navController.navigate(MatchesDestination) {
                         popUpTo<CompetitionsDestination> { inclusive = true }
@@ -212,6 +217,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                         )
                     )
                 },
+                goToProfileScreen = { navController.navigate(ProfileDestination) },
                 isRefreshRequired = competitionCreated,
                 refreshCallback = {
                     backStackEntry.savedStateHandle["competition_created"] = false
@@ -260,10 +266,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             ItemListScreen(
                 goToHomeScreen = {
-                navController.navigate(HomeDestination) {
-                    popUpTo<ItemsDestination> { inclusive = true }
-                }
-            },
+                    navController.navigate(HomeDestination) {
+                        popUpTo<ItemsDestination> { inclusive = true }
+                    }
+                },
                 goToMatchesScreen = {
                     navController.navigate(MatchesDestination) {
                         popUpTo<ItemsDestination> { inclusive = true }
@@ -280,6 +286,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                     }
                 },
                 goToItemAddScreen = { navController.navigate(AddItemDestination) },
+                goToProfileScreen = { navController.navigate(ProfileDestination) },
                 isRefreshRequired = itemCreated,
                 refreshCallback = {
                     backStackEntry.savedStateHandle["item_created"] = false
@@ -300,10 +307,10 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
 
             TeamListScreen(
                 goToHomeScreen = {
-                navController.navigate(HomeDestination) {
-                    popUpTo<TeamsDestination> { inclusive = true }
-                }
-            },
+                    navController.navigate(HomeDestination) {
+                        popUpTo<TeamsDestination> { inclusive = true }
+                    }
+                },
                 goToMatchesScreen = {
                     navController.navigate(MatchesDestination) {
                         popUpTo<TeamsDestination> { inclusive = true }
@@ -327,6 +334,7 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
                         )
                     )
                 },
+                goToProfileScreen = { navController.navigate(ProfileDestination) },
                 isRefreshRequired = teamCreated,
                 refreshCallback = { backStackEntry.savedStateHandle["team_created"] = false })
         }

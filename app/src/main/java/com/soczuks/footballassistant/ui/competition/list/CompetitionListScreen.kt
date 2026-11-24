@@ -44,6 +44,7 @@ fun CompetitionListScreen(
     goToTeamsScreen: () -> Unit,
     goToCompetitionAddScreen: () -> Unit,
     goToCompetitionDetailsScreen: (Int) -> Unit,
+    goToProfileScreen: () -> Unit,
     isRefreshRequired: Boolean = false,
     refreshCallback: () -> Unit = {},
     competitionViewModel: CompetitionViewModel = hiltViewModel()
@@ -59,31 +60,32 @@ fun CompetitionListScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.nav_competitions_title)) },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = goToCompetitionAddScreen,
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-            ) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = stringResource(R.string.competition_add_title)
-                )
-            }
-        },
-        bottomBar = {
-            NavBar(
-                currentNavBarElement = NavBarElement.COMPETITIONS,
-                goToHomeScreen = goToHomeScreen,
-                goToMatchesScreen = goToMatchesScreen,
-                goToCompetitionsScreen = {},
-                goToItemsScreen = goToItemsScreen,
-                goToTeamsScreen = goToTeamsScreen
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = {
+        TopBar(
+            title = stringResource(R.string.nav_competitions_title),
+            onNavigateToProfile = goToProfileScreen
+        )
+    }, floatingActionButton = {
+        FloatingActionButton(
+            onClick = goToCompetitionAddScreen,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        ) {
+            Icon(
+                Icons.Default.Add,
+                contentDescription = stringResource(R.string.competition_add_title)
             )
-        }) { padding ->
+        }
+    }, bottomBar = {
+        NavBar(
+            currentNavBarElement = NavBarElement.COMPETITIONS,
+            goToHomeScreen = goToHomeScreen,
+            goToMatchesScreen = goToMatchesScreen,
+            goToCompetitionsScreen = {},
+            goToItemsScreen = goToItemsScreen,
+            goToTeamsScreen = goToTeamsScreen
+        )
+    }) { padding ->
         PullToRefreshBox(
             isRefreshing = areCompetitionsRefreshing,
             onRefresh = { competitionViewModel.load(fromPullToRefresh = true) },

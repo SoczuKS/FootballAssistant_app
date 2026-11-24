@@ -49,6 +49,7 @@ fun ItemListScreen(
     goToCompetitionsScreen: () -> Unit,
     goToTeamsScreen: () -> Unit,
     goToItemAddScreen: () -> Unit,
+    goToProfileScreen: () -> Unit,
     isRefreshRequired: Boolean = false,
     refreshCallback: () -> Unit = {},
     itemViewModel: ItemViewModel = hiltViewModel()
@@ -73,30 +74,31 @@ fun ItemListScreen(
         itemViewModel.resetDeleteStatus()
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.nav_items_title)) },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = goToItemAddScreen,
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-            ) {
-                Icon(
-                    Icons.Default.Add, contentDescription = stringResource(R.string.item_add_title)
-                )
-            }
-        },
-        bottomBar = {
-            NavBar(
-                currentNavBarElement = NavBarElement.ITEMS,
-                goToHomeScreen = goToHomeScreen,
-                goToMatchesScreen = goToMatchesScreen,
-                goToCompetitionsScreen = goToCompetitionsScreen,
-                goToItemsScreen = {},
-                goToTeamsScreen = goToTeamsScreen
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = {
+        TopBar(
+            title = stringResource(R.string.nav_items_title),
+            onNavigateToProfile = goToProfileScreen
+        )
+    }, floatingActionButton = {
+        FloatingActionButton(
+            onClick = goToItemAddScreen,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        ) {
+            Icon(
+                Icons.Default.Add, contentDescription = stringResource(R.string.item_add_title)
             )
-        }) { padding ->
+        }
+    }, bottomBar = {
+        NavBar(
+            currentNavBarElement = NavBarElement.ITEMS,
+            goToHomeScreen = goToHomeScreen,
+            goToMatchesScreen = goToMatchesScreen,
+            goToCompetitionsScreen = goToCompetitionsScreen,
+            goToItemsScreen = {},
+            goToTeamsScreen = goToTeamsScreen
+        )
+    }) { padding ->
         PullToRefreshBox(
             isRefreshing = areItemsRefreshing,
             onRefresh = { itemViewModel.load(fromPullToRefresh = true) },

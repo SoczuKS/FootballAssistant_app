@@ -1,8 +1,8 @@
 package com.soczuks.footballassistant.api
 
 import com.soczuks.footballassistant.api.model.AppRelease
-import com.soczuks.footballassistant.api.model.request.LoginRequest
-import com.soczuks.footballassistant.api.model.request.RegisterRequest
+import com.soczuks.footballassistant.api.model.request.auth.LoginRequest
+import com.soczuks.footballassistant.api.model.request.auth.RegisterRequest
 import com.soczuks.footballassistant.api.model.request.competition.CompetitionAddRequest
 import com.soczuks.footballassistant.api.model.request.competition.CompetitionItemAssignmentRequest
 import com.soczuks.footballassistant.api.model.request.item.ItemAddRequest

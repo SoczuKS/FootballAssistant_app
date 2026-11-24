@@ -22,7 +22,7 @@ internal fun PlayerItem(player: UserProfile) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = player.login,
+                text = player.firstname + " " + player.lastname,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant

@@ -2,6 +2,7 @@ package com.soczuks.footballassistant.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -13,19 +14,30 @@ import androidx.compose.ui.res.stringResource
 import com.soczuks.footballassistant.R
 
 @Composable
-fun TopBar(title: String, onNavigateBack: (() -> Unit)? = null) {
+fun TopBar(
+    title: String, onNavigateBack: (() -> Unit)? = null, onNavigateToProfile: (() -> Unit)? = null
+) {
     TopAppBar(
-        title = { Text(title) }, actions = {}, colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-    ), navigationIcon = {
-        onNavigateBack?.let { navigateBack ->
-            IconButton(onClick = navigateBack) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.back_button_description)
-                )
+        title = { Text(title) }, actions = {
+            onNavigateToProfile?.let { navigateToProfile ->
+                IconButton(onClick = navigateToProfile) {
+                    Icon(
+                        Icons.Default.AccountCircle,
+                        contentDescription = stringResource(R.string.profile_menu_button_description)
+                    )
+                }
             }
-        }
-    })
+        }, colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ), navigationIcon = {
+            onNavigateBack?.let { navigateBack ->
+                IconButton(onClick = navigateBack) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back_button_description)
+                    )
+                }
+            }
+        })
 }

@@ -33,7 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.soczuks.footballassistant.R
-import com.soczuks.footballassistant.api.model.request.LoginRequest
+import com.soczuks.footballassistant.api.model.request.auth.LoginRequest
 import com.soczuks.footballassistant.utility.withoutWhitespace
 
 @Composable

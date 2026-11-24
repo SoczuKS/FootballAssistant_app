@@ -44,6 +44,7 @@ fun TeamListScreen(
     goToItemsScreen: () -> Unit,
     goToTeamAddScreen: () -> Unit,
     goToTeamDetailsScreen: (Int) -> Unit,
+    goToProfileScreen: () -> Unit,
     isRefreshRequired: Boolean = false,
     refreshCallback: () -> Unit = {},
     teamViewModel: TeamViewModel = hiltViewModel()
@@ -59,29 +60,30 @@ fun TeamListScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = { TopBar(title = stringResource(R.string.nav_teams_title)) },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = goToTeamAddScreen,
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-            ) {
-                Icon(
-                    Icons.Default.Add, contentDescription = stringResource(R.string.team_add_title)
-                )
-            }
-        },
-        bottomBar = {
-            NavBar(
-                currentNavBarElement = NavBarElement.TEAMS,
-                goToHomeScreen = goToHomeScreen,
-                goToMatchesScreen = goToMatchesScreen,
-                goToCompetitionsScreen = goToCompetitionsScreen,
-                goToItemsScreen = goToItemsScreen,
-                goToTeamsScreen = {})
-        }) { padding ->
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = {
+        TopBar(
+            title = stringResource(R.string.nav_teams_title),
+            onNavigateToProfile = goToProfileScreen
+        )
+    }, floatingActionButton = {
+        FloatingActionButton(
+            onClick = goToTeamAddScreen,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        ) {
+            Icon(
+                Icons.Default.Add, contentDescription = stringResource(R.string.team_add_title)
+            )
+        }
+    }, bottomBar = {
+        NavBar(
+            currentNavBarElement = NavBarElement.TEAMS,
+            goToHomeScreen = goToHomeScreen,
+            goToMatchesScreen = goToMatchesScreen,
+            goToCompetitionsScreen = goToCompetitionsScreen,
+            goToItemsScreen = goToItemsScreen,
+            goToTeamsScreen = {})
+    }) { padding ->
         PullToRefreshBox(
             isRefreshing = areTeamsRefreshing,
             onRefresh = { teamViewModel.load(fromPullToRefresh = true) },

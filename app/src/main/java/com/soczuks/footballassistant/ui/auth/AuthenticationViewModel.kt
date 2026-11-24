@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soczuks.footballassistant.R
 import com.soczuks.footballassistant.api.FootballAssistantApi
-import com.soczuks.footballassistant.api.model.request.LoginRequest
-import com.soczuks.footballassistant.api.model.request.RegisterRequest
+import com.soczuks.footballassistant.api.model.request.auth.LoginRequest
+import com.soczuks.footballassistant.api.model.request.auth.RegisterRequest
 import com.soczuks.footballassistant.data.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,7 +36,7 @@ class AuthenticationViewModel @Inject constructor(
 
                     if (body.statusCode == 0) {
                         sessionManager.saveTokens(body.data.accessToken, body.data.refreshToken)
-                        sessionManager.saveUserId(body.data.user.id)
+                        sessionManager.saveUserId(body.data.userId)
                         _authenticationStatus.value = AuthenticationStatus.LoginSuccess
                     } else {
                         _authenticationStatus.value = AuthenticationStatus.Error(body.message)

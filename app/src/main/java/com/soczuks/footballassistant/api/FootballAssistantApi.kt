@@ -1,6 +1,9 @@
 package com.soczuks.footballassistant.api
 
 import com.soczuks.footballassistant.api.model.AppRelease
+import com.soczuks.footballassistant.api.model.request.auth.ChangeEmailRequest
+import com.soczuks.footballassistant.api.model.request.auth.ChangePasswordRequest
+import com.soczuks.footballassistant.api.model.request.auth.ChangeUserDataRequest
 import com.soczuks.footballassistant.api.model.request.auth.LoginRequest
 import com.soczuks.footballassistant.api.model.request.auth.RegisterRequest
 import com.soczuks.footballassistant.api.model.request.competition.CompetitionAddRequest
@@ -35,6 +38,18 @@ interface FootballAssistantApi {
 
     @GET("auth/me")
     suspend fun getCurrentUser(): Response<UserProfileResponse>
+
+    @POST("auth/change_email")
+    suspend fun changeEmail(@Body request: ChangeEmailRequest): Response<MessageResponse>
+
+    @POST("auth/change_password")
+    suspend fun changePassword(@Body request: ChangePasswordRequest): Response<MessageResponse>
+
+    @POST("auth/change_user_data")
+    suspend fun changeUserData(@Body request: ChangeUserDataRequest): Response<MessageResponse>
+
+    @GET("auth/logout")
+    suspend fun logout(): Response<MessageResponse>
 
     @GET("app/latest")
     suspend fun getLatestAppRelease(): Response<AppRelease>

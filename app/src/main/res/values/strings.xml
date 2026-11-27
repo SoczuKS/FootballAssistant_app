@@ -99,4 +99,19 @@
     <string name="profile_load_error">Could not load profile.</string>
     <string name="profile_edit_error">Could not edit profile.</string>
     <string name="user_profile_title">User profile</string>
+    <string name="change_email_error">Email change failed. Try again later.</string>
+    <string name="change_password_error">Password change failed. Try again later.</string>
+    <string name="change_user_data_error">User data change failed. Try again later.</string>
+    <string name="profile_user_info_title">User info</string>
+    <string name="profile_password_title">Password</string>
+    <string name="profile_email_title">Email</string>
+    <string name="profile_update_user_info">Update user info</string>
+    <string name="profile_change_password">Change password</string>
+    <string name="profile_change_email">Change email</string>
+    <string name="profile_update_success">Updated successfully.</string>
+    <string name="current_password_label">Current password</string>
+    <string name="confirm_email_label">Confirm email</string>
+    <string name="emails_do_not_match">Email addresses do not match.</string>
+    <string name="logout_button">Log out</string>
+    <string name="login_required_after_credential_change">Your email or password changed. Please sign in again.</string>
 </resources>

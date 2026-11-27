@@ -58,9 +58,16 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
             StartupScreen(startupStatus = startupStatus, onRetry = viewModel::restoreSession)
         }
 
-        composable<LoginDestination> {
+        composable<LoginDestination> { backStackEntry ->
+            val showLoginRequiredMessage by backStackEntry.savedStateHandle
+                .getStateFlow("show_login_required_message", false)
+                .collectAsState()
             LoginScreen(
                 onNavigateToRegister = { navController.navigate(RegisterDestination) },
+                showLoginRequiredMessage = showLoginRequiredMessage,
+                onLoginMessageShown = {
+                    backStackEntry.savedStateHandle["show_login_required_message"] = false
+                },
                 onLoginSuccess = {
                     onAuthenticated()
                     navController.navigate(HomeDestination) {
@@ -97,7 +104,19 @@ fun NavGraph(navController: NavHostController, onAuthenticated: () -> Unit) {
         }
 
         composable<ProfileDestination> {
-            ProfileScreen(onNavigateBack = { navController.popBackStack() })
+            ProfileScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onLogout = { showLoginRequiredMessage ->
+                    navController.navigate(LoginDestination) {
+                        popUpTo<HomeDestination> { inclusive = true }
+                        launchSingleTop = true
+                    }
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        "show_login_required_message",
+                        showLoginRequiredMessage
+                    )
+                }
+            )
         }
 
         composable<MatchesDestination> { backStackEntry ->

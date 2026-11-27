@@ -40,6 +40,8 @@ import com.soczuks.footballassistant.utility.withoutWhitespace
 fun LoginScreen(
     onNavigateToRegister: () -> Unit,
     onLoginSuccess: () -> Unit,
+    showLoginRequiredMessage: Boolean = false,
+    onLoginMessageShown: () -> Unit = {},
     authenticationViewModel: AuthenticationViewModel = hiltViewModel()
 ) {
     var login by rememberSaveable { mutableStateOf("") }
@@ -51,6 +53,11 @@ fun LoginScreen(
         if (authenticationStatus is AuthenticationStatus.LoginSuccess) {
             onLoginSuccess()
             authenticationViewModel.resetState()
+        }
+    }
+    LaunchedEffect(showLoginRequiredMessage) {
+        if (showLoginRequiredMessage) {
+            onLoginMessageShown()
         }
     }
 
@@ -71,6 +78,14 @@ fun LoginScreen(
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary
             )
+            if (showLoginRequiredMessage) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(R.string.login_required_after_credential_change),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(

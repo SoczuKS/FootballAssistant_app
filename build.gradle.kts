@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all subprojects/modules.
 buildscript {
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.21")
-        classpath("com.google.devtools.ksp:symbol-processing-gradle-plugin:2.3.14")
+        classpath(libs.kotlin.gradle.plugin)
+        classpath(libs.ksp.gradle.plugin)
     }
 }
 
